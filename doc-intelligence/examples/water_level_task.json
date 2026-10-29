@@ -1,0 +1,29 @@
+{
+  "task_id": "historical_water_level_time_series_extraction",
+  "objective": "Extract historical water-level time series measurements for monitoring wells from Annexure 2",
+  "instructions": "Extract monitoring well observations from the table in Annexure 2. For each measurement, extract well_id, village, year, month, date, and depth_to_water_level_mbgl.",
+  "fields": [
+    "well_id",
+    "village",
+    "year",
+    "month",
+    "date",
+    "depth_to_water_level_mbgl"
+  ],
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "well_id": {"type": "string"},
+      "village": {"type": "string"},
+      "year": {"type": "string"},
+      "month": {"type": "string"},
+      "date": {"type": "string"},
+      "depth_to_water_level_mbgl": {"type": "string"}
+    }
+  },
+  "coverage_scope": "sample",
+  "max_relevant_pages": 3,
+  "expand_annexures": true,
+  "allow_escalation": true,
+  "max_repair_attempts": 2
+}

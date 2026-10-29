@@ -1,0 +1,24 @@
+{
+  "task_id": "operational_efficiency_extraction",
+  "objective": "Extract recorded operational observations, facility measurements, and dates",
+  "instructions": "Only extract observations explicitly reported in the text. Preserve exact numerical units.",
+  "fields": [
+    "observation_id",
+    "facility_or_location",
+    "metric_description",
+    "measurement_value",
+    "observation_date"
+  ],
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "observation_id": {"type": "string"},
+      "facility_or_location": {"type": "string"},
+      "metric_description": {"type": "string"},
+      "measurement_value": {"type": "string"},
+      "observation_date": {"type": "string"}
+    }
+  },
+  "max_relevant_pages": 3,
+  "allow_escalation": true
+}

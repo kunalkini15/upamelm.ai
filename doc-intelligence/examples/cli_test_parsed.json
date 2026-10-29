@@ -1,0 +1,607 @@
+{
+  "document_metadata": {
+    "document_id": "doc_a67f7fd7c1ae2f6e",
+    "filename": "sample_report.pdf",
+    "file_path": "/Users/kunal.kini/Kunal/Projects/meta-gloabl-ai-hackathon-oct/subsurface/doc-intelligence/examples/sample_report.pdf",
+    "file_size_bytes": 4226,
+    "file_hash_sha256": "a67f7fd7c1ae2f6e32cac68ad30af0c34f6969a5696e3e8e6b16cac3b68482d7",
+    "page_count": 2,
+    "mime_type": "application/pdf",
+    "title": "",
+    "author": "",
+    "creation_date": "",
+    "custom_metadata": {}
+  },
+  "parsed_document": {
+    "metadata": {
+      "document_id": "doc_a67f7fd7c1ae2f6e",
+      "filename": "sample_report.pdf",
+      "file_path": "/Users/kunal.kini/Kunal/Projects/meta-gloabl-ai-hackathon-oct/subsurface/doc-intelligence/examples/sample_report.pdf",
+      "file_size_bytes": 4226,
+      "file_hash_sha256": "a67f7fd7c1ae2f6e32cac68ad30af0c34f6969a5696e3e8e6b16cac3b68482d7",
+      "page_count": 2,
+      "mime_type": "application/pdf",
+      "title": "",
+      "author": "",
+      "creation_date": "",
+      "custom_metadata": {}
+    },
+    "pages": [
+      {
+        "page_number": 1,
+        "printed_page_number": null,
+        "width": 595.0,
+        "height": 842.0,
+        "text": "Quarterly Operational Assessment Report\nDocument ID: CORP-2026-Q1\n1. Executive Summary\nThis quarterly assessment outlines facility performance, key operational metrics,\nenergy efficiency, and compliance status across eastern facilities.\nKey Observation: Facility North recorded a baseline energy consumption of 412 MWh in January 2026.\nThe operating margin for the industrial division was observed at 18.4% during Q1.\n",
+        "blocks": [
+          {
+            "block_id": "p1_b1",
+            "page_number": 1,
+            "block_type": "title",
+            "text": "Quarterly Operational Assessment Report",
+            "level": 1,
+            "bbox": {
+              "x0": 50.0,
+              "y0": 40.650001525878906,
+              "x1": 384.1159362792969,
+              "y1": 65.38200378417969
+            },
+            "metadata": {
+              "font_size": 18.0
+            }
+          },
+          {
+            "block_id": "p1_b2",
+            "page_number": 1,
+            "block_type": "paragraph",
+            "text": "Document ID: CORP-2026-Q1",
+            "level": null,
+            "bbox": {
+              "x0": 50.0,
+              "y0": 79.25,
+              "x1": 185.03997802734375,
+              "y1": 92.98999786376953
+            },
+            "metadata": {
+              "font_size": 10.0
+            }
+          },
+          {
+            "block_id": "p1_b3",
+            "page_number": 1,
+            "block_type": "heading",
+            "text": "1. Executive Summary",
+            "level": 2,
+            "bbox": {
+              "x0": 50.0,
+              "y0": 104.94999694824219,
+              "x1": 190.04202270507812,
+              "y1": 124.18599700927734
+            },
+            "metadata": {
+              "font_size": 14.0
+            }
+          },
+          {
+            "block_id": "p1_b4",
+            "page_number": 1,
+            "block_type": "paragraph",
+            "text": "This quarterly assessment outlines facility performance, key operational metrics,\nenergy efficiency, and compliance status across eastern facilities.",
+            "level": null,
+            "bbox": {
+              "x0": 50.0,
+              "y0": 128.1750030517578,
+              "x1": 440.0159606933594,
+              "y1": 158.40301513671875
+            },
+            "metadata": {
+              "font_size": 11.0
+            }
+          },
+          {
+            "block_id": "p1_b5",
+            "page_number": 1,
+            "block_type": "paragraph",
+            "text": "Key Observation: Facility North recorded a baseline energy consumption of 412 MWh in January 2026.",
+            "level": null,
+            "bbox": {
+              "x0": 50.0,
+              "y0": 168.1750030517578,
+              "x1": 550.1040649414062,
+              "y1": 183.28900146484375
+            },
+            "metadata": {
+              "font_size": 11.0
+            }
+          },
+          {
+            "block_id": "p1_b6",
+            "page_number": 1,
+            "block_type": "paragraph",
+            "text": "The operating margin for the industrial division was observed at 18.4% during Q1.",
+            "level": null,
+            "bbox": {
+              "x0": 50.0,
+              "y0": 193.1750030517578,
+              "x1": 447.39697265625,
+              "y1": 208.28900146484375
+            },
+            "metadata": {
+              "font_size": 11.0
+            }
+          }
+        ],
+        "tables": [],
+        "images": [],
+        "metadata": {}
+      },
+      {
+        "page_number": 2,
+        "printed_page_number": null,
+        "width": 595.0,
+        "height": 842.0,
+        "text": "2. Operational Data Metrics\nTable 1: Regional Efficiency Metrics\nFacility | Month | Output (Units) | Variance\nFacility-A | Jan-2026 | 125,000 | +4.2%\nFacility-B | Feb-2026 | 98,400 | -1.1%\nFacility-C | Mar-2026 | 114,200 | +0.5%\n3. Risk and Compliance\nAudit finding AF-09: Unresolved telemetry discrepancy noted in sector 4 sensor array.\nWater retention levels remained stable at 94.5% capacity.\n",
+        "blocks": [
+          {
+            "block_id": "p2_b1",
+            "page_number": 2,
+            "block_type": "heading",
+            "text": "2. Operational Data Metrics",
+            "level": 2,
+            "bbox": {
+              "x0": 50.0,
+              "y0": 44.94999694824219,
+              "x1": 220.39401245117188,
+              "y1": 64.18599700927734
+            },
+            "metadata": {
+              "font_size": 14.0
+            }
+          },
+          {
+            "block_id": "p2_b2",
+            "page_number": 2,
+            "block_type": "heading",
+            "text": "Table 1: Regional Efficiency Metrics",
+            "level": 3,
+            "bbox": {
+              "x0": 50.0,
+              "y0": 77.0999984741211,
+              "x1": 240.72796630859375,
+              "y1": 93.58799743652344
+            },
+            "metadata": {
+              "font_size": 12.0
+            }
+          },
+          {
+            "block_id": "p2_b3",
+            "page_number": 2,
+            "block_type": "paragraph",
+            "text": "Facility | Month | Output (Units) | Variance",
+            "level": null,
+            "bbox": {
+              "x0": 60.0,
+              "y0": 109.25,
+              "x1": 245.07998657226562,
+              "y1": 122.98999786376953
+            },
+            "metadata": {
+              "font_size": 10.0
+            }
+          },
+          {
+            "block_id": "p2_b4",
+            "page_number": 2,
+            "block_type": "paragraph",
+            "text": "Facility-A | Jan-2026 | 125,000 | +4.2%",
+            "level": null,
+            "bbox": {
+              "x0": 60.0,
+              "y0": 129.25,
+              "x1": 232.04995727539062,
+              "y1": 142.99000549316406
+            },
+            "metadata": {
+              "font_size": 10.0
+            }
+          },
+          {
+            "block_id": "p2_b5",
+            "page_number": 2,
+            "block_type": "paragraph",
+            "text": "Facility-B | Feb-2026 | 98,400 | -1.1%",
+            "level": null,
+            "bbox": {
+              "x0": 60.0,
+              "y0": 149.25,
+              "x1": 225.0899658203125,
+              "y1": 162.99000549316406
+            },
+            "metadata": {
+              "font_size": 10.0
+            }
+          },
+          {
+            "block_id": "p2_b6",
+            "page_number": 2,
+            "block_type": "paragraph",
+            "text": "Facility-C | Mar-2026 | 114,200 | +0.5%",
+            "level": null,
+            "bbox": {
+              "x0": 60.0,
+              "y0": 169.25,
+              "x1": 233.69996643066406,
+              "y1": 182.99000549316406
+            },
+            "metadata": {
+              "font_size": 10.0
+            }
+          },
+          {
+            "block_id": "p2_b7",
+            "page_number": 2,
+            "block_type": "heading",
+            "text": "3. Risk and Compliance",
+            "level": 2,
+            "bbox": {
+              "x0": 50.0,
+              "y0": 214.9499969482422,
+              "x1": 197.8260040283203,
+              "y1": 234.18600463867188
+            },
+            "metadata": {
+              "font_size": 14.0
+            }
+          },
+          {
+            "block_id": "p2_b8",
+            "page_number": 2,
+            "block_type": "paragraph",
+            "text": "Audit finding AF-09: Unresolved telemetry discrepancy noted in sector 4 sensor array.",
+            "level": null,
+            "bbox": {
+              "x0": 50.0,
+              "y0": 238.1750030517578,
+              "x1": 466.9439697265625,
+              "y1": 253.28900146484375
+            },
+            "metadata": {
+              "font_size": 11.0
+            }
+          },
+          {
+            "block_id": "p2_b9",
+            "page_number": 2,
+            "block_type": "paragraph",
+            "text": "Water retention levels remained stable at 94.5% capacity.",
+            "level": null,
+            "bbox": {
+              "x0": 50.0,
+              "y0": 258.17498779296875,
+              "x1": 330.6209716796875,
+              "y1": 273.28900146484375
+            },
+            "metadata": {
+              "font_size": 11.0
+            }
+          }
+        ],
+        "tables": [],
+        "images": [],
+        "metadata": {}
+      }
+    ],
+    "parser_name": "pymupdf",
+    "parser_version": "2.0",
+    "parsing_time_seconds": 0.19173195795156062,
+    "parsing_warnings": []
+  },
+  "document_index": {
+    "document_id": "doc_a67f7fd7c1ae2f6e",
+    "total_pages": 2,
+    "sections": [
+      {
+        "title": "Quarterly Operational Assessment Report",
+        "level": 1,
+        "page_number": 1,
+        "bbox": {
+          "x0": 50.0,
+          "y0": 40.650001525878906,
+          "x1": 384.1159362792969,
+          "y1": 65.38200378417969
+        }
+      },
+      {
+        "title": "1. Executive Summary",
+        "level": 2,
+        "page_number": 1,
+        "bbox": {
+          "x0": 50.0,
+          "y0": 104.94999694824219,
+          "x1": 190.04202270507812,
+          "y1": 124.18599700927734
+        }
+      },
+      {
+        "title": "2. Operational Data Metrics",
+        "level": 2,
+        "page_number": 2,
+        "bbox": {
+          "x0": 50.0,
+          "y0": 44.94999694824219,
+          "x1": 220.39401245117188,
+          "y1": 64.18599700927734
+        }
+      },
+      {
+        "title": "Table 1: Regional Efficiency Metrics",
+        "level": 3,
+        "page_number": 2,
+        "bbox": {
+          "x0": 50.0,
+          "y0": 77.0999984741211,
+          "x1": 240.72796630859375,
+          "y1": 93.58799743652344
+        }
+      },
+      {
+        "title": "3. Risk and Compliance",
+        "level": 2,
+        "page_number": 2,
+        "bbox": {
+          "x0": 50.0,
+          "y0": 214.9499969482422,
+          "x1": 197.8260040283203,
+          "y1": 234.18600463867188
+        }
+      }
+    ],
+    "tables": [],
+    "figures": [],
+    "page_summaries": [
+      {
+        "page_number": 1,
+        "printed_page_number": null,
+        "char_count": 418,
+        "word_count": 38,
+        "top_keywords": [
+          "quarterly",
+          "operational",
+          "assessment",
+          "facility",
+          "key"
+        ],
+        "has_tables": false,
+        "has_figures": false,
+        "preview_snippet": "Quarterly Operational Assessment Report Document ID: CORP-2026-Q1 1. Executive Summary This quarterly assessment outlines facility performance, key operational "
+      },
+      {
+        "page_number": 2,
+        "printed_page_number": null,
+        "char_count": 396,
+        "word_count": 35,
+        "top_keywords": [
+          "metrics",
+          "operational",
+          "data",
+          "regional",
+          "efficiency"
+        ],
+        "has_tables": false,
+        "has_figures": false,
+        "preview_snippet": "2. Operational Data Metrics Table 1: Regional Efficiency Metrics Facility | Month | Output (Units) | Variance Facility-A | Jan-2026 | 125,000 | +4.2% Facility-B"
+      }
+    ],
+    "quality_indicators": [
+      {
+        "page_number": 1,
+        "character_count": 418,
+        "word_count": 38,
+        "has_tables": false,
+        "has_images": false,
+        "is_scanned_suspicion": false,
+        "confidence_score": 1.0
+      },
+      {
+        "page_number": 2,
+        "character_count": 396,
+        "word_count": 35,
+        "has_tables": false,
+        "has_images": false,
+        "is_scanned_suspicion": false,
+        "confidence_score": 1.0
+      }
+    ],
+    "vocabulary": {
+      "facilities": [
+        1
+      ],
+      "compliance": [
+        1,
+        2
+      ],
+      "performance": [
+        1
+      ],
+      "metrics": [
+        1,
+        2
+      ],
+      "baseline": [
+        1
+      ],
+      "north": [
+        1
+      ],
+      "observation": [
+        1
+      ],
+      "key": [
+        1
+      ],
+      "recorded": [
+        1
+      ],
+      "energy": [
+        1
+      ],
+      "across": [
+        1
+      ],
+      "efficiency": [
+        1,
+        2
+      ],
+      "observed": [
+        1
+      ],
+      "operational": [
+        1,
+        2
+      ],
+      "mwh": [
+        1
+      ],
+      "division": [
+        1
+      ],
+      "assessment": [
+        1
+      ],
+      "consumption": [
+        1
+      ],
+      "facility": [
+        1,
+        2
+      ],
+      "eastern": [
+        1
+      ],
+      "quarterly": [
+        1
+      ],
+      "corp-2026-q1": [
+        1
+      ],
+      "operating": [
+        1
+      ],
+      "outlines": [
+        1
+      ],
+      "executive": [
+        1
+      ],
+      "report": [
+        1
+      ],
+      "status": [
+        1
+      ],
+      "industrial": [
+        1
+      ],
+      "january": [
+        1
+      ],
+      "document": [
+        1
+      ],
+      "margin": [
+        1
+      ],
+      "summary": [
+        1
+      ],
+      "discrepancy": [
+        2
+      ],
+      "jan-2026": [
+        2
+      ],
+      "facility-c": [
+        2
+      ],
+      "noted": [
+        2
+      ],
+      "facility-b": [
+        2
+      ],
+      "feb-2026": [
+        2
+      ],
+      "stable": [
+        2
+      ],
+      "variance": [
+        2
+      ],
+      "levels": [
+        2
+      ],
+      "remained": [
+        2
+      ],
+      "sensor": [
+        2
+      ],
+      "water": [
+        2
+      ],
+      "output": [
+        2
+      ],
+      "mar-2026": [
+        2
+      ],
+      "array": [
+        2
+      ],
+      "units": [
+        2
+      ],
+      "month": [
+        2
+      ],
+      "data": [
+        2
+      ],
+      "facility-a": [
+        2
+      ],
+      "regional": [
+        2
+      ],
+      "finding": [
+        2
+      ],
+      "unresolved": [
+        2
+      ],
+      "risk": [
+        2
+      ],
+      "retention": [
+        2
+      ],
+      "telemetry": [
+        2
+      ],
+      "audit": [
+        2
+      ],
+      "af-09": [
+        2
+      ],
+      "sector": [
+        2
+      ],
+      "capacity": [
+        2
+      ]
+    }
+  }
+}

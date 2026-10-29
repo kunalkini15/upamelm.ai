@@ -1,8 +1,26 @@
 # Dependencies
 node_modules/
 
-# Build output
+# Python Virtual Environments & Packages
+.venv/
+venv/
+ENV/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
 dist/
+build/
+*.egg
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Build output
 dist-ssr/
 *.local
 
@@ -24,7 +42,7 @@ yarn-error.log*
 *.sln
 *.sw?
 
-# Local env (never commit secrets; frontend must not hold model credentials)
+# Local env (never commit secrets; frontend and repo must not hold model credentials)
 .env
 .env.*
 !.env.example

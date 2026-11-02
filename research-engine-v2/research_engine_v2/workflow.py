@@ -60,10 +60,10 @@ class ResearchWorkflow:
 
     def run_all(self):
         planning = self.run_planning()
-        if planning.status != "completed":
+        if planning.status not in {"completed", "completed_with_limitations"}:
             return planning
         extraction = self.run_extraction()
-        if extraction.status != "completed":
+        if extraction.status not in {"completed", "completed_with_limitations"}:
             return extraction
         return self.run_synthesis()
 

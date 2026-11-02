@@ -1,6 +1,6 @@
-# Research Engine V2
+# Research Engine
 
-Research Engine V2 is an independent, stage-oriented research harness. It accepts a
+`research-engine-v2` is the repository's single research-engine implementation. It accepts a
 request and source documents, uses Document Intelligence to build/load a
 Document Atlas, lets Meta Muse Spark Contributor create a selective
 investigation plan, extracts that plan as one bounded objective-wide evidence bundle,
@@ -11,6 +11,10 @@ workflow registers planning, extraction, and synthesis stages. The planner owns
 document understanding and page selection; the extractor owns bounded Document
 Intelligence extraction and evidence artifacts; the synthesizer owns findings
 and reporting.
+
+The older `research-engine` package and the stray top-level `research_engine_v2`
+package have been retired. Import `research_engine_v2` from this directory or use
+the `research-engine-v2` command installed by this package.
 
 To execute an existing completed planning run:
 

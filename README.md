@@ -63,6 +63,11 @@ docs/
   data-licensing.md Tile/boundary data sources, licences, attribution
 ```
 
+The backend research pipeline has one canonical implementation in
+`research-engine-v2/`. Its `research_engine_v2` Python package runs planning,
+extraction, and synthesis end to end; see `research-engine-v2/README.md` for the
+CLI and artifact layout.
+
 Key files and responsibilities:
 
 - `src/types/*` — reusable interfaces for regions, locations, domains, layers,

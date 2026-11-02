@@ -344,6 +344,15 @@ def test_workflow_exposes_planning_as_a_stage_without_execution():
     assert hasattr(ResearchWorkflow, "run_extraction")
 
 
+def test_workflow_continues_through_limited_successes():
+    workflow = ResearchWorkflow.__new__(ResearchWorkflow)
+    workflow.run_planning = lambda: type("Result", (), {"status": "completed_with_limitations"})()
+    workflow.run_extraction = lambda: type("Result", (), {"status": "completed_with_limitations"})()
+    workflow.run_synthesis = lambda: {"status": "completed", "stage": "synthesis"}
+
+    assert workflow.run_all() == {"status": "completed", "stage": "synthesis"}
+
+
 def test_planner_and_extractor_use_sibling_stage_roots(tmp_path: Path):
     planner_dir = tmp_path / "planner"
     assert extractor_dir_for(planner_dir) == tmp_path / "extractor"

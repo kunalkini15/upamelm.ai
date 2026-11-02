@@ -206,12 +206,12 @@ def main(argv: list[str] | None = None) -> int:
     workflow = ResearchWorkflow(request, run_dir)
     if args.command == "run":
         planning = workflow.run_planning()
-        if planning.status == "completed":
+        if planning.status in {"completed", "completed_with_limitations"}:
             extraction_root = extractor_dir_for(run_dir)
             reset_stage_dir(extraction_root)
             configure_logging(extraction_root / "logs" / "research_engine_v2.log")
             result = workflow.run_extraction(config=extractor_config)
-            if result.status == "completed":
+            if result.status in {"completed", "completed_with_limitations"}:
                 synthesis_root = run_dir.parent / "synthesizer"
                 reset_stage_dir(synthesis_root)
                 configure_logging(synthesis_root / "logs" / "research_engine_v2.log")
@@ -231,7 +231,7 @@ def main(argv: list[str] | None = None) -> int:
         (run_dir / "status.json").write_text(json.dumps(result.model_dump(mode="json"), indent=2), encoding="utf-8")
     status = result.get("status") if isinstance(result, dict) else result.status
     print(status, flush=True)
-    return 0 if status == "completed" else 1
+    return 0 if status in {"completed", "completed_with_limitations"} else 1
 
 
 if __name__ == "__main__":

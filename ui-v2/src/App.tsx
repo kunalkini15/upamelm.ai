@@ -1,19 +1,27 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { Suspense, lazy, useState, useEffect, useRef } from 'react';
 import { ScientificPackageLoader } from './core/ScientificPackageLoader';
 import {
   ScientificUIModel,
   RenderablePointFeature,
   RenderableInterval,
+  ReportFindingView,
 } from './types/scientific';
 import { SeamlessMap, SeamlessMapHandle } from './components/map/SeamlessMap';
-import { SubsurfaceExplorer } from './components/scene/SubsurfaceExplorer';
 import { FloatingHUD } from './components/hud/FloatingHUD';
+import { ExecutiveDossierDrawer } from './components/report/ExecutiveDossierDrawer';
 import {
   Box,
   RotateCcw,
   Sparkles,
   Map as MapIcon,
+  Compass,
 } from 'lucide-react';
+
+const SubsurfaceExplorer = lazy(() =>
+  import('./components/scene/SubsurfaceExplorer').then((module) => ({
+    default: module.SubsurfaceExplorer,
+  }))
+);
 
 export function App() {
   const [model, setModel] = useState<ScientificUIModel | null>(null);
@@ -23,13 +31,30 @@ export function App() {
   // Selection state
   const [selectedFeature, setSelectedFeature] = useState<RenderablePointFeature | null>(null);
   const [selectedInterval, setSelectedInterval] = useState<RenderableInterval | null>(null);
+  const [reportHighlightedFeatureIds, setReportHighlightedFeatureIds] = useState<string[]>([]);
+  const [subsurfaceFocusFinding, setSubsurfaceFocusFinding] = useState<{ title: string; intervalIds: string[]; featureIds: string[] } | null>(null);
 
-  // Subsurface Mode: true = 3D subterranean cutaway, false = 2D cartography
-  const [explorerOpen, setExplorerOpen] = useState(false);
+  // Primary view modes: Map vs 3D Subsurface
+  const [mode, setMode] = useState<'map' | 'subsurface'>('map');
+  const explorerOpen = mode === 'subsurface';
 
-  // Map state
-  const [zoomLevel, setZoomLevel] = useState(10.2);
-  const [pitchAngle, setPitchAngle] = useState(0);
+  // Map zoom level tracking to drive macro vs regional analysis visibility
+  const [mapZoom, setMapZoom] = useState<number>(5.5);
+
+  // Floating Executive Dossier Drawer manual toggle / override
+  const [userDismissedDossier, setUserDismissedDossier] = useState(false);
+
+  // Dossier visibility rule:
+  // Visible in 2D Map mode when zoomed into the regional study area (zoom >= 7.5),
+  // as long as the user hasn't explicitly clicked close on the drawer,
+  // and no single station HUD is active.
+  const isDossierOpen = Boolean(
+    mode === 'map' &&
+    mapZoom >= 7.5 &&
+    !selectedFeature &&
+    !userDismissedDossier &&
+    model?.reportAnalysis
+  );
 
   const mapRef = useRef<SeamlessMapHandle>(null);
 
@@ -61,6 +86,8 @@ export function App() {
   const [capturedSurfaceCanvas, setCapturedSurfaceCanvas] = useState<HTMLCanvasElement | null>(null);
 
   const handleOpenExplorer = async (feature?: RenderablePointFeature) => {
+    // A direct Map → 3D transition is not a report handoff.
+    setSubsurfaceFocusFinding(null);
     if (feature) setSelectedFeature(feature);
     if (model && mapRef.current) {
       try {
@@ -72,11 +99,68 @@ export function App() {
         console.warn('Map capture failed, using fallback grid:', e);
       }
     }
-    setExplorerOpen(true);
+    setMode('subsurface');
+    const params = new URLSearchParams(window.location.search);
+    params.set('mode', 'subsurface');
+    window.history.pushState({}, '', `${window.location.pathname}?${params.toString()}`);
   };
 
   const handleCloseExplorer = () => {
-    setExplorerOpen(false);
+    setSubsurfaceFocusFinding(null);
+    setMode('map');
+  };
+
+  const handleModeChange = (nextMode: 'map' | 'subsurface') => {
+    if (nextMode === 'subsurface') {
+      void handleOpenExplorer(selectedFeature || undefined);
+      return;
+    }
+    setMode('map');
+  };
+
+  const handleReportMap = (finding: ReportFindingView) => {
+    setReportHighlightedFeatureIds(finding.resolvedFeatureIds);
+    const target = finding.resolvedFeatureIds.length === 1
+      ? model?.featuresWithCoords.find((feature) => feature.id === finding.resolvedFeatureIds[0])
+      : undefined;
+    if (target) {
+      setSelectedFeature(target);
+      window.setTimeout(() => mapRef.current?.flyToFeature(target), 0);
+    } else {
+      window.setTimeout(() => mapRef.current?.fitToFeatures(finding.resolvedFeatureIds), 0);
+    }
+    setMode('map');
+  };
+
+  const handleReport3D = (finding: ReportFindingView) => {
+    setSubsurfaceFocusFinding({ title: finding.title, intervalIds: finding.resolvedIntervalIds, featureIds: finding.resolvedFeatureIds });
+    const target = finding.resolvedFeatureIds.length > 0
+      ? model?.featuresWithCoords.find((feature) => feature.id === finding.resolvedFeatureIds[0])
+      : undefined;
+    void openFocusedExplorer(target);
+  };
+
+  async function openFocusedExplorer(feature?: RenderablePointFeature) {
+    if (feature) setSelectedFeature(feature);
+    if (model && mapRef.current) {
+      try {
+        const cropped = await mapRef.current.captureAlignedCrop(model.studyAreaPolygon, 700, 200);
+        if (cropped) setCapturedSurfaceCanvas(cropped);
+      } catch (e) {
+        console.warn('Map capture failed, using fallback grid:', e);
+      }
+    }
+    setMode('subsurface');
+    const params = new URLSearchParams(window.location.search);
+    params.set('mode', 'subsurface');
+    window.history.pushState({}, '', `${window.location.pathname}?${params.toString()}`);
+  }
+
+  const handleReturnToExplore = () => {
+    setReportHighlightedFeatureIds([]);
+    setSelectedFeature(null);
+    setSelectedInterval(null);
+    handleModeChange('map');
   };
 
   if (loading) {
@@ -115,50 +199,53 @@ export function App() {
           </div>
         </div>
 
-        {/* Center: Clean Mode Indicator Pill */}
-        <div className="flex items-center gap-2 bg-slate-900/80 px-3 py-1 rounded-full border border-slate-800 text-xs font-mono">
-          <span
-            className={`w-2 h-2 rounded-full ${
-              explorerOpen
-                ? 'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)]'
-                : 'bg-cyan-400'
-            }`}
-          />
-          <span className="text-slate-300">
-            {explorerOpen ? '3D Subsurface Cutaway' : 'District Map'}
-          </span>
-          <span className="text-slate-600">•</span>
-          <span className="text-slate-400">{model.featuresWithCoords.length} Stations</span>
-        </div>
-
-        {/* Right: Primary View Switcher & Reset */}
-        <div className="flex items-center gap-2.5">
-          {explorerOpen ? (
+        {/* Center: Primary 2-Way View Switcher + Dossier Button */}
+        <div className="flex items-center gap-3">
+          <div className="flex items-center bg-slate-950/90 p-1 rounded-xl border border-slate-800 shadow-inner">
             <button
-              onClick={handleCloseExplorer}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs font-mono font-medium transition"
+              onClick={() => handleModeChange('map')}
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-mono font-bold transition ${
+                mode === 'map'
+                  ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
             >
-              <MapIcon className="w-3.5 h-3.5 text-cyan-400" />
-              <span>Return to Map</span>
+              <MapIcon className="w-3.5 h-3.5" />
+              <span>Map View</span>
             </button>
-          ) : (
+
             <button
-              onClick={() => handleOpenExplorer(selectedFeature || undefined)}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-slate-950 text-xs font-mono font-bold transition shadow-md shadow-cyan-600/20"
+              onClick={() => handleModeChange('subsurface')}
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-mono font-bold transition ${
+                mode === 'subsurface'
+                  ? 'bg-amber-400 text-slate-950 shadow-md shadow-amber-400/20'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
             >
               <Sparkles className="w-3.5 h-3.5" />
               <span>3D Subsurface</span>
             </button>
-          )}
+          </div>
+        </div>
 
-          {!explorerOpen && (
+        {/* Right: Quick actions & Reset */}
+        <div className="flex items-center gap-2.5">
+          <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-slate-400 border border-slate-800/80 bg-slate-900/60 px-3 py-1.5 rounded-lg">
+            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+            <span>{model.featuresWithCoords.length} Stations Active</span>
+          </div>
+
+          {mode === 'map' && (
             <button
               onClick={() => {
                 mapRef.current?.resetView();
                 setSelectedFeature(null);
+                setReportHighlightedFeatureIds([]);
+                setUserDismissedDossier(false);
+                setMapZoom(5.5);
               }}
               className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-slate-400 hover:text-slate-200 transition text-xs font-mono"
-              title="Reset View"
+              title="Reset Map View"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               <span>Reset</span>
@@ -175,15 +262,22 @@ export function App() {
           features={model.featuresWithCoords}
           regionalSlabs={model.regionalSlabs}
           selectedFeatureId={selectedFeature?.id || null}
+          highlightedFeatureIds={reportHighlightedFeatureIds}
           onSelectFeature={(feat) => {
             setSelectedFeature(feat);
             setSelectedInterval(null);
             mapRef.current?.flyToFeature(feat);
           }}
           onSelectInterval={setSelectedInterval}
-          onZoomChange={(zoom, pitch) => {
-            setZoomLevel(zoom);
-            setPitchAngle(pitch);
+          onZoomChange={(z) => {
+            setMapZoom(z);
+            if (z < 7.5) {
+              setUserDismissedDossier(false);
+            }
+          }}
+          onExitLocalView={() => {
+            setSelectedFeature(null);
+            setSelectedInterval(null);
           }}
           onEnterSubsurface={handleOpenExplorer}
           center={model.bounds.center}
@@ -193,24 +287,52 @@ export function App() {
         />
 
         {/* Floating HUD Tray (When on Map View with selected station) */}
-        {!explorerOpen && (
+        {mode === 'map' && (
           <FloatingHUD
             feature={selectedFeature}
             selectedInterval={selectedInterval}
             onSelectInterval={setSelectedInterval}
-            onCloseFeature={() => setSelectedFeature(null)}
+            onCloseFeature={() => {
+              setSelectedFeature(null);
+            }}
             model={model}
           />
         )}
 
         {/* Dedicated 3D Subsurface Cutaway Explorer */}
         {explorerOpen && (
-          <SubsurfaceExplorer
+          <Suspense
+            fallback={
+              <div className="absolute inset-0 z-40 grid place-items-center bg-slate-950 text-cyan-300 font-mono text-xs">
+                <div className="flex items-center gap-3">
+                  <span className="w-5 h-5 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin" />
+                  Preparing 3D cutaway…
+                </div>
+              </div>
+            }
+          >
+            <SubsurfaceExplorer
+              model={model}
+              selectedFeature={selectedFeature}
+              onSelectFeature={setSelectedFeature}
+              onClose={handleCloseExplorer}
+              surfaceCanvas={capturedSurfaceCanvas}
+              focusFinding={subsurfaceFocusFinding}
+            />
+          </Suspense>
+        )}
+
+        {/* Floating Executive Dossier Drawer (Grounded on Map View during regional inspection) */}
+        {model.reportAnalysis && mode === 'map' && (
+          <ExecutiveDossierDrawer
             model={model}
-            selectedFeature={selectedFeature}
-            onSelectFeature={setSelectedFeature}
-            onClose={handleCloseExplorer}
-            surfaceCanvas={capturedSurfaceCanvas}
+            analysis={model.reportAnalysis}
+            isOpen={isDossierOpen}
+            onClose={() => setUserDismissedDossier(true)}
+            onFocusOnMap={handleReportMap}
+            onInspectIn3D={handleReport3D}
+            currentMode={mode}
+            focusedFeature={null}
           />
         )}
       </div>

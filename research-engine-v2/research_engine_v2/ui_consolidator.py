@@ -42,6 +42,10 @@ def consolidate_ui_packages(synthesis_dir: Path, output_path: Path | None = None
     synthesis_dir = Path(synthesis_dir)
     rendering = _load_object(synthesis_dir / "ui_rendering_package.json", "UI rendering package")
     narrative = _load_object(synthesis_dir / "ui_synthesis_package.json", "UI synthesis package")
+    atlas_path = synthesis_dir / "report_synthesis_package.json"
+    if not atlas_path.exists():
+        atlas_path = synthesis_dir / "study_atlas_package.json"
+    atlas = _load_object(atlas_path, "Study Atlas package") if atlas_path.exists() else None
     if rendering.get("schema_version") != "1.0":
         raise ValueError("UI rendering package must use schema_version 1.0")
     if rendering.get("report", {}).get("id") != narrative.get("report_id"):
@@ -87,12 +91,17 @@ def consolidate_ui_packages(synthesis_dir: Path, output_path: Path | None = None
                 feature["narrative"] = narratives[fid]
         merged["features"].append(feature)
     merged["narrative_coverage"] = copy.deepcopy(narrative.get("coverage", {}))
+    if atlas is not None:
+        if atlas.get("schema_version") not in {"report-synthesis.v1", "study-atlas.v1"} or atlas.get("report_id") != rendering.get("report", {}).get("id"):
+            raise ValueError("Study Atlas package has an incompatible schema or report ID")
+        merged["analysis_schema_version"] = atlas.get("schema_version")
+        merged["report_synthesis" if atlas.get("schema_version") == "report-synthesis.v1" else "study_atlas"] = copy.deepcopy(atlas)
 
     # Verify enrichment did not mutate the scientific package.
     original_scientific = copy.deepcopy(rendering)
     original_scientific.pop("schema_version", None)
     merged_scientific = copy.deepcopy(merged)
-    for key in ("schema_version", "scientific_schema_version", "narrative_schema_version", "narrative_coverage"):
+    for key in ("schema_version", "scientific_schema_version", "narrative_schema_version", "narrative_coverage", "analysis_schema_version", "report_synthesis", "study_atlas"):
         merged_scientific.pop(key, None)
     for feature in merged_scientific.get("features", []):
         if isinstance(feature, dict):
@@ -113,6 +122,8 @@ def consolidate_ui_packages(synthesis_dir: Path, output_path: Path | None = None
         "report_id": rendering.get("report", {}).get("id"),
         "warnings": ([{"message": "narrative references unknown feature", "feature_ids": sorted(set(unknown_ids))}] if unknown_ids else []),
     }
+    if atlas is not None:
+        report["report_synthesis" if atlas.get("schema_version") == "report-synthesis.v1" else "study_atlas"] = {"present": True, "theme_count": len(atlas.get("themes", [])), "chapter_count": len(atlas.get("chapters", [])), "finding_count": len(atlas.get("findings", []))}
     store = ArtifactStore(synthesis_dir)
     store.write_json("ui_consolidation_report.json", report)
     destination = output_path or (synthesis_dir / "ui_consolidated_package.json")

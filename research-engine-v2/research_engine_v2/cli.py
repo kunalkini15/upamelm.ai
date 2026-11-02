@@ -93,6 +93,16 @@ def main(argv: list[str] | None = None) -> int:
     consolidate = sub.add_parser("consolidate-ui", help="merge the scientific UI package and feature narratives without model calls")
     consolidate.add_argument("--synthesis-dir", required=True, type=Path)
     consolidate.add_argument("--output", type=Path)
+    atlas = sub.add_parser("synthesize-report-analysis", aliases=["synthesize-study-atlas", "synthesize-atlas"], help="generate report-level analysis from UI and extractor evidence")
+    atlas.add_argument("--run", required=True, type=Path)
+    atlas.add_argument("--extraction-dir", required=True, type=Path)
+    atlas.add_argument("--synthesis-dir", required=True, type=Path)
+    atlas.add_argument("--concurrency", type=int, default=8)
+    atlas.add_argument("--max-calls", type=int)
+    atlas.add_argument("--max-total-tokens", type=int)
+    atlas.add_argument("--max-output-tokens", type=int)
+    atlas.add_argument("--resume", action="store_true")
+    atlas.add_argument("--deterministic-only", action="store_true")
     all_run = sub.add_parser("run")
     all_run.add_argument("--request", required=True, type=Path)
     all_run.add_argument("--output", required=True, type=Path)
@@ -117,6 +127,17 @@ def main(argv: list[str] | None = None) -> int:
         result = consolidate_ui_packages(args.synthesis_dir, args.output)
         print(result["path"], flush=True)
         return 0
+    if args.command in {"synthesize-report-analysis", "synthesize-study-atlas", "synthesize-atlas"}:
+        from .study_atlas_synthesizer import StudyAtlasSynthesizer
+        run_dir = args.run
+        request = Request.model_validate_json((run_dir / "request_snapshot.json").read_text(encoding="utf-8"))
+        synthesis_root = args.synthesis_dir
+        synthesis_root.mkdir(parents=True, exist_ok=True)
+        configure_logging(synthesis_root / "logs" / "research_engine_v2.log")
+        config = SynthesizerConfig(max_spark_calls=args.max_calls, max_total_tokens=args.max_total_tokens, max_output_tokens=args.max_output_tokens, ui_max_concurrency=max(1, min(args.concurrency, 16)))
+        result = StudyAtlasSynthesizer(request, run_dir, args.extraction_dir, synthesis_root, config=config).run(resume=args.resume, concurrency=args.concurrency, deterministic_only=args.deterministic_only)
+        print(result["status"], flush=True)
+        return 0 if result["status"] in {"completed", "completed_with_limitations"} else 1
     extractor_config = ExtractorConfig(
         max_model_calls=getattr(args, "max_calls", None),
         max_total_tokens=getattr(args, "max_total_tokens", None),

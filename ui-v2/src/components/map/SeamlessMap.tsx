@@ -1,11 +1,35 @@
-import React, { useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
+import React, { useEffect, useRef, useImperativeHandle, forwardRef, useState } from 'react';
 import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import { MousePointerClick } from 'lucide-react';
 import {
   RenderablePointFeature,
   RenderableRegionalSlab,
   RenderableInterval,
 } from '../../types/scientific';
+
+const escapeHtml = (value: unknown) =>
+  String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+
+function pointInPolygon(point: [number, number], polygon: [number, number][]): boolean {
+  if (polygon.length < 3) return false;
+  const [x, y] = point;
+  let inside = false;
+
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    const [xi, yi] = polygon[i];
+    const [xj, yj] = polygon[j];
+    const crosses = yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+    if (crosses) inside = !inside;
+  }
+
+  return inside;
+}
 
 if (typeof window !== 'undefined' && (maplibregl as any).setWorkerUrl) {
   (maplibregl as any).setWorkerUrl('/maplibre-gl-worker.mjs');
@@ -14,6 +38,7 @@ if (typeof window !== 'undefined' && (maplibregl as any).setWorkerUrl) {
 export interface SeamlessMapHandle {
   flyToFeature: (feature: RenderablePointFeature) => void;
   flyToStudyArea: () => void;
+  fitToFeatures: (featureIds: string[]) => void;
   resetView: () => void;
   zoomIn: () => void;
   zoomOut: () => void;
@@ -25,9 +50,11 @@ interface SeamlessMapProps {
   features: RenderablePointFeature[];
   regionalSlabs: RenderableRegionalSlab[];
   selectedFeatureId: string | null;
+  highlightedFeatureIds?: string[];
   onSelectFeature: (feature: RenderablePointFeature) => void;
   onSelectInterval?: (interval: RenderableInterval) => void;
   onZoomChange: (zoom: number, pitch: number) => void;
+  onExitLocalView: () => void;
   onEnterSubsurface: (feature?: RenderablePointFeature) => void;
   center: [number, number];
   bounds: { minLng: number; maxLng: number; minLat: number; maxLat: number };
@@ -40,8 +67,10 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
     {
       features,
       selectedFeatureId,
+      highlightedFeatureIds = [],
       onSelectFeature,
       onZoomChange,
+      onExitLocalView,
       onEnterSubsurface,
       center,
       bounds,
@@ -50,6 +79,7 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
     },
     ref
   ) => {
+    const [instructionStage, setInstructionStage] = useState<'district' | 'coverage' | 'stations'>('district');
     const mapContainer = useRef<HTMLDivElement>(null);
     const mapRef = useRef<maplibregl.Map | null>(null);
     const markersRef = useRef<maplibregl.Marker[]>([]);
@@ -58,8 +88,12 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
     featuresRef.current = features;
     const onEnterSubsurfaceRef = useRef(onEnterSubsurface);
     onEnterSubsurfaceRef.current = onEnterSubsurface;
+    const onExitLocalViewRef = useRef(onExitLocalView);
+    onExitLocalViewRef.current = onExitLocalView;
     const selectedFeatureIdRef = useRef(selectedFeatureId);
     selectedFeatureIdRef.current = selectedFeatureId;
+    const highlightedFeatureIdsRef = useRef(highlightedFeatureIds);
+    highlightedFeatureIdsRef.current = highlightedFeatureIds;
     const currentZoomRef = useRef(10.2);
 
     useImperativeHandle(ref, () => ({
@@ -83,6 +117,17 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
           { padding: 80, duration: 1600 }
         );
       },
+      fitToFeatures: (featureIds: string[]) => {
+        const targets = featuresRef.current.filter((feature) => featureIds.includes(feature.id));
+        if (!mapRef.current || targets.length === 0) return;
+        if (targets.length === 1) {
+          mapRef.current.flyTo({ center: targets[0].coordinates, zoom: 13.2, pitch: 35, duration: 1200, essential: true });
+          return;
+        }
+        const lngs = targets.map((feature) => feature.coordinates[0]);
+        const lats = targets.map((feature) => feature.coordinates[1]);
+        mapRef.current.fitBounds([[Math.min(...lngs), Math.min(...lats)], [Math.max(...lngs), Math.max(...lats)]], { padding: 120, duration: 1400, maxZoom: 13 });
+      },
       resetView: () => {
         if (!mapRef.current) return;
         mapRef.current.flyTo({
@@ -104,7 +149,14 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
       },
       captureAlignedCrop: async (poly: [number, number][], worldSpan3D: number, sceneScale3D: number) => {
         const map = mapRef.current;
-        if (!map) return null;
+        if (!map || poly.length < 3) return null;
+
+        const previousView = {
+          center: map.getCenter(),
+          zoom: map.getZoom(),
+          pitch: map.getPitch(),
+          bearing: map.getBearing(),
+        };
 
         // Compute centroid
         let sumLng = 0, sumLat = 0;
@@ -167,6 +219,7 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
         if (!ctx) return null;
 
         ctx.drawImage(src, srcX, srcY, cropSrc, cropSrc, 0, 0, 1024, 1024);
+        map.jumpTo(previousView);
         return squareCanvas;
       },
     }));
@@ -219,6 +272,7 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
       const handleMove = () => {
         const z = map.getZoom();
         currentZoomRef.current = z;
+        setInstructionStage(z < 7.5 ? 'district' : z < 8.5 ? 'coverage' : 'stations');
         onZoomChange(z, map.getPitch());
         updateMarkerVisibility(z);
       };
@@ -230,7 +284,21 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
       // Wheel Gesture Handoff: At local threshold (zoom >= 14.4), smoothly enter 3D
       const wheelSurface = map.getCanvas();
       const enterFromMapZoom = (event: WheelEvent) => {
+        if (event.deltaY > 0 && map.getZoom() <= 12.7) {
+          onExitLocalViewRef.current();
+        }
+
         if (map.getZoom() >= 14.4 && event.deltaY < 0) {
+          const canvasRect = wheelSurface.getBoundingClientRect();
+          const cursorLocation = map.unproject([
+            event.clientX - canvasRect.left,
+            event.clientY - canvasRect.top,
+          ]);
+
+          // The zoom-to-3D handoff is meaningful only over the synthesized
+          // study footprint. Outside it, preserve ordinary map navigation.
+          if (!pointInPolygon([cursorLocation.lng, cursorLocation.lat], studyAreaPolygon)) return;
+
           event.preventDefault();
           event.stopPropagation();
 
@@ -375,7 +443,7 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
             <div class="w-3.5 h-3.5 rounded-full bg-slate-950"></div>
           </div>
           <div class="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap px-3 py-1 rounded-full bg-slate-900/95 border border-cyan-500/60 text-xs font-mono font-bold text-cyan-300 shadow-2xl">
-            ${studyAreaName} • ${features.length} Stations
+            ${escapeHtml(studyAreaName)} • ${features.length} Stations
           </div>
         </div>
       `;
@@ -409,6 +477,7 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
 
       features.forEach((feature) => {
         const isSelected = feature.id === selectedFeatureId;
+        const isHighlighted = highlightedFeatureIdsRef.current.includes(feature.id);
         const hasDeepData = (feature.totalDepthMeters || 0) > 50 || feature.intervals.length > 0;
 
         const el = document.createElement('div');
@@ -424,14 +493,16 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
             <div class="w-5 h-5 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-130 ${
               isSelected
                 ? 'bg-amber-400 text-slate-950 ring-4 ring-amber-400/40 shadow-[0_0_25px_rgba(251,191,36,0.9)]'
+                : isHighlighted
+                ? 'bg-violet-400 text-slate-950 ring-4 ring-violet-300/50 shadow-[0_0_25px_rgba(167,139,250,0.85)]'
                 : hasDeepData
                 ? 'bg-cyan-500 text-slate-950 ring-2 ring-cyan-300 shadow-[0_0_18px_rgba(6,182,212,0.7)]'
                 : 'bg-slate-700 text-slate-300 border border-slate-500'
             }">
-              <div class="w-2 h-2 rounded-full ${isSelected ? 'bg-slate-950' : 'bg-slate-950/80'}"></div>
+              <div class="w-2 h-2 rounded-full ${isSelected || isHighlighted ? 'bg-slate-950' : 'bg-slate-950/80'}"></div>
             </div>
             <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-0.5 rounded bg-slate-900/90 border border-slate-700/80 text-[10px] font-mono text-slate-300 shadow-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-40">
-              ${feature.name} ${feature.totalDepthMeters ? `(${feature.totalDepthMeters}m)` : ''}
+              ${escapeHtml(feature.name)} ${feature.totalDepthMeters ? `(${feature.totalDepthMeters}m)` : ''}
             </div>
           </div>
         `;
@@ -457,11 +528,27 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
       });
 
       updateMarkerVisibility(map.getZoom());
-    }, [features, selectedFeatureId, onSelectFeature]);
+    }, [features, selectedFeatureId, highlightedFeatureIds, onSelectFeature]);
 
     return (
       <div className="absolute inset-0 w-full h-full">
         <div ref={mapContainer} className="w-full h-full" />
+        {!selectedFeatureId && (
+          <div className="pointer-events-none absolute bottom-6 left-1/2 z-20 -translate-x-1/2">
+            <div className="flex items-center gap-2 rounded-full border border-slate-600/70 bg-slate-950/88 px-3.5 py-2 text-[11px] font-mono text-slate-200 shadow-[0_8px_30px_rgba(0,0,0,0.45)] backdrop-blur-md animate-in fade-in duration-300">
+              <MousePointerClick className="h-3.5 w-3.5 flex-none text-cyan-400" />
+              {instructionStage === 'district' && (
+                <span>Select the pulsing district marker to explore the study area</span>
+              )}
+              {instructionStage === 'coverage' && (
+                <span>Explore the highlighted coverage area · Continue zooming to reveal stations</span>
+              )}
+              {instructionStage === 'stations' && (
+                <span>Select a station for details · Select the highlighted area to open the 3D subsurface</span>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     );
   }

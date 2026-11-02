@@ -8,6 +8,10 @@ import {
   X,
   ChevronDown,
   ChevronUp,
+  Database,
+  Droplets,
+  Layers3,
+  ShieldCheck,
 } from 'lucide-react';
 
 interface FloatingHUDProps {
@@ -20,7 +24,10 @@ interface FloatingHUDProps {
 
 export const FloatingHUD: React.FC<FloatingHUDProps> = ({
   feature,
+  selectedInterval,
+  onSelectInterval,
   onCloseFeature,
+  model,
 }) => {
   const [expanded, setExpanded] = useState(true);
 
@@ -28,6 +35,9 @@ export const FloatingHUD: React.FC<FloatingHUDProps> = ({
 
   const narrative = feature.narrative;
   const hasNarrative = Boolean(narrative && narrative.headline);
+  const reportedObservationCount = feature.observations.filter(
+    (observation) => observation.value !== 'N/A'
+  ).length;
 
   return (
     <div className="absolute top-16 right-5 z-20 flex flex-col pointer-events-auto select-none transition-all duration-300 w-96 max-w-[calc(100vw-40px)] max-h-[calc(100vh-100px)]">
@@ -68,6 +78,27 @@ export const FloatingHUD: React.FC<FloatingHUDProps> = ({
           <div className="flex flex-col max-h-[calc(100vh-180px)] overflow-hidden">
             {/* Scrollable Content Body */}
             <div className="overflow-y-auto p-4 space-y-3.5 text-xs font-mono">
+              {/* Compact evidence and measurement summary */}
+              <div className="grid grid-cols-3 gap-2">
+                <div className="rounded-lg border border-slate-800 bg-slate-950/55 p-2">
+                  <Droplets className="w-3.5 h-3.5 text-cyan-400 mb-1.5" />
+                  <div className="text-[9px] uppercase tracking-wider text-slate-500">Water level</div>
+                  <div className="mt-0.5 text-[11px] font-bold text-slate-200">
+                    {feature.waterLevelMeters !== undefined ? `${feature.waterLevelMeters} m` : 'Not reported'}
+                  </div>
+                </div>
+                <div className="rounded-lg border border-slate-800 bg-slate-950/55 p-2">
+                  <Layers3 className="w-3.5 h-3.5 text-cyan-400 mb-1.5" />
+                  <div className="text-[9px] uppercase tracking-wider text-slate-500">Intervals</div>
+                  <div className="mt-0.5 text-[11px] font-bold text-slate-200">{feature.intervals.length}</div>
+                </div>
+                <div className="rounded-lg border border-slate-800 bg-slate-950/55 p-2">
+                  <Database className="w-3.5 h-3.5 text-cyan-400 mb-1.5" />
+                  <div className="text-[9px] uppercase tracking-wider text-slate-500">Observations</div>
+                  <div className="mt-0.5 text-[11px] font-bold text-slate-200">{reportedObservationCount}</div>
+                </div>
+              </div>
+
               {hasNarrative && narrative ? (
                 <div className="space-y-3">
                   {/* Headline */}
@@ -108,6 +139,13 @@ export const FloatingHUD: React.FC<FloatingHUDProps> = ({
                             <p className="text-slate-400 text-[10px] leading-relaxed font-sans">
                               {ins.explanation}
                             </p>
+                            {(ins.grounding_status || (ins.evidence_refs?.length ?? 0) > 0) && (
+                              <div className="pt-1 flex items-center gap-1.5 text-[9px] text-emerald-400/80">
+                                <ShieldCheck className="w-3 h-3" />
+                                <span>{ins.grounding_status?.replace(/_/g, ' ') || 'Evidence linked'}</span>
+                                {(ins.evidence_refs?.length ?? 0) > 0 && <span>• {ins.evidence_refs!.length} refs</span>}
+                              </div>
+                            )}
                           </div>
                         ))}
                       </div>
@@ -119,6 +157,45 @@ export const FloatingHUD: React.FC<FloatingHUDProps> = ({
                   No synthesis summary available for this station.
                 </div>
               )}
+
+              {feature.intervals.length > 0 && (
+                <div className="space-y-1.5 pt-1">
+                  <div className="flex items-center justify-between text-[10px] uppercase tracking-wider font-bold">
+                    <span className="text-slate-400">Depth intervals</span>
+                    {feature.hasSyntheticIntervals && (
+                      <span className="normal-case font-medium text-amber-400">Illustrative</span>
+                    )}
+                  </div>
+                  <div className="space-y-1">
+                    {feature.intervals.map((interval) => (
+                      <button
+                        key={interval.id}
+                        onClick={() => onSelectInterval?.(interval)}
+                        className={`w-full flex items-center gap-2 rounded-md border px-2.5 py-2 text-left transition ${
+                          selectedInterval?.id === interval.id
+                            ? 'border-cyan-500/70 bg-cyan-950/35'
+                            : 'border-slate-800 bg-slate-950/45 hover:border-slate-700'
+                        }`}
+                      >
+                        <span className="h-6 w-1 rounded-full" style={{ backgroundColor: interval.colorHex }} />
+                        <span className="min-w-0 flex-1 truncate text-[10px] text-slate-300">{interval.name}</span>
+                        <span className="whitespace-nowrap text-[10px] text-slate-500">{interval.start}–{interval.end} m</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="rounded-lg border border-slate-800 bg-slate-950/45 p-2.5 text-[9px] leading-relaxed text-slate-500">
+                <div className="mb-1 flex items-center gap-1.5 font-bold uppercase tracking-wider text-slate-400">
+                  <ShieldCheck className="w-3 h-3 text-emerald-400" /> Data provenance
+                </div>
+                Coordinates: {feature.coordinateFidelity.replace(/_/g, ' ')} • Depth: {feature.depthFidelity.replace(/_/g, ' ')}
+                {feature.sourcePages.length > 0 && ` • Source pages: ${feature.sourcePages.join(', ')}`}
+                {feature.isSpatialOutlier && (
+                  <div className="mt-1 text-amber-400">Coordinate is flagged for verification and excluded from the derived study boundary.</div>
+                )}
+              </div>
             </div>
           </div>
         )}

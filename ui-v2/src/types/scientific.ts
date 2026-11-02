@@ -143,6 +143,138 @@ export interface ScientificPackage {
     datasets?: PreservedDataset[];
     relationships?: Array<Record<string, unknown>>;
   };
+  analysis_schema_version?: string;
+  report_synthesis?: ReportSynthesisPackage;
+}
+
+export type ReportFindingBasis = 'source_stated' | 'synthesized_pattern' | 'deterministic_derived' | string;
+export type ReportFindingConfidence = 'high' | 'medium' | 'low' | string;
+
+export interface ReportStatCallout {
+  id: string;
+  label: string;
+  kind?: string | null;
+  value?: number | null;
+  value_range?: { minimum?: number | null; maximum?: number | null } | null;
+  category?: string | null;
+  unit?: string | null;
+  qualifier?: string | null;
+  evidence_refs?: string[];
+}
+
+export interface ReportFinding {
+  id: string;
+  title: string;
+  statement: string;
+  why_it_matters: string;
+  scope: string;
+  pattern_type: string;
+  basis: ReportFindingBasis;
+  confidence: ReportFindingConfidence;
+  feature_ids?: string[];
+  study_area_ids?: string[];
+  observation_ids?: string[];
+  interval_ids?: string[];
+  dataset_ids?: string[];
+  evidence_refs?: string[];
+  stat_callout_ids?: string[];
+}
+
+export interface ReportTheme {
+  id: string;
+  title: string;
+  summary: string;
+  chapter_ids: string[];
+  finding_ids?: string[];
+}
+
+export interface ReportChapter {
+  id: string;
+  theme_id: string;
+  title: string;
+  summary: string;
+  narrative: string;
+  finding_ids: string[];
+  evidence_refs?: string[];
+  focal_feature_ids?: string[];
+  focal_study_area_ids?: string[];
+  focal_observation_ids?: string[];
+  focal_interval_ids?: string[];
+  focal_dataset_ids?: string[];
+}
+
+export interface ReportUncertainty {
+  id: string;
+  statement: string;
+  theme_id?: string;
+}
+
+export interface ReportSynthesisPackage {
+  schema_version: string;
+  report_id: string;
+  audience?: string;
+  themes: ReportTheme[];
+  chapters: ReportChapter[];
+  findings: ReportFinding[];
+  stat_callouts: ReportStatCallout[];
+  uncertainties: ReportUncertainty[];
+  coverage?: Record<string, unknown>;
+  executive_overview: {
+    headline: string;
+    abstract: string;
+    key_finding_ids: string[];
+    key_stat_callout_ids: string[];
+    generation_mode?: string;
+  };
+}
+
+export type NormalizedPatternCategory =
+  | 'Status & Inventory'
+  | 'Spatial Contrast'
+  | 'Temporal Change'
+  | 'Vertical Stratigraphy'
+  | 'Process & Mechanism'
+  | 'Scenarios & Interventions'
+  | 'Data & Caveats';
+
+export type VisualizationCapability =
+  | 'spatial'
+  | 'temporal-series'
+  | 'vertical-profile'
+  | 'scenario-comparison'
+  | 'categorical-matrix'
+  | 'entity-matrix'
+  | 'statistical-summary'
+  | 'narrative-evidence';
+
+export interface ReportFindingView extends ReportFinding {
+  normalizedCategories: NormalizedPatternCategory[];
+  capabilities: VisualizationCapability[];
+  resolvedFeatureIds: string[];
+  resolvedStudyAreaIds: string[];
+  resolvedObservationIds: string[];
+  resolvedIntervalIds: string[];
+  resolvedDatasetIds: string[];
+  unresolvedReferences: string[];
+}
+
+export interface ReportAnalysisModel {
+  raw: ReportSynthesisPackage;
+  themes: ReportTheme[];
+  chaptersById: Map<string, ReportChapter>;
+  findingsById: Map<string, ReportFindingView>;
+  calloutsById: Map<string, ReportStatCallout>;
+  uncertainties: ReportUncertainty[];
+  uncertaintiesByThemeId: Map<string, ReportUncertainty[]>;
+  findingsByThemeId: Map<string, ReportFindingView[]>;
+  findingsByChapterId: Map<string, ReportFindingView[]>;
+  findingsByFeatureId: Map<string, ReportFindingView[]>;
+  findingsByStudyAreaId: Map<string, ReportFindingView[]>;
+  findingsByObservationId: Map<string, ReportFindingView[]>;
+  findingsByIntervalId: Map<string, ReportFindingView[]>;
+  findingsByDatasetId: Map<string, ReportFindingView[]>;
+  unresolvedUncertaintyCount: number;
+  diagnostics: string[];
 }
 
 /**
@@ -166,6 +298,10 @@ export interface RenderablePointFeature {
   sourcePages: Array<number | string>;
   narrative?: FeatureNarrative | null;
   evidenceRefs?: string[];
+  coordinateFidelity: 'reported' | 'property' | 'parsed_dms';
+  depthFidelity: 'reported' | 'interval_derived' | 'illustrative_default';
+  hasSyntheticIntervals: boolean;
+  isSpatialOutlier: boolean;
 }
 
 export interface RenderableInterval {
@@ -224,4 +360,9 @@ export interface ScientificUIModel {
   preservedDatasets: PreservedDataset[];
   allObservations: RawObservation[];
   sourcesCount: number;
+  renderingNotes: {
+    studyAreaBoundary: 'station_hull' | 'reported_bounds' | 'fallback_bounds';
+    hiddenFeatureCount: number;
+  };
+  reportAnalysis?: ReportAnalysisModel;
 }

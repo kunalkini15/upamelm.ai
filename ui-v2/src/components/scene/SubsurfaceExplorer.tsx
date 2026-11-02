@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, Focus } from 'lucide-react';
 import { FloatingHUD } from '../hud/FloatingHUD';
 import {
   RenderablePointFeature,
@@ -15,14 +15,21 @@ interface SubsurfaceExplorerProps {
   onSelectFeature: (f: RenderablePointFeature | null) => void;
   onClose: () => void;
   surfaceCanvas?: HTMLCanvasElement | null;
+  focusFinding?: { title: string; intervalIds: string[]; featureIds: string[] } | null;
 }
 
-function materialColor(name: string): string {
-  const s = name.toLowerCase();
-  if (/clay|aquitard/.test(s)) return '#b45309'; // Clay/Silt warm amber-brown
-  if (/sand|gravel|aquifer/.test(s)) return '#0284c7'; // Permeable aquifer cyan-blue
-  if (/basalt|rock|granite/.test(s)) return '#475569'; // Hard rock slate
-  return '#0d9488'; // Default teal
+const WELL_PALETTE = [
+  '#fb7185', // coral
+  '#a78bfa', // violet
+  '#34d399', // emerald
+  '#fb923c', // orange
+  '#e2e8f0', // mineral white
+];
+
+function wellColor(featureId: string): string {
+  let hash = 0;
+  for (let i = 0; i < featureId.length; i++) hash = (hash * 31 + featureId.charCodeAt(i)) | 0;
+  return WELL_PALETTE[Math.abs(hash) % WELL_PALETTE.length];
 }
 
 function createTextSprite(
@@ -162,10 +169,15 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
   onSelectFeature,
   onClose,
   surfaceCanvas,
+  focusFinding,
 }) => {
   const mountRef = useRef<HTMLDivElement>(null);
   const onSelectFeatureRef = useRef(onSelectFeature);
   onSelectFeatureRef.current = onSelectFeature;
+  const selectAndIsolateRef = useRef((feature: RenderablePointFeature) => {
+    onSelectFeature(feature);
+    setFocusMode(true);
+  });
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
 
@@ -174,11 +186,27 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
 
   const scaleY = 0.55;
   const currentFeature = selectedFeature;
+  const currentFeatureIdRef = useRef<string | null>(currentFeature?.id || null);
+  currentFeatureIdRef.current = currentFeature?.id || null;
+  const sceneFeatures = useMemo(
+    () => model.featuresWithCoords.filter((feature) => !feature.isSpatialOutlier),
+    [model.featuresWithCoords]
+  );
   const [focusMode, setFocusMode] = useState<boolean>(false);
   const focusModeRef = useRef(focusMode);
   focusModeRef.current = focusMode;
+  selectAndIsolateRef.current = (feature: RenderablePointFeature) => {
+    onSelectFeatureRef.current(feature);
+    setFocusMode(true);
+  };
 
   const updateHighlightsRef = useRef<((selectedId: string | null, isFocus: boolean) => void) | null>(null);
+
+  useEffect(() => {
+    if (currentFeature?.isSpatialOutlier && sceneFeatures.length > 0) {
+      onSelectFeature(sceneFeatures[0]);
+    }
+  }, [currentFeature?.isSpatialOutlier, onSelectFeature, sceneFeatures]);
 
   useEffect(() => {
     if (selectedItemRef.current) {
@@ -194,14 +222,14 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
 
   const maxDepth = useMemo(() => {
     let d = 120;
-    model.featuresWithCoords.forEach((f) => {
+    sceneFeatures.forEach((f) => {
       if (f.totalDepthMeters && f.totalDepthMeters > d) d = f.totalDepthMeters;
       f.intervals.forEach((iv) => {
         if (iv.end > d) d = iv.end;
       });
     });
     return Math.min(600, d);
-  }, [model]);
+  }, [sceneFeatures]);
 
   useEffect(() => {
     const container = mountRef.current;
@@ -295,7 +323,23 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
     const rootSubsurface = new THREE.Group();
     scene.add(rootSubsurface);
 
-    const stationPositions = model.featuresWithCoords.map((feat) => {
+    if (focusFinding && focusFinding.intervalIds.length > 0) {
+      const focusedIntervals = sceneFeatures
+        .flatMap((feature) => feature.intervals)
+        .filter((interval) => focusFinding.intervalIds.includes(interval.id));
+      if (focusedIntervals.length > 0) {
+        const topDepth = Math.min(...focusedIntervals.map((interval) => interval.start));
+        const bottomDepth = Math.max(...focusedIntervals.map((interval) => interval.end));
+        const focusBand = new THREE.Mesh(
+          new THREE.BoxGeometry(330, Math.max(1.5, (bottomDepth - topDepth) * scaleY), 330),
+          new THREE.MeshBasicMaterial({ color: '#fbbf24', transparent: true, opacity: 0.07, side: THREE.DoubleSide, depthWrite: false })
+        );
+        focusBand.position.y = -((topDepth + bottomDepth) / 2) * scaleY;
+        rootSubsurface.add(focusBand);
+      }
+    }
+
+    const stationPositions = sceneFeatures.map((feat) => {
       const x = (feat.coordinates[0] - cLng) * cosLat * sceneScale;
       const z = -(feat.coordinates[1] - cLat) * sceneScale;
       return { feat, x, z };
@@ -314,6 +358,7 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
       sprite: THREE.Sprite;
       fDepth: number;
       featName: string;
+      baseColor: string;
       casingMeshes: THREE.Mesh[];
       rings: THREE.Mesh[];
     }[] = [];
@@ -321,6 +366,7 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
     // A. Render All Boreholes (Extruded downwards from the surface)
     stationPositions.forEach(({ feat, x, z }) => {
       const isSelected = currentFeature && feat.id === currentFeature.id;
+      const stationColor = wellColor(feat.id);
       const bGroup = new THREE.Group();
       bGroup.position.set(x, 0, z);
       bGroup.userData = { feature: feat };
@@ -336,10 +382,10 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
       const collarMesh = new THREE.Mesh(
         new THREE.CylinderGeometry(radius * 1.5, radius * 1.8, 2.5, 16),
         new THREE.MeshStandardMaterial({
-          color: isSelected ? '#fbbf24' : '#06b6d4',
+          color: isSelected ? '#fbbf24' : stationColor,
           roughness: 0.2,
           metalness: 0.8,
-          emissive: isSelected ? '#d97706' : '#0891b2',
+          emissive: isSelected ? '#d97706' : stationColor,
           emissiveIntensity: isSelected ? 0.9 : 0.4,
           transparent: true,
           opacity: 1.0,
@@ -350,20 +396,41 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
       bGroup.add(collarMesh);
       clickableObjects.push(collarMesh);
 
+      // Ink-dark silhouette keeps each well legible against regional slabs
+      // and against neighboring wells when their screen projections converge.
+      const outlinePipe = new THREE.Mesh(
+        new THREE.CylinderGeometry(radius * 1.28, radius * 1.28, totalH, 16),
+        new THREE.MeshBasicMaterial({
+          color: '#020617',
+          side: THREE.BackSide,
+          transparent: true,
+          opacity: 0.9,
+          depthWrite: false,
+        })
+      );
+      outlinePipe.position.y = -totalH / 2;
+      bGroup.add(outlinePipe);
+
       // Subterranean casing extending downwards into negative Y
       // 1. Draw a continuous casing pipe from surface (y=0) to the bottom of the borehole
       const continuousPipe = new THREE.Mesh(
         new THREE.CylinderGeometry(radius * 0.92, radius * 0.92, totalH, 16),
         new THREE.MeshStandardMaterial({
-          color: isSelected ? '#38bdf8' : '#0284c7',
+          color: isSelected ? '#fde047' : stationColor,
+          emissive: isSelected ? '#d97706' : stationColor,
+          emissiveIntensity: isSelected ? 0.75 : 0.42,
           transparent: true,
-          opacity: 0.9,
-          metalness: 0.4,
-          roughness: 0.3,
+          opacity: 0.98,
+          metalness: 0.55,
+          roughness: 0.18,
         })
       );
       continuousPipe.position.y = -totalH / 2;
-      continuousPipe.userData = { feature: feat };
+      continuousPipe.userData = {
+        feature: feat,
+        wellBaseColor: stationColor,
+        wellBaseEmissive: stationColor,
+      };
       bGroup.add(continuousPipe);
       clickableObjects.push(continuousPipe);
       casingMeshes.push(continuousPipe);
@@ -379,15 +446,22 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
           const seg = new THREE.Mesh(
             new THREE.CylinderGeometry(radius * 1.08, radius * 1.08, h, 16),
             new THREE.MeshStandardMaterial({
-              color: iv.colorHex || materialColor(iv.name),
-              roughness: 0.25,
-              metalness: 0.35,
+              color: isSelected ? '#fde047' : stationColor,
+              emissive: isSelected ? '#d97706' : stationColor,
+              emissiveIntensity: isSelected ? 0.7 : 0.25,
+              roughness: 0.18,
+              metalness: 0.45,
               transparent: true,
               opacity: 1.0,
             })
           );
           seg.position.y = yCenter;
-          seg.userData = { feature: feat };
+          const segmentColor = stationColor;
+          seg.userData = {
+            feature: feat,
+            wellBaseColor: segmentColor,
+            wellBaseEmissive: segmentColor,
+          };
           bGroup.add(seg);
           clickableObjects.push(seg);
           casingMeshes.push(seg);
@@ -395,11 +469,11 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
       }
 
       // Water Table Ring
-      if (feat.waterLevelMeters) {
+      if (feat.waterLevelMeters !== undefined) {
         const wtY = -feat.waterLevelMeters * scaleY;
         const ring = new THREE.Mesh(
           new THREE.TorusGeometry(radius * 2.8, 0.4, 8, 24),
-          new THREE.MeshBasicMaterial({ color: '#38bdf8', transparent: true, opacity: 0.95 })
+          new THREE.MeshBasicMaterial({ color: stationColor, transparent: true, opacity: 0.95 })
         );
         ring.rotation.x = Math.PI / 2;
         ring.position.y = wtY;
@@ -414,7 +488,7 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
       const laser = new THREE.Mesh(
         new THREE.CylinderGeometry(0.35, 0.35, laserH, 8),
         new THREE.MeshBasicMaterial({
-          color: isSelected ? '#fde047' : '#38bdf8',
+          color: isSelected ? '#fde047' : stationColor,
           transparent: true,
           opacity: isSelected ? 0.95 : 0.5,
         })
@@ -427,7 +501,7 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
       // Station Name Callout Sprite (positioned just above wellhead beacon)
       const sprite = createTextSprite(
         `${feat.name} (${fDepth}m)`,
-        isSelected ? '#f59e0b' : '#38bdf8',
+        isSelected ? '#f59e0b' : stationColor,
         '#090d16',
         28,
         4.0
@@ -446,6 +520,7 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
         sprite,
         fDepth,
         featName: feat.name,
+        baseColor: stationColor,
         casingMeshes,
         rings,
       });
@@ -543,7 +618,7 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
         const slabMat = new THREE.MeshStandardMaterial({
           color: slab.colorHex || '#0ea5e9',
           transparent: true,
-          opacity: 0.12,
+          opacity: 0.075,
           side: THREE.DoubleSide,
           depthWrite: false,
           roughness: 0.4,
@@ -559,7 +634,7 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
           new THREE.LineBasicMaterial({
             color: slab.colorHex || '#0ea5e9',
             transparent: true,
-            opacity: 0.28,
+            opacity: 0.18,
           })
         );
         edges.position.y = -topY;
@@ -674,7 +749,7 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
           obj = obj.parent;
         }
         if (obj?.userData?.feature) {
-          onSelectFeatureRef.current(obj.userData.feature);
+          selectAndIsolateRef.current(obj.userData.feature);
         }
       }
     };
@@ -726,10 +801,14 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
             collarMat.emissive.set('#d97706');
             collarMat.emissiveIntensity = 1.0;
             collarMat.opacity = 1.0;
+            item.collar.scale.setScalar(1.15);
 
             // Casing intervals & water rings
             item.casingMeshes.forEach((mesh) => {
               const mat = mesh.material as THREE.MeshStandardMaterial;
+              mat.color.set('#fde047');
+              mat.emissive.set('#d97706');
+              mat.emissiveIntensity = 0.75;
               mat.opacity = 1.0;
             });
             item.rings.forEach((ring) => {
@@ -767,13 +846,16 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
           item.group.visible = true;
 
           const collarMat = item.collar.material as THREE.MeshStandardMaterial;
-          collarMat.color.set(isSel ? '#fbbf24' : '#06b6d4');
-          collarMat.emissive.set(isSel ? '#d97706' : '#0891b2');
+          collarMat.color.set(isSel ? '#fbbf24' : item.baseColor);
+          collarMat.emissive.set(isSel ? '#d97706' : item.baseColor);
           collarMat.emissiveIntensity = isSel ? 0.9 : 0.4;
           collarMat.opacity = 1.0;
 
           item.casingMeshes.forEach((mesh) => {
             const mat = mesh.material as THREE.MeshStandardMaterial;
+            mat.color.set(isSel ? '#fde047' : mesh.userData.wellBaseColor || '#e2f7ff');
+            mat.emissive.set(isSel ? '#d97706' : mesh.userData.wellBaseEmissive || '#0891b2');
+            mat.emissiveIntensity = isSel ? 0.75 : 0.32;
             mat.opacity = 0.85;
           });
           item.rings.forEach((ring) => {
@@ -782,7 +864,7 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
           });
 
           const laserMat = item.laser.material as THREE.MeshBasicMaterial;
-          laserMat.color.set(isSel ? '#fde047' : '#38bdf8');
+          laserMat.color.set(isSel ? '#fde047' : item.baseColor);
           laserMat.opacity = isSel ? 0.95 : 0.45;
           const targetLaserH = isSel ? 24 : 16;
           item.laser.scale.set(1, targetLaserH / item.laserH, 1);
@@ -792,7 +874,7 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
           item.sprite.position.y = targetLaserH + 4;
           const newSprite = createTextSprite(
             `${item.featName} (${item.fDepth}m)`,
-            isSel ? '#f59e0b' : '#38bdf8',
+            isSel ? '#f59e0b' : item.baseColor,
             '#090d16',
             28,
             4.0
@@ -820,8 +902,10 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
 
       const dist = camera.position.distanceTo(controls.target);
 
-      // Only show depth ruler when camera looks under the ground or has dipped below surface
-      const isUndergroundView = camera.position.y < 35 || controls.target.y < -10;
+      // The ruler belongs to the underground inspection view. A shallow,
+      // side-on camera can still be above the terrain, so use the actual world
+      // surface (y = 0) rather than orbit angle as the visibility boundary.
+      const isUndergroundView = camera.position.y < -2;
       rulerGroup.visible = isUndergroundView;
 
       // A. Dynamic Camera-Orbit Tracking for the 3D Subsurface Depth Meter:
@@ -840,44 +924,100 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
       // Modulate scale with zoom distance with gentle bounds so labels stay clean and never overpower the view
       const zoomFactor = Math.min(1.4, Math.max(0.75, dist / 220));
 
-      // Calculate camera horizontal look direction for front-facing priority
-      const camDir = new THREE.Vector3();
-      camera.getWorldDirection(camDir);
-
       const isIsolated = focusModeRef.current;
-      const activeSelId = currentFeature?.id || null;
+      const activeSelId = currentFeatureIdRef.current;
 
-      // In Show All mode: sort stations by proximity to camera to show frontmost non-overlapping labels
+      // Project each label into screen space. The previous implementation only
+      // enforced a quota, so a small number of labels could still overlap.
       const candidates = boreholeMeshesRef.map((item) => {
-        const worldPos = new THREE.Vector3();
-        item.group.getWorldPosition(worldPos);
-        const camDistance = camera.position.distanceTo(worldPos);
-        return { item, worldPos, camDistance, isSel: item.featId === activeSelId };
+        const labelWorldPos = new THREE.Vector3();
+        item.sprite.getWorldPosition(labelWorldPos);
+        const projected = labelWorldPos.clone().project(camera);
+
+        // Rank against the nearest point along the actual underground borehole.
+        // This makes the active labels change naturally as the camera moves down,
+        // around, or between wells instead of favoring a fixed surface subset.
+        const stationWorldPos = new THREE.Vector3();
+        item.group.getWorldPosition(stationWorldPos);
+        const boreBottomY = stationWorldPos.y - item.fDepth * scaleY;
+        const nearestBoreY = THREE.MathUtils.clamp(camera.position.y, boreBottomY, stationWorldPos.y);
+        const proximityPoint = new THREE.Vector3(stationWorldPos.x, nearestBoreY, stationWorldPos.z);
+        const proximityDistance = camera.position.distanceTo(proximityPoint);
+        const labelDistance = camera.position.distanceTo(labelWorldPos);
+
+        return {
+          item,
+          projected,
+          proximityDistance,
+          labelDistance,
+          isSel: item.featId === activeSelId,
+        };
       });
 
-      // Sort by closest to camera
-      candidates.sort((a, b) => a.camDistance - b.camDistance);
+      // Selected label first, then favor labels closest to the camera.
+      candidates.sort(
+        (a, b) => Number(b.isSel) - Number(a.isSel) || a.proximityDistance - b.proximityDistance
+      );
 
-      // Label visibility quota based on distance (distant view = 6-8 labels, close up = 12-16)
+      const viewportWidth = renderer.domElement.clientWidth;
+      const viewportHeight = renderer.domElement.clientHeight;
+      const perspectiveScale = viewportHeight / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2));
       const maxLabelsToShow = dist > 260 ? 6 : dist > 140 ? 10 : 16;
+      const acceptedRects: Array<{ left: number; right: number; top: number; bottom: number }> = [];
       let labelsShown = 0;
 
-      candidates.forEach(({ item, isSel }, rank) => {
+      candidates.forEach(({ item, projected, labelDistance, isSel }) => {
         if (isIsolated) {
           // In isolate mode, only show the selected label
           item.sprite.visible = isSel;
-        } else {
-          // If a point is selected, always show its label
-          if (isSel) {
-            item.sprite.visible = true;
-          } else if (labelsShown < maxLabelsToShow && rank < maxLabelsToShow * 2) {
-            item.sprite.visible = true;
-            labelsShown++;
-          } else {
-            item.sprite.visible = false;
-          }
+          return;
+        }
+
+        item.sprite.visible = false;
+        if (labelsShown >= maxLabelsToShow || projected.z < -1 || projected.z > 1) return;
+
+        const baseScale = baseSpriteScales.get(item.sprite) || item.sprite.scale;
+        const pixelsPerWorldUnit = perspectiveScale / Math.max(1, labelDistance);
+        const labelWidth = baseScale.x * zoomFactor * pixelsPerWorldUnit;
+        const labelHeight = baseScale.y * zoomFactor * pixelsPerWorldUnit;
+        const centerX = (projected.x * 0.5 + 0.5) * viewportWidth;
+        const centerY = (-projected.y * 0.5 + 0.5) * viewportHeight;
+        const padding = 8;
+        const rect = {
+          left: centerX - labelWidth / 2 - padding,
+          right: centerX + labelWidth / 2 + padding,
+          top: centerY - labelHeight / 2 - padding,
+          bottom: centerY + labelHeight / 2 + padding,
+        };
+
+        const isOnScreen = rect.right >= 0 && rect.left <= viewportWidth && rect.bottom >= 0 && rect.top <= viewportHeight;
+        const overlaps = acceptedRects.some(
+          (other) =>
+            rect.left < other.right &&
+            rect.right > other.left &&
+            rect.top < other.bottom &&
+            rect.bottom > other.top
+        );
+
+        if (isOnScreen && !overlaps) {
+          item.sprite.visible = true;
+          acceptedRects.push(rect);
+          labelsShown++;
         }
       });
+
+      // Tie the visible label set back to the geometry. Nearby labelled wells
+      // glow more strongly while the remaining context recedes slightly.
+      if (!isIsolated) {
+        boreholeMeshesRef.forEach((item) => {
+          const isContextHighlight = item.sprite.visible;
+          const collarMat = item.collar.material as THREE.MeshStandardMaterial;
+          const laserMat = item.laser.material as THREE.MeshBasicMaterial;
+          collarMat.emissiveIntensity = isContextHighlight ? 0.85 : 0.28;
+          item.collar.scale.setScalar(isContextHighlight ? 1.12 : 0.92);
+          laserMat.opacity = isContextHighlight ? 0.72 : 0.28;
+        });
+      }
 
       baseSpriteScales.forEach((baseScale, sp) => {
         if (sp.visible) {
@@ -917,8 +1057,10 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
     };
   }, [
     model,
+    sceneFeatures,
     surfaceCanvas,
     maxDepth,
+    focusFinding,
   ]);
 
   return (
@@ -926,29 +1068,43 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
       {/* 3D Canvas Host */}
       <div ref={mountRef} className="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing" />
 
+      {focusFinding && (
+        <div className="absolute top-16 left-1/2 z-50 -translate-x-1/2 rounded-full border border-amber-400/60 bg-slate-950/90 px-4 py-2 text-[11px] font-mono text-amber-200 shadow-xl backdrop-blur-md">
+          Finding focus: {focusFinding.title}{focusFinding.intervalIds.length > 0 ? ` · ${focusFinding.intervalIds.length} depth interval${focusFinding.intervalIds.length === 1 ? '' : 's'}` : ''}
+        </div>
+      )}
+
       {/* Floating Left Station Navigator */}
-      <div className="absolute top-16 left-5 z-50 w-76 bg-slate-900/95 backdrop-blur-xl border border-slate-700/70 rounded-xl shadow-[0_16px_50px_rgba(0,0,0,0.8)] p-3 pointer-events-auto max-h-[calc(100vh-100px)] flex flex-col">
+      <div className="absolute top-16 bottom-5 left-5 z-50 w-76 bg-slate-900/95 backdrop-blur-xl border border-slate-700/70 rounded-xl shadow-[0_16px_50px_rgba(0,0,0,0.8)] p-3 pointer-events-auto flex min-h-0 flex-col">
         {/* Header */}
         <div className="flex items-center justify-between pb-2 border-b border-slate-800 text-xs font-mono">
           <span className="text-slate-200 font-bold tracking-wide">RESEARCH STATIONS</span>
-          <span className="text-cyan-400 font-semibold">{model.featuresWithCoords.length} Points</span>
+          <span className="text-cyan-400 font-semibold">{sceneFeatures.length} Points</span>
         </div>
 
         {/* Distinct Mode Segmented Action Banner */}
         <div className="my-2.5 bg-slate-950/80 p-1 rounded-lg border border-slate-800 flex gap-1">
           <button
-            onClick={() => setFocusMode(true)}
+            onClick={() => {
+              if (!sceneFeatures.some((feature) => feature.id === currentFeature?.id) && sceneFeatures.length > 0) {
+                onSelectFeature(sceneFeatures[0]);
+              }
+              setFocusMode(true);
+            }}
             className={`flex-1 py-1.5 px-2 rounded-md text-[11px] font-mono font-bold transition flex items-center justify-center gap-1.5 ${
               focusMode
                 ? 'bg-amber-400 text-slate-950 shadow-md shadow-amber-400/20'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            <EyeOff className="w-3.5 h-3.5" />
-            <span>Isolate One</span>
+            <Focus className="w-3.5 h-3.5" />
+            <span>Focus Station</span>
           </button>
           <button
-            onClick={() => setFocusMode(false)}
+            onClick={() => {
+              setFocusMode(false);
+              onSelectFeature(null);
+            }}
             className={`flex-1 py-1.5 px-2 rounded-md text-[11px] font-mono font-bold transition flex items-center justify-center gap-1.5 ${
               !focusMode
                 ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
@@ -956,7 +1112,7 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
             }`}
           >
             <Eye className="w-3.5 h-3.5" />
-            <span>Show All ({model.featuresWithCoords.length})</span>
+            <span>Show All ({sceneFeatures.length})</span>
           </button>
         </div>
 
@@ -965,14 +1121,14 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
           <span className="text-slate-500">{focusMode ? 'Showing active point' : 'Showing all points'}</span>
         </div>
 
-        <div ref={listContainerRef} className="overflow-y-auto space-y-1.5 flex-1 pr-1">
-          {model.featuresWithCoords.map((feat) => {
+        <div ref={listContainerRef} className="min-h-0 overflow-y-auto space-y-1.5 flex-1 pr-1 pb-3 scroll-pb-3">
+          {sceneFeatures.map((feat) => {
             const isSel = currentFeature && feat.id === currentFeature.id;
             return (
               <button
                 key={feat.id}
                 ref={isSel ? selectedItemRef : undefined}
-                onClick={() => onSelectFeature(feat)}
+                onClick={() => selectAndIsolateRef.current(feat)}
                 className={`w-full text-left p-2.5 rounded-lg text-xs font-mono transition flex items-center justify-between ${
                   isSel
                     ? 'bg-amber-400/25 border border-amber-400 text-amber-300 ring-2 ring-amber-400/40 shadow-[0_0_15px_rgba(251,191,36,0.25)]'

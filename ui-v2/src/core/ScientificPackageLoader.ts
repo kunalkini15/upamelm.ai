@@ -9,6 +9,7 @@ import {
   RawObservation,
   RawInterval,
 } from '../types/scientific';
+import { buildReportAnalysis } from './ReportAnalysis';
 
 /**
  * Universal Scientific Ingestion Pipeline (v1.0)
@@ -99,6 +100,7 @@ export class ScientificPackageLoader {
       // Prefer canonical GeoJSON geometry [longitude, latitude]
       let lng: number | undefined;
       let lat: number | undefined;
+      let coordinateFidelity: RenderablePointFeature['coordinateFidelity'] = 'reported';
 
       if (
         f.geometry &&
@@ -124,6 +126,7 @@ export class ScientificPackageLoader {
           propMap.X_LONG ??
           propMap.longitude_reported;
 
+        const usedDms = (!latVal && propMap.latitude_DMS_reported) || (!lngVal && propMap.longitude_DMS_reported);
         if (!latVal && propMap.latitude_DMS_reported) {
           latVal = this.parseDMS(propMap.latitude_DMS_reported);
         }
@@ -136,6 +139,7 @@ export class ScientificPackageLoader {
         if (!isNaN(parsedLat) && !isNaN(parsedLng)) {
           lat = parsedLat;
           lng = parsedLng;
+          coordinateFidelity = usedDms ? 'parsed_dms' : 'property';
         }
       }
 
@@ -230,9 +234,9 @@ export class ScientificPackageLoader {
           .sort((a, b) => a.start - b.start);
 
         // If no intervals exist on this borehole, compute synthetic default strata up to drilled depth
-        if (normalizedIntervals.length === 0 && totalDepth) {
-          normalizedIntervals.push(
-            {
+        const hasSyntheticIntervals = normalizedIntervals.length === 0 && Boolean(totalDepth);
+        if (hasSyntheticIntervals && totalDepth) {
+          normalizedIntervals.push({
               id: `${f.id}_unc`,
               name: 'Phreatic Upper Zone',
               type: 'aquifer',
@@ -243,8 +247,9 @@ export class ScientificPackageLoader {
               material: 'alluvium',
               colorHex: '#38bdf8',
               transparency: 0.5,
-            },
-            {
+              fidelity: 'estimated',
+            });
+          if (totalDepth > 55) normalizedIntervals.push({
               id: `${f.id}_conf`,
               name: 'Confined Aquifer Interval',
               type: 'aquifer',
@@ -255,8 +260,8 @@ export class ScientificPackageLoader {
               material: 'sand_gravel',
               colorHex: '#0284c7',
               transparency: 0.7,
-            }
-          );
+              fidelity: 'estimated',
+            });
         }
 
         // Gather unique source page numbers
@@ -283,6 +288,14 @@ export class ScientificPackageLoader {
           sourcePages: Array.from(pageSet),
           narrative: f.narrative || null,
           evidenceRefs: f.narrative?.evidence_refs || [],
+          coordinateFidelity,
+          depthFidelity: totalDepth
+            ? 'reported'
+            : normalizedIntervals.length > 0
+            ? 'interval_derived'
+            : 'illustrative_default',
+          hasSyntheticIntervals,
+          isSpatialOutlier: isFlaggedOutlier,
         };
 
         featuresWithCoords.push(renderableFeat);
@@ -308,11 +321,13 @@ export class ScientificPackageLoader {
 
     // 5b. Compute robust Study Area Polygon (Convex Hull of geocoded features or district extent)
     const validPointCoords = featuresWithCoords
-      .map((f) => f.coordinates)
-      .filter(([lng, lat]) => lat < 24.0); // Filter anomalous reporting outliers
+      .filter((feature) => !feature.isSpatialOutlier)
+      .map((feature) => feature.coordinates);
 
     let studyAreaPolygon: [number, number][] = [];
+    let studyAreaBoundary: ScientificUIModel['renderingNotes']['studyAreaBoundary'];
     if (validPointCoords.length >= 3) {
+      studyAreaBoundary = 'station_hull';
       // Compute 2D Convex Hull
       const sorted = [...validPointCoords].sort((a, b) =>
         a[0] === b[0] ? a[1] - b[1] : a[0] - b[0]
@@ -356,6 +371,7 @@ export class ScientificPackageLoader {
       ]);
       studyAreaPolygon.push(studyAreaPolygon[0]); // Close GeoJSON ring
     } else {
+      studyAreaBoundary = primaryStudyArea?.bounds ? 'reported_bounds' : 'fallback_bounds';
       // Fallback to bounding box rectangle
       studyAreaPolygon = [
         [minLng, minLat],
@@ -394,7 +410,7 @@ export class ScientificPackageLoader {
       })
       .sort((a, b) => a.start - b.start);
 
-    return {
+    const uiModel: ScientificUIModel = {
       reportTitle: pkg.report?.title || 'Scientific Hydrogeological Investigation',
       shortTitle: pkg.report?.short_title || 'District Aquifer Explorer',
       studyAreaName,
@@ -413,6 +429,31 @@ export class ScientificPackageLoader {
       preservedDatasets: pkg.extensions?.datasets || [],
       allObservations: pkg.observations || [],
       sourcesCount: pkg.sources?.length || 0,
+      renderingNotes: {
+        studyAreaBoundary,
+        hiddenFeatureCount: featuresWithoutCoords.length,
+      },
     };
+
+    if (
+      pkg.analysis_schema_version === 'report-synthesis.v1' &&
+      pkg.report_synthesis?.schema_version === 'report-synthesis.v1' &&
+      pkg.report_synthesis.report_id === pkg.report?.id
+    ) {
+      uiModel.reportAnalysis = buildReportAnalysis(pkg.report_synthesis, {
+        featureIds: new Set(featuresWithCoords.map((feature) => feature.id)),
+        studyAreaIds: new Set((pkg.study_areas || []).map((area) => area.id)),
+        observationIds: new Set((pkg.observations || []).map((observation) => observation.id)),
+        intervalIds: new Set((pkg.intervals || []).map((interval) => interval.id)),
+        datasetIds: new Set((pkg.extensions?.datasets || []).map((dataset) => dataset.id)),
+        datedObservationIds: new Set(
+          (pkg.observations || [])
+            .filter((observation) => Boolean(observation.date))
+            .map((observation) => observation.id)
+        ),
+      });
+    }
+
+    return uiModel;
   }
 }

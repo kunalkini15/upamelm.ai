@@ -60,3 +60,19 @@ def test_consolidator_rejects_duplicate_ids(tmp_path):
     (tmp_path / "ui_rendering_package.json").write_text(json.dumps(rendering), encoding="utf-8")
     with pytest.raises(ValueError, match="duplicate scientific"):
         consolidate_ui_packages(tmp_path)
+
+
+def test_consolidator_embeds_optional_study_atlas_without_scientific_mutation(tmp_path):
+    _write_packages(tmp_path)
+    atlas = {
+        "schema_version": "study-atlas.v1", "report_id": "r1", "audience": "general_nontechnical",
+        "executive_overview": {"headline": "h", "abstract": "a", "key_finding_ids": [], "key_stat_callout_ids": [], "generation_mode": "deterministic_fallback"},
+        "themes": [], "chapters": [], "findings": [], "stat_callouts": [], "uncertainties": [], "coverage": {},
+    }
+    (tmp_path / "study_atlas_package.json").write_text(json.dumps(atlas), encoding="utf-8")
+    result = consolidate_ui_packages(tmp_path)
+    package = json.loads((tmp_path / "ui_consolidated_package.json").read_text())
+    assert result["report"]["study_atlas"]["present"] is True
+    assert package["analysis_schema_version"] == "study-atlas.v1"
+    assert package["study_atlas"]["report_id"] == "r1"
+    assert package["observations"] == [{"id": "o1"}]

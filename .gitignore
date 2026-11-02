@@ -49,3 +49,5 @@ yarn-error.log*
 
 # Docs ignored for now; curated docs will be added explicitly later
 docs/
+playground/
+.playwright-cli/

@@ -38,7 +38,9 @@ STOPWORDS = {
 
 def tokenize(text: str) -> List[str]:
     """Tokenize alphanumeric words, convert to lowercase, filter out stop words and short tokens."""
-    words = re.findall(r"\b[a-zA-Z0-9_\-]{3,}\b", text.lower())
+    # Normalize hyphens, underscores, slashes, and punctuation to spaces so compound phrases split
+    clean_text = re.sub(r"[_\-/\\]+", " ", text)
+    words = re.findall(r"\b[a-zA-Z0-9]{3,}\b", clean_text.lower())
     return [w for w in words if w not in STOPWORDS and not w.isdigit()]
 
 

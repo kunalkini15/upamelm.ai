@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any, Dict, List, Optional
 
 from doc_intelligence.indexing.indexer import DocumentIndexer
@@ -111,103 +112,60 @@ class IntelligencePipeline:
         # Batch pages in chunks of 2 pages max to preserve table context & tokens
         page_chunks: List[List[int]] = [planned_pages[i : i + 2] for i in range(0, len(planned_pages), 2)]
 
-        for chunk_idx, page_subset in enumerate(page_chunks):
-            if calls_count >= self.max_model_calls or tokens_count >= self.max_tokens_budget:
-                trace.append(
-                    ExecutionTraceStep(
-                        step_id=f"step_{len(trace)+1}",
-                        stage="Stage 5: AI Extraction",
-                        action="Budget limit reached",
-                        details={"calls_count": calls_count, "tokens_count": tokens_count},
-                        success=False,
-                        error_message="Configured model calls or token budget limit exceeded.",
-                    )
-                )
-                break
+        # Independent page chunks are safe to process concurrently. Failed
+        # attempts are counted before dispatch so timeouts cannot bypass the
+        # task call budget.
+        available_calls = max(0, self.max_model_calls - calls_count)
+        selected_chunks = page_chunks[:available_calls]
+        calls_count += len(selected_chunks)
+        successfully_processed_pages: set[int] = set()
+        failed_or_unprocessed_pages: Dict[int, str] = {}
+        for chunk in page_chunks[len(selected_chunks):]:
+            for page in chunk:
+                failed_or_unprocessed_pages[page] = "Not dispatched because the model-call budget was exhausted"
 
-            # Collect bounded page text and tables with preserved headers
+        def run_chunk(page_subset: List[int]):
             retrieved_contexts: List[Dict[str, Any]] = []
             for p_num in page_subset:
                 p_obj = document.get_page(p_num)
                 if p_obj:
-                    # Provide page metadata and tables
-                    tables_repr = []
-                    for t in p_obj.tables:
-                        # Include table markdown or structured headers + sample
-                        t_str = t.markdown or f"Table {t.table_id} (Headers: {t.headers}, Rows: {t.rows})"
-                        tables_repr.append(t_str)
-
-                    retrieved_contexts.append(
-                        {
-                            "page_number": p_num,
-                            "printed_page_number": p_obj.printed_page_number,
-                            "text": p_obj.text,
-                            "tables": tables_repr,
-                        }
-                    )
-
+                    tables_repr = [t.markdown or f"Table {t.table_id} (Headers: {t.headers}, Rows: {t.rows})" for t in p_obj.tables]
+                    retrieved_contexts.append({"page_number": p_num, "printed_page_number": p_obj.printed_page_number, "text": p_obj.text, "tables": tables_repr})
             prompt = self._build_extraction_prompt(task, retrieved_contexts)
-            system_inst = (
-                "You are an objective document intelligence engine powered by Muse Spark. "
-                "Only extract records explicitly stated in the provided text and tables. "
-                "Do NOT guess, extrapolate or combine unrelated rows. "
-                "For tabular records, retain row association, entity identifiers, and verbatim quotes."
-            )
-
-            t_model_start = time.perf_counter()
+            system_inst = ("You are an objective document intelligence engine powered by Muse Spark. "
+                            "Only extract records explicitly stated in the provided text and tables. "
+                            "Do NOT guess, extrapolate or combine unrelated rows. "
+                            "For tabular records, retain row association, entity identifiers, and verbatim quotes.")
+            started = time.perf_counter()
             try:
-                resp = self.model_provider.complete(
-                    prompt=prompt,
-                    system_instruction=system_inst,
-                    json_mode=True,
-                )
-                calls_count += 1
+                response = self.model_provider.complete(prompt=prompt, system_instruction=system_inst, json_mode=True)
+                return page_subset, response, None, time.perf_counter() - started
+            except Exception as exc:
+                return page_subset, None, exc, time.perf_counter() - started
+
+        worker_count = max(1, min(len(selected_chunks), 3))
+        with ThreadPoolExecutor(max_workers=worker_count, thread_name_prefix="di-extract") as executor:
+            futures = [executor.submit(run_chunk, pages) for pages in selected_chunks]
+            for future in as_completed(futures):
+                page_subset, resp, error, duration = future.result()
+                if error:
+                    for page in page_subset:
+                        failed_or_unprocessed_pages[page] = f"Model extraction failed: {error}"
+                    trace.append(ExecutionTraceStep(step_id=f"step_{len(trace)+1}", stage="Stage 5: AI Extraction", action=f"Failed model call on pages {page_subset}", details={"error": str(error), "pages": page_subset}, duration_seconds=round(duration, 4), success=False, error_message=str(error)))
+                    continue
+                successfully_processed_pages.update(page_subset)
                 tokens_count += resp.total_tokens
+                trace.append(ExecutionTraceStep(step_id=f"step_{len(trace)+1}", stage="Stage 5: AI Extraction", action=f"Extract records from pages {page_subset}", details={"provider": self.model_provider.provider_name, "pages": page_subset, "prompt_tokens": resp.prompt_tokens, "completion_tokens": resp.completion_tokens}, model_name=resp.model_name, prompt_tokens=resp.prompt_tokens, completion_tokens=resp.completion_tokens, duration_seconds=round(duration, 4), success=True))
+                self._verify_and_integrate_findings(document=document, task=task, raw_findings=(resp.parsed_json or {}).get("findings", []), model_name=resp.model_name, findings_map=findings_map, review_queue=review_queue)
 
-                trace.append(
-                    ExecutionTraceStep(
-                        step_id=f"step_{len(trace)+1}",
-                        stage="Stage 5: AI Extraction",
-                        action=f"Extract records from pages {page_subset}",
-                        details={
-                            "provider": self.model_provider.provider_name,
-                            "pages": page_subset,
-                            "prompt_tokens": resp.prompt_tokens,
-                            "completion_tokens": resp.completion_tokens,
-                        },
-                        model_name=resp.model_name,
-                        prompt_tokens=resp.prompt_tokens,
-                        completion_tokens=resp.completion_tokens,
-                        duration_seconds=round(time.perf_counter() - t_model_start, 4),
-                        success=True,
-                    )
-                )
+        if len(page_chunks) > len(selected_chunks):
+            trace.append(ExecutionTraceStep(step_id=f"step_{len(trace)+1}", stage="Stage 5: AI Extraction", action="Budget limit reached", details={"attempted_calls": len(selected_chunks), "skipped_chunks": len(page_chunks) - len(selected_chunks), "tokens_count": tokens_count}, success=False, error_message="Configured model call budget reached; remaining chunks were not dispatched."))
 
-                extracted_data = resp.parsed_json or {}
-                raw_findings = extracted_data.get("findings", [])
-
-                # Stage 6: Grounding, field-level verification, and deduplication
-                self._verify_and_integrate_findings(
-                    document=document,
-                    task=task,
-                    raw_findings=raw_findings,
-                    model_name=resp.model_name,
-                    findings_map=findings_map,
-                    review_queue=review_queue,
-                )
-
-            except Exception as e:
-                trace.append(
-                    ExecutionTraceStep(
-                        step_id=f"step_{len(trace)+1}",
-                        stage="Stage 5: AI Extraction",
-                        action=f"Failed model call on pages {page_subset}",
-                        details={"error": str(e)},
-                        duration_seconds=round(time.perf_counter() - t_model_start, 4),
-                        success=False,
-                        error_message=str(e),
-                    )
-                )
+        # Coverage must describe pages actually sent successfully to Muse, not
+        # merely pages selected by the deterministic coverage planner.
+        coverage_manifest.processed_pages = sorted(successfully_processed_pages)
+        coverage_manifest.skipped_pages.update(failed_or_unprocessed_pages)
+        coverage_manifest.status = "complete" if not coverage_manifest.skipped_pages else "partial"
 
         # Stage 6B: Selective second-pass repair for flagged ambiguous records
         if review_queue and task.allow_escalation and calls_count < self.max_model_calls:
@@ -294,10 +252,16 @@ class IntelligencePipeline:
             raw_entity_id = item.get("entity_id") or item.get("finding_id") or f"rec_{len(findings_map)+1}"
             clean_entity_key = str(raw_entity_id).strip()
             page_num = item.get("page_number", 1)
-            source_text = item.get("source_text", "").strip()
-            values = item.get("values", {})
-            units = item.get("units", {})
-            nested_records = item.get("nested_records", [])
+            source_text = str(item.get("source_text") or "").strip()
+            values = item.get("values") or {}
+            if not isinstance(values, dict):
+                values = {}
+            units = item.get("units") or {}
+            if not isinstance(units, dict):
+                units = {}
+            nested_records = item.get("nested_records") or []
+            if not isinstance(nested_records, list):
+                nested_records = []
 
             page_obj = document.get_page(page_num)
             has_ambiguity = False

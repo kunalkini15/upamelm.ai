@@ -1,3 +1,5 @@
+from doc_intelligence.atlas.builder import DocumentAtlasBuilder
+from doc_intelligence.atlas.models import DocumentAtlas
 from doc_intelligence.models.document import DocumentMetadata, Page, ParsedDocument
 from doc_intelligence.models.index import DocumentIndex
 from doc_intelligence.models.task import ExtractedFinding, IntelligenceResult, TaskSpecification
@@ -18,4 +20,6 @@ __all__ = [
     "ParserRegistry",
     "IntelligencePipeline",
     "ProviderFactory",
+    "DocumentAtlas",
+    "DocumentAtlasBuilder",
 ]

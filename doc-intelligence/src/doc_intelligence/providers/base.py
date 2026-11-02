@@ -28,6 +28,7 @@ class BaseModelProvider(ABC):
         system_instruction: Optional[str] = None,
         json_mode: bool = False,
         temperature: float = 0.0,
+        reasoning_effort: Optional[str] = None,
     ) -> ModelResponse:
         """Synchronous completion."""
         pass

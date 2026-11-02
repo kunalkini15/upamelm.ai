@@ -16,6 +16,7 @@ else:
             load_dotenv(candidate)
             break
 
+from doc_intelligence.atlas.builder import DocumentAtlasBuilder
 from doc_intelligence.cli.writer import ArtifactWriter
 from doc_intelligence.indexing.indexer import DocumentIndexer
 from doc_intelligence.parsers.base import ParserOptions
@@ -186,6 +187,94 @@ def intelligence_cmd(
 
     except Exception as e:
         click.secho(f"[!] Intelligence execution error: {e}", fg="red", err=True)
+        sys.exit(1)
+
+
+@main.command("atlas")
+@click.argument("document_path", type=click.Path(exists=True, dir_okay=False))
+@click.option(
+    "--parser",
+    "-p",
+    default="pymupdf",
+    type=click.Choice(["pymupdf", "docling", "llamaparse"], case_sensitive=False),
+    help="Parsing engine adapter to use (default: pymupdf).",
+)
+@click.option(
+    "--provider",
+    default=None,
+    type=click.Choice(["muse", "openai", "gemini", "mock"], case_sensitive=False),
+    help="Model provider for interpreting printed TOC (optional).",
+)
+@click.option(
+    "--model",
+    "-m",
+    default=None,
+    help="Model identifier (or set MODEL_NAME in .env).",
+)
+@click.option(
+    "--query",
+    "-q",
+    default=None,
+    help="Optional test query to run ranked retrieval against the Atlas.",
+)
+@click.option(
+    "--output",
+    "-o",
+    type=click.Path(dir_okay=False),
+    default=None,
+    help="Destination path for Atlas JSON artifact.",
+)
+def atlas_cmd(
+    document_path: str,
+    parser: str,
+    provider: Optional[str],
+    model: Optional[str],
+    query: Optional[str],
+    output: Optional[str],
+):
+    """Build a structured, searchable Document Atlas map of an unfamiliar document."""
+    doc_file = Path(document_path).resolve()
+    click.echo(f"[*] Building Document Atlas for: {doc_file.name} using {parser.upper()}...")
+
+    try:
+        model_p = None
+        if provider:
+            model_p = ProviderFactory.create(
+                provider_type=provider,
+                model_name=model,
+            )
+            click.echo(f"[*] Using model provider for TOC: {model_p.provider_name}")
+
+        atlas = DocumentAtlasBuilder.build_from_file(
+            file_path=str(doc_file),
+            parser_name=parser,
+            provider=model_p,
+        )
+
+        dest = output or f"{doc_file.stem}_atlas.json"
+        DocumentAtlasBuilder.save_to_json(atlas, dest)
+
+        click.secho(
+            f"[+] Document Atlas generated: {atlas.total_pages} pages, "
+            f"{len(atlas.sections)} sections (TOC source: {atlas.toc_source}).",
+            fg="green",
+        )
+        click.secho(f"[+] Atlas artifact saved to: {dest}", fg="green")
+
+        if query:
+            click.echo(f"[*] Executing test query: '{query}'...")
+            results = atlas.search(query, top_k=5, expand_section_range=True)
+            click.echo(f"[+] Top {len(results)} retrieval results:")
+            for idx, r in enumerate(results, start=1):
+                click.echo(
+                    f"    {idx}. Page {r.page_number} (score: {r.score:.3f}) | "
+                    f"Sections: {r.matched_sections} | "
+                    f"Keyphrases: {r.matched_keyphrases[:3]} | "
+                    f"Range: {r.section_range}"
+                )
+
+    except Exception as e:
+        click.secho(f"[!] Atlas generation error: {e}", fg="red", err=True)
         sys.exit(1)
 
 

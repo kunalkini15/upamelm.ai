@@ -17,7 +17,9 @@ class OpenAICompatibleProvider(BaseModelProvider):
         model: Optional[str] = None,
         api_key: Optional[str] = None,
         base_url: Optional[str] = None,
-        timeout: float = 90.0,
+        timeout: float = 60.0,
+        max_output_tokens: Optional[int] = None,
+        stream: bool = False,
     ):
         # Model Priority: explicit -> MODEL_NAME -> MUSE_MODEL -> OPENAI_MODEL -> default "muse-spark-1.3"
         self.model = (
@@ -47,6 +49,8 @@ class OpenAICompatibleProvider(BaseModelProvider):
         )
         self.base_url = raw_base_url.rstrip("/")
         self.timeout = timeout
+        self.max_output_tokens = max_output_tokens
+        self.stream = stream
 
     @property
     def provider_name(self) -> str:
@@ -58,6 +62,7 @@ class OpenAICompatibleProvider(BaseModelProvider):
         system_instruction: Optional[str] = None,
         json_mode: bool = False,
         temperature: float = 0.0,
+        reasoning_effort: Optional[str] = None,
     ) -> ModelResponse:
         if not self.api_key:
             raise ValueError(
@@ -72,7 +77,7 @@ class OpenAICompatibleProvider(BaseModelProvider):
 
         messages = []
         if system_instruction:
-            messages.append({"role": "system", "content": system_instruction})
+            messages.append({"role": "developer", "content": system_instruction})
         messages.append({"role": "user", "content": prompt})
 
         payload: Dict[str, Any] = {
@@ -82,6 +87,18 @@ class OpenAICompatibleProvider(BaseModelProvider):
         }
         if json_mode:
             payload["response_format"] = {"type": "json_object"}
+        if self.max_output_tokens is not None:
+            # Meta Contributor counts reasoning and visible output together under
+            # max_completion_tokens; max_tokens can exhaust on reasoning alone.
+            payload["max_completion_tokens"] = self.max_output_tokens
+        if self.stream:
+            payload["stream"] = True
+            payload["stream_options"] = {"include_usage": True}
+        if reasoning_effort:
+            payload["reasoning_effort"] = reasoning_effort
+
+        if self.stream:
+            return self._complete_stream(payload, headers)
 
         with httpx.Client(timeout=self.timeout) as client:
             resp = client.post(f"{self.base_url}/chat/completions", headers=headers, json=payload)
@@ -123,3 +140,65 @@ class OpenAICompatibleProvider(BaseModelProvider):
             model_name=self.model,
             raw_response=data,
         )
+
+    def _complete_stream(self, payload: Dict[str, Any], headers: Dict[str, str]) -> ModelResponse:
+        """Accumulate Meta SSE chunks while retaining raw chunks for diagnostics."""
+        parts = []
+        chunks = []
+        usage: Dict[str, int] = {}
+        model_name = self.model
+        finish_reason = None
+        try:
+            with httpx.Client(timeout=self.timeout) as client:
+                with client.stream("POST", f"{self.base_url}/chat/completions", headers=headers, json=payload) as resp:
+                    resp.raise_for_status()
+                    for line in resp.iter_lines():
+                        if not line or not line.startswith("data:"):
+                            continue
+                        raw = line[5:].strip()
+                        if raw == "[DONE]":
+                            break
+                        event = json.loads(raw)
+                        chunks.append(event)
+                        model_name = event.get("model", model_name)
+                        usage.update(event.get("usage") or {})
+                        for choice in event.get("choices") or []:
+                            delta = choice.get("delta") or {}
+                            if delta.get("content"):
+                                parts.append(delta["content"])
+                            if choice.get("finish_reason"):
+                                finish_reason = choice["finish_reason"]
+        except Exception as exc:
+            setattr(exc, "partial_content", "".join(parts))
+            setattr(exc, "raw_chunks", chunks)
+            setattr(exc, "finish_reason", finish_reason)
+            raise
+        content = "".join(parts)
+        parsed = self._parse_json_content(content)
+        return ModelResponse(content=content, parsed_json=parsed,
+                             prompt_tokens=usage.get("prompt_tokens", 0),
+                             completion_tokens=usage.get("completion_tokens", 0),
+                             total_tokens=usage.get("total_tokens", 0),
+                             model_name=model_name,
+                             raw_response={"streamed": True, "chunks": chunks, "finish_reason": finish_reason, "complete": finish_reason is not None})
+
+    @staticmethod
+    def _parse_json_content(content: str) -> Optional[Dict[str, Any]]:
+        """Parse JSON responses that contain a short preamble or markdown fence."""
+        if not content:
+            return None
+        candidates = [content]
+        if "```json" in content:
+            candidates.append(content.split("```json", 1)[1].split("```", 1)[0].strip())
+        elif "```" in content:
+            candidates.append(content.split("```", 1)[1].split("```", 1)[0].strip())
+        match = re.search(r"\{.*\}", content, re.DOTALL)
+        if match:
+            candidates.append(match.group(0))
+        for candidate in candidates:
+            try:
+                parsed = json.loads(candidate.strip())
+                return parsed if isinstance(parsed, dict) else None
+            except (TypeError, ValueError, json.JSONDecodeError):
+                continue
+        return None

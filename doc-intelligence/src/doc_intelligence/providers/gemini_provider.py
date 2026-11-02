@@ -32,6 +32,7 @@ class GeminiProvider(BaseModelProvider):
         system_instruction: Optional[str] = None,
         json_mode: bool = False,
         temperature: float = 0.0,
+        reasoning_effort: Optional[str] = None,
     ) -> ModelResponse:
         if not self.api_key:
             raise ValueError("GEMINI_API_KEY or GOOGLE_API_KEY is not set.")

@@ -161,6 +161,12 @@ class PyMuPDFParser(BaseParser):
                         printed_num = t
                         break
 
+            try:
+                drawing_count = len(pdf_page.get_drawings())
+            except Exception as e:
+                drawing_count = 0
+                warnings.append(f"Drawing inspection on page {page_num} failed: {e}")
+
             pages.append(
                 Page(
                     page_number=page_num,
@@ -171,6 +177,7 @@ class PyMuPDFParser(BaseParser):
                     blocks=content_blocks,
                     tables=tables,
                     images=images,
+                    metadata={"has_drawings": drawing_count > 0, "drawing_count": drawing_count},
                 )
             )
 
@@ -179,6 +186,14 @@ class PyMuPDFParser(BaseParser):
         metadata.title = pdf_meta.get("title")
         metadata.author = pdf_meta.get("author")
         metadata.creation_date = pdf_meta.get("creationDate")
+
+        # Extract PDF bookmarks / outline if present
+        try:
+            toc = doc.get_toc()
+            if toc:
+                metadata.custom_metadata["bookmarks"] = toc
+        except Exception:
+            pass
 
         doc.close()
         duration = time.perf_counter() - start_time
@@ -191,3 +206,16 @@ class PyMuPDFParser(BaseParser):
             parsing_time_seconds=duration,
             parsing_warnings=warnings,
         )
+
+    def render_page(self, file_path: Path, page_number: int, output_path: Path, max_long_edge: int = 1280) -> Path:
+        """Render one physical PDF page for bounded multimodal inspection."""
+        file_path = Path(file_path).resolve()
+        output_path = Path(output_path)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        with pymupdf.open(str(file_path)) as doc:
+            page = doc[page_number - 1]
+            rect = page.rect
+            scale = min(1.0, max_long_edge / max(rect.width, rect.height))
+            pixmap = page.get_pixmap(matrix=pymupdf.Matrix(scale, scale), alpha=False)
+            pixmap.save(str(output_path))
+        return output_path

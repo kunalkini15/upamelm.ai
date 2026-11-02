@@ -28,6 +28,7 @@ class MockModelProvider(BaseModelProvider):
         system_instruction: Optional[str] = None,
         json_mode: bool = False,
         temperature: float = 0.0,
+        reasoning_effort: Optional[str] = None,
     ) -> ModelResponse:
         self.call_count += 1
         self.recorded_prompts.append(prompt)

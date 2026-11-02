@@ -2,7 +2,7 @@
   "document_metadata": {
     "document_id": "doc_a67f7fd7c1ae2f6e",
     "filename": "sample_report.pdf",
-    "file_path": "/Users/kunal.kini/Kunal/Projects/meta-gloabl-ai-hackathon-oct/subsurface/doc-intelligence/examples/sample_report.pdf",
+    "file_path": "examples/sample_report.pdf",
     "file_size_bytes": 4226,
     "file_hash_sha256": "a67f7fd7c1ae2f6e32cac68ad30af0c34f6969a5696e3e8e6b16cac3b68482d7",
     "page_count": 2,
@@ -16,7 +16,7 @@
     "metadata": {
       "document_id": "doc_a67f7fd7c1ae2f6e",
       "filename": "sample_report.pdf",
-      "file_path": "/Users/kunal.kini/Kunal/Projects/meta-gloabl-ai-hackathon-oct/subsurface/doc-intelligence/examples/sample_report.pdf",
+      "file_path": "examples/sample_report.pdf",
       "file_size_bytes": 4226,
       "file_hash_sha256": "a67f7fd7c1ae2f6e32cac68ad30af0c34f6969a5696e3e8e6b16cac3b68482d7",
       "page_count": 2,

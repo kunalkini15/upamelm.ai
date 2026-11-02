@@ -17,6 +17,7 @@ build/
 
 # Testing & Coverage
 .pytest_cache/
+.ruff_cache/
 .coverage
 htmlcov/
 
@@ -51,3 +52,6 @@ yarn-error.log*
 docs/
 playground/
 .playwright-cli/
+
+# Generated example outputs (keep curated sample_*.json fixtures tracked)
+doc-intelligence/examples/cli_test_*.json

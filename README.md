@@ -18,12 +18,12 @@ npm install
 npm run dev
 ```
 
-Then open **http://127.0.0.1:5173** in a browser.
+Then open **http://127.0.0.1:5174** in a browser.
 
 | Command            | Purpose                                              |
 | ------------------ | ---------------------------------------------------- |
 | `npm install`      | Install dependencies                                 |
-| `npm run dev`      | Start the dev server at http://127.0.0.1:5173        |
+| `npm run dev`      | Start the dev server at http://127.0.0.1:5174        |
 | `npm run build`    | Typecheck (`tsc -b`) + production build into `dist/` |
 | `npm run preview`  | Serve the production build locally                   |
 | `npm run typecheck`| Typecheck only                                       |

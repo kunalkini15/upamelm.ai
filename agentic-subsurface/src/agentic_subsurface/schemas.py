@@ -18,6 +18,17 @@ def extraction_schema() -> dict[str, Any]:
     visual=_obj({"visual_id":{"type":"string"},"artifact_id":{"type":"string"},"type":{"type":"string"},"title":_null("string"),"interpretation":{"type":"string"},"page":_null("integer"),"bbox":{"anyOf":[{"type":"array","items":{"type":"number"}},{"type":"null"}]},"evidence_refs":_strs(),"limitations":_strs()})
     return _obj({"batch_id":{"type":"string"},"summary":{"type":"string"},"entities":_arr(entity),"evidence_items":_arr(item),"spatial_features":_arr(spatial),"vertical_intervals":_arr(interval),"relationships":_arr(relation),"visual_interpretations":_arr(visual),"limitations":_strs(),"unresolved_items":_strs()})
 
+def visual_classification_schema() -> dict[str, Any]:
+    item = _obj({
+        "artifact_id": {"type": "string"},
+        "classification": {"type": "string", "enum": ["text_only", "duplicate", "decorative", "table", "map", "borehole_log", "geological_section", "chart", "engineering_drawing", "photograph", "other"]},
+        "meaningful": {"type": "boolean"},
+        "reason": {"type": "string"},
+        "duplicate_of": _null("string"),
+        "suggested_extraction": {"type": "string", "enum": ["none", "deep_visual", "table", "map_geometry", "diagram"]},
+    })
+    return _obj({"classifications": _arr(item), "limitations": _strs()})
+
 def scientific_schema() -> dict[str, Any]:
     prop=_obj({"name":{"type":"string"},"value":{"type":"string"},"unit":_null("string")})
     report=_obj({"id":{"type":"string"},"title":{"type":"string"},"short_title":_null("string"),"date":_null("string"),"organization":_null("string"),"summary":{"type":"string"},"domain":{"type":"string"},"source_refs":_strs()})

@@ -9,6 +9,8 @@ import pymupdf
 from agentic_subsurface.adapters import AdapterRegistry
 from agentic_subsurface.batching import SemanticBatcher
 from agentic_subsurface.models import MODEL, PipelineConfig, RunRequest
+from agentic_subsurface.models import DocumentRunRequest
+from agentic_subsurface.loop1 import DocumentLoop1Processor
 from agentic_subsurface.pipeline import AgenticSubsurfacePipeline
 from agentic_subsurface.provider import BudgetExceeded, MuseClient
 
@@ -16,6 +18,7 @@ from agentic_subsurface.provider import BudgetExceeded, MuseClient
 def test_model_and_budget_are_hard_limited() -> None:
     with pytest.raises(ValueError): PipelineConfig(model="muse-spark-1.3")
     with pytest.raises(ValueError): PipelineConfig(max_cost_usd=20.01)
+    with pytest.raises(ValueError): PipelineConfig(max_workers=33)
 
 
 def test_csv_adapter_preserves_rows(tmp_path: Path) -> None:
@@ -63,10 +66,31 @@ def test_batcher_is_lossless(tmp_path: Path) -> None:
     assert [u.unit_id for batch in batches for u in batch.units] == [u.unit_id for u in bundle.units]
 
 
+def test_batcher_never_mixes_documents(tmp_path: Path) -> None:
+    first = tmp_path / "one.csv"
+    second = tmp_path / "two.csv"
+    first.write_text("id,value\n1,a\n", encoding="utf-8")
+    second.write_text("id,value\n2,b\n", encoding="utf-8")
+    registry = AdapterRegistry()
+    bundles = [registry.materialize(first, tmp_path / "out"), registry.materialize(second, tmp_path / "out")]
+    batches = SemanticBatcher(target_tokens=10_000).build(bundles)
+    assert all(len({unit.unit_id.split(":row:")[0] for unit in batch.units}) == 1 for batch in batches)
+    assert len(batches) == 2
+
+
 def test_budget_guard_uses_contributor_pricing(tmp_path: Path) -> None:
     client = MuseClient(tmp_path, PipelineConfig(max_cost_usd=0.01))
     assert client._estimated_cost(1_000_000, 1_000_000) == pytest.approx(0.30)
     with pytest.raises(BudgetExceeded): client._guard(1_000_000, 1_000_000)
+
+
+def test_parallel_budget_reservations_cannot_oversubscribe(tmp_path: Path) -> None:
+    client = MuseClient(tmp_path, PipelineConfig(max_cost_usd=0.01))
+    reservation = client._reserve(0, 40_000)  # reserves $0.008
+    with pytest.raises(BudgetExceeded):
+        client._reserve(0, 40_000)
+    client._release(reservation)
+    assert client._reserve(0, 40_000)
 
 
 def test_offline_pipeline_materializes_complete_shape(tmp_path: Path) -> None:
@@ -80,4 +104,50 @@ def test_offline_pipeline_materializes_complete_shape(tmp_path: Path) -> None:
     assert package["schema_version"] == "1.0"
     assert package["extensions"]["datasets"][0]["feature_count"] == 1
     assert MODEL == "muse-spark-1.3-contributor"
+
+
+def test_document_loop1_is_versioned_reusable_and_isolated(tmp_path: Path) -> None:
+    corpus = tmp_path / "corpus"
+    first = tmp_path / "first.geojson"
+    second = tmp_path / "second.geojson"
+    first.write_text(json.dumps({"type": "FeatureCollection", "features": []}), encoding="utf-8")
+    second.write_text(json.dumps({"type": "FeatureCollection", "features": []}), encoding="utf-8")
+    config = PipelineConfig(live=False)
+    processor = DocumentLoop1Processor(corpus, config)
+    first_result = processor.process(DocumentRunRequest(corpus_id="test", objective="test", source=first, output_dir=corpus, config=config))
+    second_result = processor.process(DocumentRunRequest(corpus_id="test", objective="test", source=second, output_dir=corpus, config=config))
+    reused = processor.process(DocumentRunRequest(corpus_id="test", objective="test", source=first, output_dir=corpus, config=config))
+    assert first_result["status"] == second_result["status"] == "complete"
+    assert first_result["document_id"] != second_result["document_id"]
+    assert reused["reused"] is True
+    manifest = json.loads((corpus / "corpus_manifest.json").read_text(encoding="utf-8"))
+    assert manifest["counts"]["active_documents"] == 2
+
+
+def test_document_loop1_stage_ranges_persist_artifacts_and_telemetry(tmp_path: Path) -> None:
+    source = tmp_path / "records.csv"
+    source.write_text("id,depth\nBH-1,30\n", encoding="utf-8")
+    corpus = tmp_path / "corpus"
+    config = PipelineConfig(live=False, max_workers=4)
+    request = DocumentRunRequest(corpus_id="test", objective="test", source=source, output_dir=corpus, config=config)
+    processor = DocumentLoop1Processor(corpus, config)
+    materialized = processor.process(request, start_step=1, end_step=2)
+    assert materialized["status"] == "partial"
+    version_root = corpus / "documents" / materialized["document_id"] / "versions" / materialized["version_id"]
+    assert (version_root / "bundle.json").exists()
+    extracted = processor.process(request, start_step=3, end_step=3)
+    assert extracted["last_completed_stage"] == 3
+    telemetry = json.loads((version_root / "stage_telemetry.json").read_text(encoding="utf-8"))
+    assert set(telemetry["stages"]) == {"1", "2", "3"}
+    assert telemetry["stages"]["3"]["runs"][-1]["duration_seconds"] >= 0
+
+
+def test_stage_range_requires_prior_artifacts(tmp_path: Path) -> None:
+    source = tmp_path / "records.csv"
+    source.write_text("id,depth\nBH-1,30\n", encoding="utf-8")
+    corpus = tmp_path / "corpus"
+    config = PipelineConfig(live=False)
+    request = DocumentRunRequest(corpus_id="test", objective="test", source=source, output_dir=corpus, config=config)
+    with pytest.raises(RuntimeError, match="stage 2 artifact is missing"):
+        DocumentLoop1Processor(corpus, config).process(request, start_step=3, end_step=3)
 

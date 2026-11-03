@@ -14,6 +14,7 @@ def approximate_tokens(text: str) -> int:
 @dataclass
 class EvidenceBatch:
     batch_id: str
+    source_id: str | None = None
     units: list[ContentUnit] = field(default_factory=list)
     estimated_tokens: int = 0
     visual_artifact_ids: list[str] = field(default_factory=list)
@@ -36,23 +37,27 @@ class SemanticBatcher:
 
     def build(self, bundles: list[SourceBundle]) -> list[EvidenceBatch]:
         batches: list[EvidenceBatch] = []
-        current = EvidenceBatch(batch_id="batch-0001")
         for bundle in bundles:
+            # A batch is always owned by exactly one document. This makes a
+            # document independently resumable and prevents provenance bleed.
+            document_batches: list[EvidenceBatch] = []
+            current = EvidenceBatch(batch_id=f"{bundle.source_id}-batch-0001", source_id=bundle.source_id)
             for unit in bundle.units:
                 tokens = self.token_estimator(unit.text) + 80
                 would_exceed = current.units and current.estimated_tokens + tokens > self.target_tokens
                 if would_exceed:
-                    batches.append(current)
-                    current = EvidenceBatch(batch_id=f"batch-{len(batches) + 1:04d}")
+                    document_batches.append(current)
+                    current = EvidenceBatch(batch_id=f"{bundle.source_id}-batch-{len(document_batches) + 1:04d}", source_id=bundle.source_id)
                 current.units.append(unit)
                 current.estimated_tokens += tokens
                 for aid in unit.artifact_refs:
                     if aid not in current.visual_artifact_ids and len(current.visual_artifact_ids) < self.max_images:
                         current.visual_artifact_ids.append(aid)
                 if current.estimated_tokens >= self.max_tokens:
-                    batches.append(current)
-                    current = EvidenceBatch(batch_id=f"batch-{len(batches) + 1:04d}")
-        if current.units:
-            batches.append(current)
+                    document_batches.append(current)
+                    current = EvidenceBatch(batch_id=f"{bundle.source_id}-batch-{len(document_batches) + 1:04d}", source_id=bundle.source_id)
+            if current.units:
+                document_batches.append(current)
+            batches.extend(document_batches)
         return batches
 

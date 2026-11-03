@@ -21,11 +21,19 @@ The model never replaces native geometry, table rows, page images, or source fil
 
 PDF processing stores page text, layout blocks, every high-signal page render, detected tables with bounding boxes and rows, and visual-candidate metadata. KML processing preserves the full collection as GeoJSON while giving the model only a collection profile and bounded representative sample. Tabular sources preserve every row and use cell/range or row locators.
 
+Native materialization follows a common `discover -> process_work_unit -> merge` contract. Adapters discover units appropriate to their format (for example pages, sheets, row/record ranges, placemark ranges, frames, or line ranges). The scheduler selects process, thread, or sequential execution using the full discovered workload plus current CPU, memory, and I/O pressure. Chunk counts are calculated from the input itself; they do not encode sample-document page counts. Merge is ordinal and validates deterministic coverage, so sequential and parallel execution produce the same bundle.
+
+Materialization state is local to one immutable document version. `stages/materialization/` contains the selected plan, work-unit manifest, one result per completed unit, isolated failures, resource samples, merge coverage, and a timing/byte summary. This permits unit-level resume and document-isolated reprocessing. Text and delimited-table discovery use bounded streaming passes rather than retaining the whole source in memory.
+
 ## Loop 1
 
 `SemanticBatcher` creates lossless source-unit batches. Live batches are recursively split when their effective size or output density exceeds safe limits. Meta's `/responses/input_tokens` endpoint measures every live request before generation. Each batch uses a strict JSON Schema and high reasoning.
 
 The consolidation validator resolves every evidence locator against an artifact or content unit, removes invalid evidence, reports duplicate IDs, and records coverage. It never destroys the source or batch artifacts.
+
+Every source is stored as an independently versioned document package. Execution scheduling is not part of the semantic version fingerprint: changing `max_workers` resumes the same candidate. Within a document, text leaves, visual-classification groups, and deep-visual groups use a bounded worker pool. The provider keeps atomic worst-case cost reservations for in-flight calls and commits actual usage under a lock, so concurrency cannot exceed the corpus budget. An existing bundle is loaded on resume instead of repeating deterministic PDF materialization.
+
+Loop 1 is an eight-stage state machine. CLI `--start-step` and `--end-step` bounds are inclusive. A stage started in isolation loads its prerequisite artifacts and fails clearly when they are absent; it never silently reruns an earlier stage. Each version stores append-only stage timing records in `stage_telemetry.json`, partial status, batch manifests, and intermediate outputs so adapter and model performance can be compared document by document.
 
 ## Loop 2
 

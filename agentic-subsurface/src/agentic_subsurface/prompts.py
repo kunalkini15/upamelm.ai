@@ -1,6 +1,8 @@
 """Versioned prompts following Meta's stable-prefix and structured-output guidance."""
 
 EXTRACTION_PROMPT_VERSION = "evidence-extraction.v1"
+VISUAL_CLASSIFICATION_PROMPT_VERSION = "visual-classification.v1"
+VISUAL_EXTRACTION_PROMPT_VERSION = "visual-extraction.v1"
 SYNTHESIS_PROMPT_VERSION = "spatial-synthesis.v1"
 NARRATIVE_PROMPT_VERSION = "feature-narrative.v1"
 REPORT_PROMPT_VERSION = "report-synthesis.v1"
@@ -19,6 +21,11 @@ Rules:
 8. Absence is not a finding. Put genuine gaps in unresolved_items.
 9. Prefer completeness over a polished narrative; keep the summary concise.
 Return only JSON matching the supplied schema."""
+
+VISUAL_CLASSIFICATION_INSTRUCTIONS = """You are an exhaustive visual triage engine for technical documents.
+Return exactly one classification for every supplied artifact_id. Classify what is visibly present, not what the filename suggests. Mark meaningful=true for any map, table, log, section, chart, engineering drawing, evidence-bearing photograph, or other visual that can contribute technical, spatial, geological, hydrogeological, environmental, or infrastructure evidence. Text-only pages, decorative material, and true duplicates may be dismissed, but require a specific reason. Never omit an artifact. Never infer facts beyond the visible page. Return only JSON matching the schema."""
+
+VISUAL_EXTRACTION_INSTRUCTIONS = """You are the deep visual evidence acquisition engine. Inspect every supplied visual and extract all source-supported information useful to a domain-neutral technical evidence package. Maps, legends, sections, borehole logs, engineering drawings, charts, tables, annotations, coordinates, depths, materials, alignments and uncertainty are in scope. Produce one visual_interpretation per supplied artifact_id even when legibility is limited. Every evidence item must cite the exact supplied artifact_id and locator. Do not invent coordinates, values, labels, identities or geometry. Preserve terminology and explicitly record limitations and unresolved content. Return only JSON matching the supplied extraction schema."""
 
 SYNTHESIS_INSTRUCTIONS = """You are the spatial synthesis engine. Convert the supplied validated Evidence Package and deterministic asset manifest into a domain-neutral scientific UI package.
 

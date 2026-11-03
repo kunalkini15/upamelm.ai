@@ -111,6 +111,15 @@ class PipelineConfig(BaseModel):
     reasoning_effort: Literal["minimal", "low", "medium", "high"] = "high"
     max_cost_usd: float = Field(19.0, gt=0, le=20.0)
     max_images_per_batch: int = Field(20, ge=0, le=50)
+    visual_classification_batch_size: int = Field(20, ge=1, le=50)
+    visual_extraction_batch_size: int = Field(10, ge=1, le=20)
+    max_workers: int = Field(8, ge=1, le=32)
+    materialization_mode: Literal["adaptive", "manual"] = "adaptive"
+    materialization_workers: int | None = Field(None, ge=1, le=64)
+    materialization_chunk_size: int | None = Field(None, ge=1)
+    materialization_memory_limit_mb: int | None = Field(None, ge=128)
+    materialization_backend: Literal["auto", "process", "thread", "sequential"] = "auto"
+    materialization_pressure_limit_pct: float = Field(90.0, ge=50.0, le=100.0)
     render_dpi: int = Field(130, ge=72, le=220)
     live: bool = False
 
@@ -129,4 +138,16 @@ class RunRequest(BaseModel):
     sources: list[Path]
     output_dir: Path
     config: PipelineConfig = Field(default_factory=PipelineConfig)
+
+
+class DocumentRunRequest(BaseModel):
+    """One independently reproducible Loop 1 document run."""
+
+    corpus_id: str
+    objective: str
+    source: Path
+    output_dir: Path
+    config: PipelineConfig = Field(default_factory=PipelineConfig)
+    activate: bool = True
+    context_document_ids: list[str] | None = None
 

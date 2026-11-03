@@ -5,6 +5,7 @@ from pathlib import Path
 
 import pytest
 import pymupdf
+from PIL import Image
 
 from agentic_subsurface.adapters import AdapterRegistry
 from agentic_subsurface.batching import EvidenceBatch, SemanticBatcher
@@ -77,6 +78,34 @@ def test_stage3_emits_live_and_persistent_progress(tmp_path: Path, monkeypatch: 
     assert "[stage 3] Completed in" in captured.err
     records = [json.loads(line) for line in (root / "stages" / "text" / "progress.jsonl").read_text(encoding="utf-8").splitlines()]
     assert [record["event"] for record in records] == ["stage_started", "batch_started", "batch_counted", "batch_completed", "initial_batch_finished", "stage_completed"]
+
+
+def test_visual_stages_emit_live_and_persistent_progress(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
+    processor, request, bundle, _ = _stage3_fixture(tmp_path)
+    root = tmp_path / "version"
+    image_path = root / "visual.png"
+    image_path.parent.mkdir(parents=True)
+    Image.new("RGB", (10, 10), "white").save(image_path)
+    artifact_id = "visual-1"
+    bundle.visual_assets = [{"visual_id": artifact_id, "artifact_id": artifact_id, "kind": "image", "path": "visual.png"}]
+
+    def complete(**kwargs):
+        if kwargs["phase"].startswith("visual-classify"):
+            return {"classifications": [{"artifact_id": artifact_id, "classification": "map", "meaningful": True, "reason": "test", "duplicate_of": None, "suggested_extraction": "deep_visual"}], "limitations": []}
+        return {"batch_id": "ignored", "summary": "ok", "visual_interpretations": [{"artifact_id": artifact_id}]}
+
+    monkeypatch.setattr(processor.client, "complete", complete)
+    classifications = processor._classify_visuals(request, root, bundle, [], False)
+    results = processor._extract_visuals(request, root, bundle, [], classifications, False)
+    assert len(classifications) == len(results) == 1
+    captured = capsys.readouterr()
+    assert captured.out == ""
+    assert "[stage 4] Starting classification of 1 visuals" in captured.err
+    assert "[stage 5] Starting extraction of 1 meaningful visuals" in captured.err
+    stage4 = [json.loads(line)["event"] for line in (root / "stages" / "visual_classification" / "progress.jsonl").read_text().splitlines()]
+    stage5 = [json.loads(line)["event"] for line in (root / "stages" / "visual_extraction" / "progress.jsonl").read_text().splitlines()]
+    assert stage4 == ["stage_started", "batch_started", "batch_completed", "progress", "stage_completed"]
+    assert stage5 == ["stage_started", "batch_started", "batch_completed", "progress", "stage_completed"]
 
 
 @pytest.mark.parametrize("error", [IncompleteResponse("length"), IncompleteResponse("content_filter"), json.JSONDecodeError("bad JSON", "x", 0)])

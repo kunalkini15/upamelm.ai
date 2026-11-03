@@ -388,9 +388,30 @@ class DocumentLoop1Processor:
         visuals = bundle.visual_assets
         results: list[dict[str, Any]] = []
         jobs = list(enumerate(_chunks(visuals, request.config.visual_classification_batch_size), 1))
-        with ThreadPoolExecutor(max_workers=min(request.config.max_workers, max(1, len(jobs))), thread_name_prefix="loop1-classify") as executor:
-            responses = list(executor.map(lambda job: self._classify_visual_group(request, root, bundle, context, job[0], job[1], resume), jobs))
+        workers = min(request.config.max_workers, max(1, len(jobs)))
+        started = time.perf_counter()
+        progress_path = root / "stages" / "visual_classification" / "progress.jsonl"
+        if not resume and progress_path.exists():
+            progress_path.unlink()
+        self._visual_event(root, 4, "stage_started", f"Starting classification of {len(visuals)} visuals in {len(jobs)} batches; workers={workers}", document_id=root.parent.parent.name, version_id=root.name, version_root=str(root), bundle_path=str(root / "bundle.json"), stage3_results_path=str(root / "stages" / "text" / "results"), source_id=bundle.source_id, source_sha256=bundle.sha256, filename=bundle.filename, visual_count=len(visuals), batch_count=len(jobs), workers=workers, batch_size=request.config.visual_classification_batch_size, resume=resume)
+        responses: list[dict[str, Any] | None] = [None] * len(jobs)
+        completed = 0
+        try:
+            with ThreadPoolExecutor(max_workers=workers, thread_name_prefix="loop1-classify") as executor:
+                futures = {executor.submit(self._classify_visual_group, request, root, bundle, context, index, group, resume): position for position, (index, group) in enumerate(jobs)}
+                for future in as_completed(futures):
+                    position = futures[future]
+                    responses[position] = future.result()
+                    completed += 1
+                    elapsed = time.perf_counter() - started
+                    eta = elapsed / completed * (len(jobs) - completed) if completed else None
+                    self._visual_event(root, 4, "progress", f"Classification batches {completed}/{len(jobs)} ({completed * 100 // max(1, len(jobs))}%) | elapsed={elapsed:.1f}s | ETA={eta:.0f}s", completed=completed, total=len(jobs), elapsed_seconds=round(elapsed, 3), eta_seconds=round(eta, 3) if eta is not None else None)
+        except BaseException as exc:
+            elapsed = time.perf_counter() - started
+            self._visual_event(root, 4, "stage_failed", f"Classification failed after {elapsed:.1f}s | completed={completed}/{len(jobs)} | {type(exc).__name__}: {exc}", completed=completed, total=len(jobs), duration_seconds=round(elapsed, 3), error_type=type(exc).__name__, error=str(exc))
+            raise
         for (_, group), response in zip(jobs, responses):
+            assert response is not None
             by_id = {x.get("artifact_id"): x for x in response.get("classifications", [])}
             for visual in group:
                 item = by_id.get(visual["artifact_id"])
@@ -401,48 +422,123 @@ class DocumentLoop1Processor:
                 item["page"] = visual.get("page")
                 results.append(item)
         write_json(root / "stages" / "visual_classification" / "registry.json", results)
+        counts = dict(Counter(item.get("classification", "unknown") for item in results))
+        elapsed = time.perf_counter() - started
+        self._visual_event(root, 4, "stage_completed", f"Completed in {elapsed:.1f}s | visuals={len(results)} meaningful={sum(bool(x.get('meaningful')) for x in results)} unresolved={sum(x.get('status') != 'classified' for x in results)}", duration_seconds=round(elapsed, 3), visuals=len(results), meaningful=sum(bool(x.get("meaningful")) for x in results), unresolved=sum(x.get("status") != "classified" for x in results), classification_counts=counts, cost_totals=self.client.ledger.get("totals", {}))
         return results
 
     def _classify_visual_group(self, request: DocumentRunRequest, root: Path, bundle: SourceBundle, context: list[dict[str, Any]], index: int, group: list[dict[str, Any]], resume: bool) -> dict[str, Any]:
         target = root / "stages" / "visual_classification" / f"batch-{index:04d}.json"
         if resume and target.exists():
+            self._visual_event(root, 4, "batch_reused", f"Reusing classification batch {index:04d} | visuals={len(group)}", batch_index=index, artifact_ids=[v["artifact_id"] for v in group], output_path=str(target))
             return read_json(target)
+        started = time.perf_counter()
+        artifact_ids = [v["artifact_id"] for v in group]
+        self._visual_event(root, 4, "batch_started", f"Started classification batch {index:04d} | visuals={len(group)}", batch_index=index, artifact_ids=artifact_ids)
         if not request.config.live:
             response = {"classifications": [{"artifact_id": v["artifact_id"], "classification": "other", "meaningful": True, "reason": "offline-unclassified", "duplicate_of": None, "suggested_extraction": "deep_visual"} for v in group], "limitations": ["live=false"]}
         else:
             header = {"objective": request.objective, "document": {"source_id": bundle.source_id, "filename": bundle.filename}, "artifact_ids_in_order": [v["artifact_id"] for v in group], "other_document_catalog": context}
-            response = self.client.complete(phase=f"visual-classify-{bundle.source_id}-{index:04d}", instructions=VISUAL_CLASSIFICATION_INSTRUCTIONS, input_content=self._visual_content(root, group, header), schema=visual_classification_schema(), max_output_tokens=16_000, reasoning_effort="high", cache_key=f"agentic-subsurface:{VISUAL_CLASSIFICATION_PROMPT_VERSION}")
+            phase = f"visual-classify-{bundle.source_id}-{index:04d}"
+            try:
+                response = self.client.complete(phase=phase, instructions=VISUAL_CLASSIFICATION_INSTRUCTIONS, input_content=self._visual_content(root, group, header), schema=visual_classification_schema(), max_output_tokens=16_000, reasoning_effort="high", cache_key=f"agentic-subsurface:{VISUAL_CLASSIFICATION_PROMPT_VERSION}")
+            except BaseException as exc:
+                self._visual_event(root, 4, "batch_failed", f"Classification batch {index:04d} failed | {type(exc).__name__}: {exc}", batch_index=index, artifact_ids=artifact_ids, duration_seconds=round(time.perf_counter() - started, 3), error_type=type(exc).__name__, error=str(exc))
+                raise
         write_json(target, response)
+        returned = {item.get("artifact_id") for item in response.get("classifications", [])}
+        missing = [artifact_id for artifact_id in artifact_ids if artifact_id not in returned]
+        usage = self.client.latest_call_for_phase(phase) if request.config.live else None
+        usage_text = f" | input={usage['input_tokens']:,} output={usage['output_tokens']:,} cost=${usage['cost_usd']:.4f}" if usage else ""
+        self._visual_event(root, 4, "batch_completed", f"Completed classification batch {index:04d} in {time.perf_counter() - started:.1f}s | returned={len(returned)}/{len(group)} missing={len(missing)}{usage_text}", batch_index=index, artifact_ids=artifact_ids, returned_artifact_ids=sorted(x for x in returned if x), missing_artifact_ids=missing, duration_seconds=round(time.perf_counter() - started, 3), output_path=str(target), model_usage=usage)
         return response
 
     def _extract_visuals(self, request: DocumentRunRequest, root: Path, bundle: SourceBundle, context: list[dict[str, Any]], classifications: list[dict[str, Any]], resume: bool) -> list[ExtractionResult]:
         visual_by_id = {v["artifact_id"]: v for v in bundle.visual_assets}
         meaningful = [visual_by_id[x["artifact_id"]] for x in classifications if x.get("meaningful") and x["artifact_id"] in visual_by_id]
         jobs = [(group, f"batch-{index:04d}") for index, group in enumerate(_chunks(meaningful, request.config.visual_extraction_batch_size), 1)]
-        with ThreadPoolExecutor(max_workers=min(request.config.max_workers, max(1, len(jobs))), thread_name_prefix="loop1-visual") as executor:
-            groups = list(executor.map(lambda job: self._extract_visual_group(request, root, bundle, context, classifications, job[0], job[1], resume), jobs))
-        return [result for group in groups for result in group]
+        workers = min(request.config.max_workers, max(1, len(jobs)))
+        started = time.perf_counter()
+        progress_path = root / "stages" / "visual_extraction" / "progress.jsonl"
+        if not resume and progress_path.exists():
+            progress_path.unlink()
+        self._visual_event(root, 5, "stage_started", f"Starting extraction of {len(meaningful)} meaningful visuals in {len(jobs)} batches; workers={workers}", document_id=root.parent.parent.name, version_id=root.name, version_root=str(root), bundle_path=str(root / "bundle.json"), stage3_results_path=str(root / "stages" / "text" / "results"), classification_registry_path=str(root / "stages" / "visual_classification" / "registry.json"), source_id=bundle.source_id, source_sha256=bundle.sha256, filename=bundle.filename, classified_visuals=len(classifications), meaningful_visuals=len(meaningful), batch_count=len(jobs), workers=workers, batch_size=request.config.visual_extraction_batch_size, resume=resume)
+        groups: list[list[ExtractionResult] | None] = [None] * len(jobs)
+        completed = 0
+        try:
+            with ThreadPoolExecutor(max_workers=workers, thread_name_prefix="loop1-visual") as executor:
+                futures = {executor.submit(self._extract_visual_group, request, root, bundle, context, classifications, group, batch_id, resume): position for position, (group, batch_id) in enumerate(jobs)}
+                for future in as_completed(futures):
+                    position = futures[future]
+                    groups[position] = future.result()
+                    completed += 1
+                    elapsed = time.perf_counter() - started
+                    eta = elapsed / completed * (len(jobs) - completed) if completed else None
+                    self._visual_event(root, 5, "progress", f"Extraction batches {completed}/{len(jobs)} ({completed * 100 // max(1, len(jobs))}%) | leaf results={len(groups[position] or [])} | elapsed={elapsed:.1f}s | ETA={eta:.0f}s", completed=completed, total=len(jobs), leaf_results=len(groups[position] or []), elapsed_seconds=round(elapsed, 3), eta_seconds=round(eta, 3) if eta is not None else None)
+        except BaseException as exc:
+            elapsed = time.perf_counter() - started
+            self._visual_event(root, 5, "stage_failed", f"Extraction failed after {elapsed:.1f}s | completed={completed}/{len(jobs)} | {type(exc).__name__}: {exc}", completed=completed, total=len(jobs), duration_seconds=round(elapsed, 3), error_type=type(exc).__name__, error=str(exc))
+            raise
+        flattened = [result for group in groups if group is not None for result in group]
+        interpreted_ids = {item.get("artifact_id") for result in flattened for item in result.visual_interpretations if item.get("artifact_id")}
+        missing = [visual["artifact_id"] for visual in meaningful if visual["artifact_id"] not in interpreted_ids]
+        elapsed = time.perf_counter() - started
+        self._visual_event(root, 5, "stage_completed", f"Completed in {elapsed:.1f}s | meaningful={len(meaningful)} interpreted={len(interpreted_ids)} missing={len(missing)} evidence={sum(len(result.evidence_items) for result in flattened)}", duration_seconds=round(elapsed, 3), meaningful_visuals=len(meaningful), interpreted_visuals=len(interpreted_ids), missing_artifact_ids=missing, evidence_items=sum(len(result.evidence_items) for result in flattened), leaf_batches=len(flattened), cost_totals=self.client.ledger.get("totals", {}))
+        return flattened
 
     def _extract_visual_group(self, request: DocumentRunRequest, root: Path, bundle: SourceBundle, context: list[dict[str, Any]], classifications: list[dict[str, Any]], group: list[dict[str, Any]], batch_id: str, resume: bool) -> list[ExtractionResult]:
         target = root / "stages" / "visual_extraction" / f"{batch_id}.json"
+        artifact_ids = [visual["artifact_id"] for visual in group]
         if resume and target.exists():
+            self._visual_event(root, 5, "batch_reused", f"Reusing extraction {batch_id} | visuals={len(group)}", batch_id=batch_id, artifact_ids=artifact_ids, output_path=str(target))
             result = ExtractionResult.model_validate(read_json(target))
         elif not request.config.live:
+            started = time.perf_counter()
+            self._visual_event(root, 5, "batch_started", f"Started extraction {batch_id} | visuals={len(group)}", batch_id=batch_id, artifact_ids=artifact_ids)
             result = ExtractionResult(batch_id=f"visual-{batch_id}", summary="Offline visual extraction not run", limitations=["live=false"])
             write_json(target, result.model_dump(mode="json"))
+            self._visual_event(root, 5, "batch_completed", f"Completed offline extraction {batch_id} in {time.perf_counter() - started:.1f}s", batch_id=batch_id, artifact_ids=artifact_ids, duration_seconds=round(time.perf_counter() - started, 3), output_path=str(target), model_usage=None)
         else:
+            started = time.perf_counter()
+            self._visual_event(root, 5, "batch_started", f"Started extraction {batch_id} | visuals={len(group)}", batch_id=batch_id, artifact_ids=artifact_ids)
             header = {"objective": request.objective, "document": {"source_id": bundle.source_id, "filename": bundle.filename}, "required_artifact_ids": [v["artifact_id"] for v in group], "classifications": [x for x in classifications if x["artifact_id"] in {v["artifact_id"] for v in group}], "other_document_catalog": context}
+            phase = f"visual-extract-{bundle.source_id}-{batch_id}"
             try:
-                raw = self.client.complete(phase=f"visual-extract-{bundle.source_id}-{batch_id}", instructions=VISUAL_EXTRACTION_INSTRUCTIONS, input_content=self._visual_content(root, group, header), schema=extraction_schema(), max_output_tokens=request.config.max_output_tokens, reasoning_effort="high", cache_key=f"agentic-subsurface:{VISUAL_EXTRACTION_PROMPT_VERSION}")
+                raw = self.client.complete(phase=phase, instructions=VISUAL_EXTRACTION_INSTRUCTIONS, input_content=self._visual_content(root, group, header), schema=extraction_schema(), max_output_tokens=request.config.max_output_tokens, reasoning_effort="high", cache_key=f"agentic-subsurface:{VISUAL_EXTRACTION_PROMPT_VERSION}")
             except IncompleteResponse as exc:
                 if exc.reason != "max_output_tokens" or len(group) <= 1:
+                    self._visual_event(root, 5, "batch_failed", f"Extraction {batch_id} failed without splitting | IncompleteResponse: {exc.reason}", batch_id=batch_id, artifact_ids=artifact_ids, duration_seconds=round(time.perf_counter() - started, 3), error_type=type(exc).__name__, error=str(exc), split=False)
                     raise
                 midpoint = len(group) // 2
+                usage = self.client.latest_call_for_phase(phase)
+                self._visual_event(root, 5, "batch_split", f"Meta exhausted output tokens for extraction {batch_id}; splitting {len(group)} visuals -> {midpoint} + {len(group) - midpoint}", batch_id=batch_id, reason=exc.reason, artifact_ids=artifact_ids, child_batch_ids=[f"{batch_id}-a", f"{batch_id}-b"], child_sizes=[midpoint, len(group) - midpoint], model_usage=usage)
                 return self._extract_visual_group(request, root, bundle, context, classifications, group[:midpoint], f"{batch_id}-a", resume) + self._extract_visual_group(request, root, bundle, context, classifications, group[midpoint:], f"{batch_id}-b", resume)
+            except BaseException as exc:
+                self._visual_event(root, 5, "batch_failed", f"Extraction {batch_id} failed without splitting | {type(exc).__name__}: {exc}", batch_id=batch_id, artifact_ids=artifact_ids, duration_seconds=round(time.perf_counter() - started, 3), error_type=type(exc).__name__, error=str(exc), split=False)
+                raise
             raw["batch_id"] = f"visual-{batch_id}"
-            result = ExtractionResult.model_validate(raw)
+            try:
+                result = ExtractionResult.model_validate(raw)
+            except BaseException as exc:
+                self._visual_event(root, 5, "batch_failed", f"Extraction {batch_id} returned invalid structured output | {type(exc).__name__}: {exc}", batch_id=batch_id, artifact_ids=artifact_ids, duration_seconds=round(time.perf_counter() - started, 3), error_type=type(exc).__name__, error=str(exc), split=False)
+                raise
             write_json(target, result.model_dump(mode="json"))
+            interpreted_ids = {item.get("artifact_id") for item in result.visual_interpretations if item.get("artifact_id")}
+            missing = [artifact_id for artifact_id in artifact_ids if artifact_id not in interpreted_ids]
+            usage = self.client.latest_call_for_phase(phase)
+            usage_text = f" | input={usage['input_tokens']:,} output={usage['output_tokens']:,} cost=${usage['cost_usd']:.4f}" if usage else ""
+            self._visual_event(root, 5, "batch_completed", f"Completed extraction {batch_id} in {time.perf_counter() - started:.1f}s | interpreted={len(interpreted_ids)}/{len(group)} missing={len(missing)} evidence={len(result.evidence_items)}{usage_text}", batch_id=batch_id, artifact_ids=artifact_ids, interpreted_artifact_ids=sorted(interpreted_ids), missing_artifact_ids=missing, evidence_items=len(result.evidence_items), duration_seconds=round(time.perf_counter() - started, 3), output_path=str(target), model_usage=usage)
         return [result]
+
+    def _visual_event(self, root: Path, stage: int, event: str, message: str, **details: Any) -> None:
+        directory = "visual_classification" if stage == 4 else "visual_extraction"
+        record = {"timestamp": datetime.now(UTC).isoformat(), "stage": stage, "stage_name": STAGES[stage], "event": event, "message": message, **details}
+        target = root / "stages" / directory / "progress.jsonl"
+        with self._progress_lock:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            with target.open("a", encoding="utf-8") as handle:
+                handle.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
+            print(f"[stage {stage}] {message}", file=sys.stderr, flush=True)
 
     def _consolidate(self, request: DocumentRunRequest, root: Path, document_id: str, version_id: str, bundle: SourceBundle, batches: list[EvidenceBatch], results: list[ExtractionResult], classifications: list[dict[str, Any]]) -> dict[str, Any]:
         artifacts = {x.artifact_id: x for x in bundle.artifacts}

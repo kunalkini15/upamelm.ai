@@ -64,6 +64,21 @@ def test_stage3_incomplete_128k_response_falls_back_to_smaller_children(tmp_path
     assert completed == ["document-text-batch-a", "document-text-batch-b"]
 
 
+def test_stage3_emits_live_and_persistent_progress(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
+    processor, request, bundle, batch = _stage3_fixture(tmp_path)
+    root = tmp_path / "version"
+    monkeypatch.setattr(processor.client, "count_tokens", lambda instructions, payload, schema: 120_000)
+    monkeypatch.setattr(processor.client, "complete", lambda **kwargs: {"batch_id": "ignored", "summary": "ok"})
+    results = processor._extract_text(request, root, bundle, [batch], [], False)
+    assert len(results) == 1
+    captured = capsys.readouterr()
+    assert captured.out == ""
+    assert "[stage 3] Starting 1 initial evidence batches" in captured.err
+    assert "[stage 3] Completed in" in captured.err
+    records = [json.loads(line) for line in (root / "stages" / "text" / "progress.jsonl").read_text(encoding="utf-8").splitlines()]
+    assert [record["event"] for record in records] == ["stage_started", "batch_started", "batch_counted", "batch_completed", "initial_batch_finished", "stage_completed"]
+
+
 @pytest.mark.parametrize("error", [IncompleteResponse("length"), IncompleteResponse("content_filter"), json.JSONDecodeError("bad JSON", "x", 0)])
 def test_stage3_non_token_errors_do_not_split(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, error: Exception) -> None:
     processor, request, bundle, batch = _stage3_fixture(tmp_path)

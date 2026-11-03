@@ -4,9 +4,11 @@ import base64
 import json
 import os
 import shutil
+import sys
+import threading
 import time
 from collections import Counter
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Iterable
@@ -61,6 +63,7 @@ class DocumentLoop1Processor:
         self.config = config
         self.registry = AdapterRegistry(config.render_dpi)
         self.client = MuseClient(self.root, config, shared_ledger_path=self.root / "telemetry" / "cost_ledger.json")
+        self._progress_lock = threading.Lock()
 
     def process(self, request: DocumentRunRequest, resume: bool = True, start_step: int = 1, end_step: int = 8) -> dict[str, Any]:
         if not 1 <= start_step <= end_step <= 8:
@@ -265,31 +268,78 @@ class DocumentLoop1Processor:
     def _extract_text(self, request: DocumentRunRequest, root: Path, bundle: SourceBundle, batches: list[EvidenceBatch], context: list[dict[str, Any]], resume: bool) -> list[ExtractionResult]:
         # Initial 128K evidence batches run concurrently. A batch is reduced
         # only when Meta explicitly reports output-token exhaustion.
-        with ThreadPoolExecutor(max_workers=min(request.config.max_workers, max(1, len(batches))), thread_name_prefix="loop1-text") as executor:
-            groups = list(executor.map(lambda batch: self._extract_text_batch(request, root, bundle, batch, context, resume), batches))
-        return [result for group in groups for result in group]
+        workers = min(request.config.max_workers, max(1, len(batches)))
+        stage_started = time.perf_counter()
+        progress_path = root / "stages" / "text" / "progress.jsonl"
+        if not resume and progress_path.exists():
+            progress_path.unlink()
+        self._stage3_event(root, "stage_started", f"Starting {len(batches)} initial evidence batches; workers={workers} target={request.config.target_batch_tokens:,} tokens", initial_batches=len(batches), workers=workers, target_batch_tokens=request.config.target_batch_tokens, max_output_tokens=request.config.max_output_tokens, resume=resume)
+        groups: list[list[ExtractionResult] | None] = [None] * len(batches)
+        completed = 0
+        try:
+            with ThreadPoolExecutor(max_workers=workers, thread_name_prefix="loop1-text") as executor:
+                futures = {executor.submit(self._extract_text_batch, request, root, bundle, batch, context, resume): index for index, batch in enumerate(batches)}
+                for future in as_completed(futures):
+                    index = futures[future]
+                    groups[index] = future.result()
+                    completed += 1
+                    elapsed = time.perf_counter() - stage_started
+                    eta = elapsed / completed * (len(batches) - completed) if completed else None
+                    self._stage3_event(root, "initial_batch_finished", f"Initial batches {completed}/{len(batches)} ({completed * 100 // max(1, len(batches))}%) | leaf results={len(groups[index] or [])} | elapsed={elapsed:.1f}s | ETA={eta:.0f}s", completed=completed, total=len(batches), initial_batch_id=batches[index].batch_id, leaf_results=len(groups[index] or []), elapsed_seconds=round(elapsed, 3), eta_seconds=round(eta, 3) if eta is not None else None)
+        except BaseException as exc:
+            elapsed = time.perf_counter() - stage_started
+            self._stage3_event(root, "stage_failed", f"Failed after {elapsed:.1f}s | initial batches completed={completed}/{len(batches)} | {type(exc).__name__}: {exc}", duration_seconds=round(elapsed, 3), completed_initial_batches=completed, total_initial_batches=len(batches), error_type=type(exc).__name__, error=str(exc))
+            raise
+        flattened = [result for group in groups if group is not None for result in group]
+        elapsed = time.perf_counter() - stage_started
+        self._stage3_event(root, "stage_completed", f"Completed in {elapsed:.1f}s | initial batches={len(batches)} leaf batches={len(flattened)} evidence items={sum(len(result.evidence_items) for result in flattened)}", duration_seconds=round(elapsed, 3), initial_batches=len(batches), leaf_batches=len(flattened), evidence_items=sum(len(result.evidence_items) for result in flattened), cost_totals=self.client.ledger.get("totals", {}))
+        return flattened
 
     def _extract_text_batch(self, request: DocumentRunRequest, root: Path, bundle: SourceBundle, batch: EvidenceBatch, context: list[dict[str, Any]], resume: bool) -> list[ExtractionResult]:
         target = root / "stages" / "text" / "results" / f"{batch.batch_id}.json"
         if resume and target.exists():
+            self._stage3_event(root, "batch_reused", f"Reusing {batch.batch_id}", batch_id=batch.batch_id, estimated_tokens=batch.estimated_tokens, unit_count=len(batch.units))
             return [ExtractionResult.model_validate(read_json(target))]
+        batch_started = time.perf_counter()
+        self._stage3_event(root, "batch_started", f"Started {batch.batch_id} | estimated={batch.estimated_tokens:,} tokens units={len(batch.units)}", batch_id=batch.batch_id, estimated_tokens=batch.estimated_tokens, unit_count=len(batch.units))
         if not request.config.live:
             result = ExtractionResult(batch_id=batch.batch_id, summary="Offline deterministic materialization only", limitations=["live=false"])
         else:
             profile = {"source_id": bundle.source_id, "filename": bundle.filename, "media_type": bundle.media_type, "adapter": bundle.adapter, "capabilities": bundle.capabilities, "structured_assets": bundle.structured_assets, "spatial_assets": bundle.spatial_assets}
             payload = json.dumps({"objective": request.objective, "current_document": profile, "other_document_catalog": context, "batch_id": batch.batch_id}, ensure_ascii=False) + batch.model_text()
             schema = extraction_schema()
-            exact_input_tokens = self.client.count_tokens(EXTRACTION_INSTRUCTIONS, payload, schema)
+            phase = f"document-text-{batch.batch_id}"
             try:
-                raw = self.client.complete(phase=f"document-text-{batch.batch_id}", instructions=EXTRACTION_INSTRUCTIONS, input_content=payload, schema=schema, max_output_tokens=request.config.max_output_tokens, reasoning_effort="high", cache_key=f"agentic-subsurface:{EXTRACTION_PROMPT_VERSION}", counted_input_tokens=exact_input_tokens)
+                exact_input_tokens = self.client.count_tokens(EXTRACTION_INSTRUCTIONS, payload, schema)
+                self._stage3_event(root, "batch_counted", f"Counted {batch.batch_id} | exact request input={exact_input_tokens:,} tokens", batch_id=batch.batch_id, exact_input_tokens=exact_input_tokens)
+                raw = self.client.complete(phase=phase, instructions=EXTRACTION_INSTRUCTIONS, input_content=payload, schema=schema, max_output_tokens=request.config.max_output_tokens, reasoning_effort="high", cache_key=f"agentic-subsurface:{EXTRACTION_PROMPT_VERSION}", counted_input_tokens=exact_input_tokens)
+                raw["batch_id"] = batch.batch_id
+                result = ExtractionResult.model_validate(raw)
             except IncompleteResponse as exc:
                 if exc.reason != "max_output_tokens":
+                    self._stage3_event(root, "batch_failed", f"Failed {batch.batch_id} without splitting | IncompleteResponse: {exc.reason}", batch_id=batch.batch_id, error_type=type(exc).__name__, error=str(exc), split=False, duration_seconds=round(time.perf_counter() - batch_started, 3))
                     raise
-                return [x for child in self._split_batch(batch) for x in self._extract_text_batch(request, root, bundle, child, context, resume)]
-            raw["batch_id"] = batch.batch_id
-            result = ExtractionResult.model_validate(raw)
+                children = self._split_batch(batch)
+                usage = self.client.latest_call_for_phase(phase)
+                self._stage3_event(root, "batch_split", f"Meta exhausted output tokens for {batch.batch_id}; splitting {batch.estimated_tokens:,} -> " + " + ".join(f"{child.estimated_tokens:,}" for child in children), batch_id=batch.batch_id, reason=exc.reason, parent_estimated_tokens=batch.estimated_tokens, child_batch_ids=[child.batch_id for child in children], child_estimated_tokens=[child.estimated_tokens for child in children], model_usage=usage)
+                return [x for child in children for x in self._extract_text_batch(request, root, bundle, child, context, resume)]
+            except BaseException as exc:
+                self._stage3_event(root, "batch_failed", f"Failed {batch.batch_id} without splitting | {type(exc).__name__}: {exc}", batch_id=batch.batch_id, error_type=type(exc).__name__, error=str(exc), split=False, duration_seconds=round(time.perf_counter() - batch_started, 3))
+                raise
         write_json(target, result.model_dump(mode="json"))
+        usage = self.client.latest_call_for_phase(phase) if request.config.live else None
+        usage_text = f" | input={usage['input_tokens']:,} output={usage['output_tokens']:,} cost=${usage['cost_usd']:.4f}" if usage else ""
+        self._stage3_event(root, "batch_completed", f"Completed {batch.batch_id} in {time.perf_counter() - batch_started:.1f}s | evidence={len(result.evidence_items)} entities={len(result.entities)}{usage_text}", batch_id=batch.batch_id, duration_seconds=round(time.perf_counter() - batch_started, 3), evidence_items=len(result.evidence_items), entities=len(result.entities), output_path=str(target), model_usage=usage)
         return [result]
+
+    def _stage3_event(self, root: Path, event: str, message: str, **details: Any) -> None:
+        record = {"timestamp": datetime.now(UTC).isoformat(), "stage": 3, "event": event, "message": message, **details}
+        target = root / "stages" / "text" / "progress.jsonl"
+        with self._progress_lock:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            with target.open("a", encoding="utf-8") as handle:
+                handle.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
+            print(f"[stage 3] {message}", file=sys.stderr, flush=True)
 
     def _split_batch(self, batch: EvidenceBatch) -> list[EvidenceBatch]:
         if len(batch.units) == 1:

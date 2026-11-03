@@ -78,6 +78,10 @@ class MuseClient:
             totals["cost_usd"] = round(float(totals["cost_usd"]) + record["cost_usd"], 8)
             write_json(self.ledger_path, self.ledger)
 
+    def latest_call_for_phase(self, phase: str) -> dict[str, Any] | None:
+        with self._ledger_lock:
+            return next((dict(record) for record in reversed(self.ledger["calls"]) if record.get("phase") == phase), None)
+
     def count_tokens(self, instructions: str, input_content: Any, schema: dict[str, Any] | None = None) -> int:
         # Meta's documented counter accepts the request input itself. Count the
         # stable instructions as a leading text part so the result remains a

@@ -63,6 +63,21 @@ def test_pdf_parallel_and_sequential_bundles_are_identical(tmp_path: Path) -> No
     plan = json.loads(next((tmp_path / "parallel").glob("stages/materialization/plan.json")).read_text())
     assert plan["selected_workers"] == 2
     assert plan["selected_backend"] == "process"
+    summary = json.loads((tmp_path / "parallel" / "stages" / "materialization" / "summary.json").read_text())
+    assert summary["bytes_written_by_workers"] > 0
+
+
+def test_materialization_emits_progress_without_polluting_result_files(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    source = tmp_path / "progress.pdf"
+    document = pymupdf.open()
+    document.new_page().insert_text((60, 70), "Progress")
+    document.save(source)
+    document.close()
+    _bundle(source, tmp_path / "run", 1, 1, "sequential")
+    captured = capsys.readouterr()
+    assert captured.out == ""
+    assert "[stage 2] Found 1 pdf_page_range" in captured.err
+    assert "[stage 2] Completed in" in captured.err
 
 
 def test_csv_parallel_and_sequential_bundles_are_identical(tmp_path: Path) -> None:

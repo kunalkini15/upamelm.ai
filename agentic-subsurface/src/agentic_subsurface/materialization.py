@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import math
 import os
+import sys
 import time
 import traceback
 from concurrent.futures import FIRST_COMPLETED, ProcessPoolExecutor, ThreadPoolExecutor, wait
@@ -57,6 +58,21 @@ def execute_materialization_unit(adapter: Any, source: str, root: str, source_id
     unit = MaterializationWorkUnit.model_validate(unit_data)
     started = time.perf_counter()
     output = adapter.process_work_unit(Path(source), Path(root), source_id, unit)
+    written_paths: set[Path] = set()
+
+    def collect_paths(value: Any, key: str | None = None) -> None:
+        if isinstance(value, dict):
+            for child_key, child in value.items():
+                collect_paths(child, child_key)
+        elif isinstance(value, list):
+            for child in value:
+                collect_paths(child, key)
+        elif isinstance(value, str) and key in {"path", "text_path", "source_path"}:
+            candidate = Path(root) / value
+            if candidate.is_file():
+                written_paths.add(candidate)
+
+    collect_paths(output)
     result = MaterializationWorkResult(
         work_unit_id=unit.work_unit_id,
         ordinal=unit.ordinal,
@@ -64,7 +80,7 @@ def execute_materialization_unit(adapter: Any, source: str, root: str, source_id
         output=output,
         counts={key: len(value) for key, value in output.items() if isinstance(value, list)},
         bytes_read=unit.estimated_bytes,
-        bytes_written=sum(int(item.get("size_bytes", 0)) for item in output.get("written_files", []) if isinstance(item, dict)),
+        bytes_written=sum(path.stat().st_size for path in written_paths),
     )
     return result.model_dump(mode="json")
 
@@ -78,12 +94,18 @@ class MaterializationScheduler:
     def run(self, adapter: Any, source: Path, root: Path, source_id: str, resume: bool = True) -> SourceBundle:
         stage_root = root / "stages" / "materialization"
         stage_root.mkdir(parents=True, exist_ok=True)
+        self._log(f"[stage 2] Discovering native units in {source.name}...")
         discovery_started = time.perf_counter()
         plan = adapter.discover(source, root, source_id, self.config)
         plan = self._select_execution(plan)
         discovery_duration = time.perf_counter() - discovery_started
         write_json(stage_root / "plan.json", plan.model_dump(mode="json", exclude={"work_units"}))
         write_json(stage_root / "work_units.json", [unit.model_dump(mode="json") for unit in plan.work_units])
+        self._log(
+            f"[stage 2] Found {plan.total_native_units} {plan.work_unit_kind}; "
+            f"backend={plan.selected_backend} workers={plan.selected_workers} "
+            f"chunk_size={plan.chunk_size} work_units={len(plan.work_units)}"
+        )
 
         execution_started = time.perf_counter()
         reused_before_execution = sum((stage_root / "results" / f"{unit.work_unit_id}.json").exists() for unit in plan.work_units) if resume else 0
@@ -91,6 +113,7 @@ class MaterializationScheduler:
         execution_duration = time.perf_counter() - execution_started
         merge_started = time.perf_counter()
         ordered = sorted(results, key=lambda result: result.ordinal)
+        self._log(f"[stage 2] Merging {len(ordered)} work-unit results...")
         bundle = adapter.merge_work_results(source, root, source_id, plan, ordered)
         merge_duration = time.perf_counter() - merge_started
         write_json(stage_root / "merge_report.json", {
@@ -100,6 +123,8 @@ class MaterializationScheduler:
             "ordinals": [result.ordinal for result in ordered],
             "bundle_counts": {"artifacts": len(bundle.artifacts), "units": len(bundle.units), "structured_assets": len(bundle.structured_assets), "visual_assets": len(bundle.visual_assets), "spatial_assets": len(bundle.spatial_assets)},
         })
+        total_duration = discovery_duration + execution_duration + merge_duration
+        bytes_written = sum(result.bytes_written for result in ordered)
         write_json(stage_root / "summary.json", {
             "status": "completed",
             "adapter": plan.adapter,
@@ -110,9 +135,14 @@ class MaterializationScheduler:
             "work_units": len(plan.work_units),
             "reused_work_units": reused_before_execution,
             "bytes_read_estimate": sum(result.bytes_read for result in ordered),
-            "bytes_written_by_workers": sum(result.bytes_written for result in ordered),
-            "durations": {"discovery_seconds": discovery_duration, "execution_seconds": execution_duration, "merge_seconds": merge_duration, "total_seconds": discovery_duration + execution_duration + merge_duration},
+            "bytes_written_by_workers": bytes_written,
+            "durations": {"discovery_seconds": discovery_duration, "execution_seconds": execution_duration, "merge_seconds": merge_duration, "total_seconds": total_duration},
         })
+        self._log(
+            f"[stage 2] Completed in {total_duration:.1f}s | artifacts={len(bundle.artifacts)} "
+            f"visuals={len(bundle.visual_assets)} tables={len(bundle.structured_assets)} "
+            f"written={bytes_written / (1024 * 1024):.1f} MiB"
+        )
         return bundle
 
     def _select_execution(self, plan: MaterializationPlan) -> MaterializationPlan:
@@ -132,8 +162,7 @@ class MaterializationScheduler:
             configured = self.config.materialization_workers or 1
             cpu_limit = configured
         else:
-            physical = psutil.cpu_count(logical=False) or logical_cpu_limit
-            cpu_limit = physical if backend == "process" else logical_cpu_limit
+            cpu_limit = adaptive_worker_capacity(backend)
             configured = self.config.materialization_workers or cpu_limit
         workers = min(configured, cpu_limit, memory_limit, len(plan.work_units))
         if backend == "sequential" or workers <= 1:
@@ -156,7 +185,10 @@ class MaterializationScheduler:
 
     def _under_pressure(self, sample: dict[str, Any]) -> bool:
         limit = self.config.materialization_pressure_limit_pct
-        return sample["cpu_percent"] >= limit or sample["memory_percent"] >= limit or (sample["disk_busy_percent"] is not None and sample["disk_busy_percent"] >= limit)
+        # High CPU is expected for process-backed extraction and is not alone a
+        # reason to starve the pool. Memory and sustained I/O pressure are the
+        # signals that can make concurrent materialization unsafe.
+        return sample["memory_percent"] >= limit or (sample["disk_busy_percent"] is not None and sample["disk_busy_percent"] >= limit)
 
     def _execute(self, adapter: Any, source: Path, root: Path, source_id: str, plan: MaterializationPlan, stage_root: Path, resume: bool) -> list[MaterializationWorkResult]:
         results_root = stage_root / "results"
@@ -174,6 +206,32 @@ class MaterializationScheduler:
                 except Exception:
                     pass
             pending.append(unit)
+        total_units = len(plan.work_units)
+        native_done = sum(max(1, (unit.end or 0) - (unit.start or 0)) for unit in plan.work_units if unit.work_unit_id in completed)
+        execution_started = time.perf_counter()
+        last_log = 0.0
+        last_percent = -1
+
+        def report(force: bool = False) -> None:
+            nonlocal last_log, last_percent
+            now = time.perf_counter()
+            done = len(completed)
+            percent = int(done * 100 / max(1, total_units))
+            if not force and now - last_log < 2.0 and percent < last_percent + 10:
+                return
+            elapsed = now - execution_started
+            eta = (elapsed / done * (total_units - done)) if done else None
+            eta_text = f"{eta:.0f}s" if eta is not None else "calculating"
+            self._log(
+                f"[stage 2] {done}/{total_units} work units ({percent}%) | "
+                f"native units {native_done}/{plan.total_native_units} | "
+                f"elapsed {elapsed:.1f}s | ETA {eta_text}"
+            )
+            last_log, last_percent = now, percent
+
+        if completed:
+            self._log(f"[stage 2] Reusing {len(completed)}/{total_units} completed work units")
+            report(force=True)
         if not pending:
             return [completed[unit.work_unit_id] for unit in plan.work_units]
 
@@ -186,6 +244,8 @@ class MaterializationScheduler:
                 result = self._execute_one(adapter, source, root, source_id, unit, failures_root)
                 write_json(results_root / f"{unit.work_unit_id}.json", result.model_dump(mode="json"))
                 completed[unit.work_unit_id] = result
+                native_done += max(1, (unit.end or 0) - (unit.start or 0))
+                report()
         else:
             executor_type = ProcessPoolExecutor if plan.selected_backend == "process" else ThreadPoolExecutor
             with executor_type(max_workers=plan.selected_workers) as executor:
@@ -215,6 +275,9 @@ class MaterializationScheduler:
                             raise
                         write_json(results_root / f"{unit.work_unit_id}.json", result.model_dump(mode="json"))
                         completed[unit.work_unit_id] = result
+                        native_done += max(1, (unit.end or 0) - (unit.start or 0))
+                        report()
+        report(force=True)
         return [completed[unit.work_unit_id] for unit in plan.work_units]
 
     def _execute_one(self, adapter: Any, source: Path, root: Path, source_id: str, unit: MaterializationWorkUnit, failures_root: Path) -> MaterializationWorkResult:
@@ -234,11 +297,28 @@ class MaterializationScheduler:
         with path.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(value, ensure_ascii=False, default=str) + "\n")
 
+    @staticmethod
+    def _log(message: str) -> None:
+        print(message, file=sys.stderr, flush=True)
+
+
+def adaptive_worker_capacity(backend: str) -> int:
+    """Return a host-derived capacity without encoding document-size constants."""
+    logical = max(1, os.cpu_count() or 1)
+    if backend != "process":
+        return logical
+    physical = max(1, psutil.cpu_count(logical=False) or logical)
+    # Native PDF/image libraries also use memory bandwidth and filesystem I/O.
+    # Reserve roughly one third of physical cores to prevent oversubscription;
+    # manual mode remains available for dedicated batch hosts.
+    return max(1, math.ceil(physical * 2 / 3))
+
 
 def adaptive_chunk_size(total_units: int, worker_limit: int, explicit: int | None) -> int:
     if explicit:
         return explicit
     if total_units <= 0:
         return 1
-    # Keep several independently schedulable tasks per worker for work stealing.
-    return max(1, math.ceil(total_units / max(1, worker_limit * 4)))
+    # Keep enough independently schedulable tasks to balance heterogeneous
+    # pages/records. Native units often vary far more than their byte size.
+    return max(1, math.ceil(total_units / max(1, worker_limit * 8)))

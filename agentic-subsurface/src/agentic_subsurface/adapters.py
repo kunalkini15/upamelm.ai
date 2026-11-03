@@ -13,12 +13,12 @@ from typing import Any
 from xml.etree import ElementTree as ET
 
 from .models import Artifact, ContentUnit, SourceBundle, SourceLocator
-from .materialization import MaterializationPlan, MaterializationScheduler, MaterializationWorkResult, MaterializationWorkUnit, adaptive_chunk_size
+from .materialization import MaterializationPlan, MaterializationScheduler, MaterializationWorkResult, MaterializationWorkUnit, adaptive_chunk_size, adaptive_worker_capacity
 from .util import media_type, read_json, relative, sha256_file, stable_id, write_json
 
 
 def _range_work_units(total: int, kind: str, path: Path, config: Any, memory_mb: int = 64) -> tuple[int, list[MaterializationWorkUnit]]:
-    worker_limit = config.materialization_workers or (os.cpu_count() or 1)
+    worker_limit = config.materialization_workers or adaptive_worker_capacity("process")
     chunk_size = adaptive_chunk_size(total, worker_limit, config.materialization_chunk_size)
     units = []
     for ordinal, start in enumerate(range(0, total, chunk_size), 1):
@@ -477,7 +477,7 @@ class PDFAdapter(SourceAdapter):
         import pymupdf
         with pymupdf.open(path) as document:
             page_count = document.page_count
-        worker_limit = config.materialization_workers or (os.cpu_count() or 1)
+        worker_limit = config.materialization_workers or adaptive_worker_capacity("process")
         chunk_size = adaptive_chunk_size(page_count, worker_limit, config.materialization_chunk_size)
         units = []
         for ordinal, start in enumerate(range(0, page_count, chunk_size), 1):
@@ -500,7 +500,9 @@ class PDFAdapter(SourceAdapter):
                 page = document[zero_index]
                 text = page.get_text("text") or ""
                 blocks = page.get_text("blocks") or []
-                drawings = page.get_drawings()
+                # Compact drawings are materially faster to enumerate and are
+                # sufficient because downstream logic only needs their count.
+                drawings = page.get_cdrawings()
                 images = page.get_images(full=True)
                 text_path = text_root / f"page_{index:04d}.txt"
                 text_path.parent.mkdir(parents=True, exist_ok=True)
@@ -511,11 +513,19 @@ class PDFAdapter(SourceAdapter):
                 structured_assets: list[dict[str, Any]] = []
                 visual_assets: list[dict[str, Any]] = []
                 diagnostics: list[dict[str, Any]] = []
-                try:
-                    found_tables = page.find_tables().tables
-                except Exception as exc:
+                # PyMuPDF's default table strategy is line-based. Avoid its
+                # expensive intersection analysis only when the display list
+                # cannot contain the four geometric boundaries of even one
+                # cell. Rectangles contribute four boundaries.
+                boundary_count = sum(4 if item[0] in {"re", "qu"} else 1 if item[0] == "l" else 0 for drawing in drawings for item in drawing.get("items", []))
+                if boundary_count >= 4:
+                    try:
+                        found_tables = page.find_tables().tables
+                    except Exception as exc:
+                        found_tables = []
+                        diagnostics.append({"level": "warning", "code": "pdf_table_detection_failed", "page": index, "message": str(exc)})
+                else:
                     found_tables = []
-                    diagnostics.append({"level": "warning", "code": "pdf_table_detection_failed", "page": index, "message": str(exc)})
                 page_aid = f"{source_id}:page:{index}"
                 for table_index, table in enumerate(found_tables, 1):
                     rows = table.extract()

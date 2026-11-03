@@ -100,6 +100,42 @@ def test_kml_parallel_and_sequential_bundles_are_identical(tmp_path: Path) -> No
     assert _bundle(source, tmp_path / "one", 1, 2, "sequential") == _bundle(source, tmp_path / "many", 3, 4, "process")
 
 
+def test_kml_preserves_recursive_geometry_metadata_and_namespace_variants(tmp_path: Path) -> None:
+    source = tmp_path / "generic.kml"
+    source.write_text("""<kml xmlns="http://earth.google.com/kml/2.1" xmlns:gx="http://www.google.com/kml/ext/2.2"><Document>
+      <Placemark id="multi"><name>Network</name><styleUrl>#water</styleUrl><ExtendedData>
+        <Data name="diameter"><displayName>Pipe diameter</displayName><value>300</value></Data>
+        <SchemaData><SimpleData name="material">DI</SimpleData></SchemaData>
+      </ExtendedData><MultiGeometry>
+        <LineString><coordinates>77,12,5 78,13,6</coordinates></LineString>
+        <LinearRing><coordinates>77,12 78,12 78,13 77,13</coordinates></LinearRing>
+      </MultiGeometry></Placemark>
+      <Placemark id="polygon"><Polygon>
+        <outerBoundaryIs><LinearRing><coordinates>0,0 4,0 4,4 0,0</coordinates></LinearRing></outerBoundaryIs>
+        <innerBoundaryIs><LinearRing><coordinates>1,1 2,1 1,2 1,1</coordinates></LinearRing></innerBoundaryIs>
+      </Polygon></Placemark>
+      <Placemark id="track"><gx:Track><gx:coord>77 12 10</gx:coord><gx:coord>78 13 11</gx:coord></gx:Track></Placemark>
+    </Document></kml>""", encoding="utf-8")
+    root = tmp_path / "run"
+    bundle = _bundle(source, root, 2, 1, "process")
+    feature_artifact = next(item for item in bundle["artifacts"] if item["kind"] == "vector_features")
+    collection = json.loads((root / feature_artifact["path"]).read_text())
+    by_id = {feature["id"]: feature for feature in collection["features"]}
+    multi = by_id["multi"]
+    assert multi["geometry"]["type"] == "GeometryCollection"
+    assert [item["type"] for item in multi["geometry"]["geometries"]] == ["LineString", "LineString"]
+    assert multi["geometry"]["geometries"][0]["coordinates"][0] == [77.0, 12.0, 5.0]
+    assert multi["geometry"]["geometries"][1]["coordinates"][0] == multi["geometry"]["geometries"][1]["coordinates"][-1]
+    assert multi["properties"]["styleUrl"] == "#water"
+    assert multi["properties"]["extended_data"] == {"diameter": "300", "material": "DI"}
+    assert multi["properties"]["extended_data_display_names"] == {"diameter": "Pipe diameter"}
+    assert by_id["polygon"]["geometry"]["type"] == "Polygon"
+    assert len(by_id["polygon"]["geometry"]["coordinates"]) == 2
+    assert by_id["track"]["geometry"] == {"type": "LineString", "coordinates": [[77.0, 12.0, 10.0], [78.0, 13.0, 11.0]]}
+    counts = bundle["spatial_assets"][0]["geometry_component_type_counts"]
+    assert counts == {"GeometryCollection": 1, "LineString": 3, "Polygon": 1}
+
+
 def test_excel_parallel_and_sequential_bundles_are_identical(tmp_path: Path) -> None:
     source = tmp_path / "sheets.xlsx"
     workbook = Workbook()

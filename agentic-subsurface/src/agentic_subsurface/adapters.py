@@ -317,6 +317,160 @@ class ExcelAdapter(SourceAdapter):
         return bundle
 
 
+def _xml_local_name(element: ET.Element) -> str:
+    return element.tag.rsplit("}", 1)[-1]
+
+
+def _xml_children(element: ET.Element, name: str) -> list[ET.Element]:
+    return [child for child in element if _xml_local_name(child) == name]
+
+
+def _xml_first_text(element: ET.Element, name: str) -> str:
+    child = next((item for item in element if _xml_local_name(item) == name), None)
+    return (child.text or "").strip() if child is not None else ""
+
+
+def _kml_coordinates(text: str | None, comma_separated: bool = True) -> list[list[float]]:
+    coordinates: list[list[float]] = []
+    if not text:
+        return coordinates
+    values = text.split()
+    for value in values:
+        parts = value.split(",") if comma_separated else value.split()
+        try:
+            coordinate = [float(part) for part in parts if part != ""]
+        except ValueError:
+            continue
+        if len(coordinate) >= 2:
+            coordinates.append(coordinate)
+    return coordinates
+
+
+def _kml_geometry(element: ET.Element) -> tuple[dict[str, Any] | None, list[str]]:
+    """Convert one KML geometry recursively without assuming a namespace."""
+    kind = _xml_local_name(element)
+    if kind in {"Point", "LineString", "LinearRing"}:
+        coordinate_element = next((child for child in element.iter() if _xml_local_name(child) == "coordinates"), None)
+        coordinates = _kml_coordinates(coordinate_element.text if coordinate_element is not None else None)
+        if not coordinates:
+            return None, [kind]
+        if kind == "Point":
+            return {"type": "Point", "coordinates": coordinates[0]}, [kind]
+        # GeoJSON has no standalone LinearRing. Preserve it as a closed
+        # LineString and retain the source KML type in feature properties.
+        if kind == "LinearRing" and coordinates[0] != coordinates[-1]:
+            coordinates.append(list(coordinates[0]))
+        return {"type": "LineString", "coordinates": coordinates}, [kind]
+    if kind == "Polygon":
+        rings: list[list[list[float]]] = []
+        source_types = [kind]
+        for boundary_name in ("outerBoundaryIs", "innerBoundaryIs"):
+            for boundary in _xml_children(element, boundary_name):
+                ring = next((child for child in boundary.iter() if _xml_local_name(child) == "LinearRing"), None)
+                if ring is None:
+                    continue
+                geometry, types = _kml_geometry(ring)
+                source_types.extend(types)
+                if geometry and geometry["coordinates"]:
+                    rings.append(geometry["coordinates"])
+        return ({"type": "Polygon", "coordinates": rings} if rings else None), source_types
+    if kind == "MultiGeometry":
+        geometries: list[dict[str, Any]] = []
+        source_types = [kind]
+        for child in element:
+            if _xml_local_name(child) not in {"Point", "LineString", "LinearRing", "Polygon", "MultiGeometry", "Track", "MultiTrack"}:
+                continue
+            geometry, types = _kml_geometry(child)
+            source_types.extend(types)
+            if geometry:
+                geometries.append(geometry)
+        return ({"type": "GeometryCollection", "geometries": geometries} if geometries else None), source_types
+    if kind == "Track":
+        coordinates = []
+        for child in element.iter():
+            if _xml_local_name(child) != "coord" or not child.text:
+                continue
+            try:
+                coordinate = [float(part) for part in child.text.split()]
+            except ValueError:
+                continue
+            if len(coordinate) >= 2:
+                coordinates.append(coordinate)
+        return ({"type": "LineString", "coordinates": coordinates} if coordinates else None), [kind]
+    if kind == "MultiTrack":
+        lines: list[list[list[float]]] = []
+        source_types = [kind]
+        for track in element:
+            if _xml_local_name(track) != "Track":
+                continue
+            geometry, types = _kml_geometry(track)
+            source_types.extend(types)
+            if geometry:
+                lines.append(geometry["coordinates"])
+        return ({"type": "MultiLineString", "coordinates": lines} if lines else None), source_types
+    return None, []
+
+
+def _kml_placemark_feature(placemark: ET.Element, ordinal: int) -> dict[str, Any]:
+    properties: dict[str, Any] = {}
+    for name in ("name", "description", "styleUrl", "address", "phoneNumber", "visibility", "open", "Snippet"):
+        value = _xml_first_text(placemark, name)
+        if value != "":
+            properties[name] = value
+    if placemark.attrib:
+        properties["kml_attributes"] = dict(placemark.attrib)
+    extended: dict[str, Any] = {}
+    display_names: dict[str, str] = {}
+    for item in placemark.iter():
+        kind = _xml_local_name(item)
+        if kind == "Data":
+            key = item.attrib.get("name")
+            if not key:
+                continue
+            value = next((child.text for child in item if _xml_local_name(child) == "value"), None)
+            display = next((child.text for child in item if _xml_local_name(child) == "displayName"), None)
+            extended[key] = value
+            if display:
+                display_names[key] = display
+        elif kind == "SimpleData" and item.attrib.get("name"):
+            extended[item.attrib["name"]] = item.text
+    if extended:
+        properties["extended_data"] = extended
+    if display_names:
+        properties["extended_data_display_names"] = display_names
+    for temporal in placemark:
+        kind = _xml_local_name(temporal)
+        if kind in {"TimeStamp", "TimeSpan"}:
+            properties[kind] = {_xml_local_name(child): (child.text or "").strip() for child in temporal}
+
+    geometries: list[dict[str, Any]] = []
+    source_types: list[str] = []
+    geometry_names = {"Point", "LineString", "LinearRing", "Polygon", "MultiGeometry", "Track", "MultiTrack"}
+    for child in placemark:
+        if _xml_local_name(child) not in geometry_names:
+            continue
+        geometry, types = _kml_geometry(child)
+        source_types.extend(types)
+        if geometry:
+            geometries.append(geometry)
+    geometry = geometries[0] if len(geometries) == 1 else {"type": "GeometryCollection", "geometries": geometries} if geometries else None
+    if source_types:
+        properties["kml_geometry_types"] = source_types
+    feature_id = placemark.attrib.get("id") or f"placemark-{ordinal}"
+    return {"type": "Feature", "id": feature_id, "properties": properties, "geometry": geometry}
+
+
+def _geojson_component_counts(geometry: dict[str, Any] | None, counts: Counter[str]) -> None:
+    if not geometry:
+        counts["None"] += 1
+        return
+    kind = str(geometry.get("type"))
+    counts[kind] += 1
+    if kind == "GeometryCollection":
+        for child in geometry.get("geometries", []):
+            _geojson_component_counts(child, counts)
+
+
 class KMLAdapter(SourceAdapter):
     suffixes = {".kml", ".kmz"}
 
@@ -331,10 +485,9 @@ class KMLAdapter(SourceAdapter):
 
     def discover(self, path: Path, root: Path, source_id: str, config: Any) -> MaterializationPlan:
         xml_root = ET.fromstring(self._raw_kml(path))
-        ns = {"k": "http://www.opengis.net/kml/2.2"}
-        total = len(xml_root.findall(".//k:Placemark", ns))
+        placemarks = [element for element in xml_root.iter() if _xml_local_name(element) == "Placemark"]
+        total = len(placemarks)
         chunk_size, units = _range_work_units(max(1, total), "kml-placemarks", path, config, 128)
-        placemarks = xml_root.findall(".//k:Placemark", ns)
         for unit in units:
             unit.payload["empty"] = total == 0
             serialized = [ET.tostring(item, encoding="unicode") for item in placemarks[unit.start or 0:unit.end]]
@@ -344,24 +497,9 @@ class KMLAdapter(SourceAdapter):
     def process_work_unit(self, path: Path, root: Path, source_id: str, unit: MaterializationWorkUnit) -> dict[str, Any]:
         if unit.payload.get("empty"):
             return {"features": []}
-        ns = {"k": "http://www.opengis.net/kml/2.2"}
         serialized = read_json(root / unit.payload["chunk_path"])["placemarks"]
         placemarks = [ET.fromstring(item) for item in serialized]
-        features = []
-        for offset, placemark in enumerate(placemarks, unit.start or 0):
-            name = placemark.findtext("k:name", default="", namespaces=ns)
-            description = placemark.findtext("k:description", default="", namespaces=ns)
-            geometry = None
-            for tag, geo_type in (("Point", "Point"), ("LineString", "LineString"), ("Polygon", "Polygon")):
-                element = placemark.find(f".//k:{tag}/k:coordinates", ns)
-                if element is not None and element.text:
-                    tuples = [[float(v) for v in item.split(",")[:2]] for item in element.text.split() if "," in item]
-                    coordinates: Any = tuples[0] if geo_type == "Point" and tuples else tuples
-                    if geo_type == "Polygon": coordinates = [tuples]
-                    geometry = {"type": geo_type, "coordinates": coordinates}
-                    break
-            feature_id = placemark.attrib.get("id") or f"placemark-{offset + 1}"
-            features.append({"type": "Feature", "id": feature_id, "properties": {"name": name, "description": description}, "geometry": geometry})
+        features = [_kml_placemark_feature(placemark, offset + 1) for offset, placemark in enumerate(placemarks, unit.start or 0)]
         return {"features": features}
 
     def merge_work_results(self, path: Path, root: Path, source_id: str, plan: MaterializationPlan, results: list[MaterializationWorkResult]) -> SourceBundle:
@@ -373,12 +511,15 @@ class KMLAdapter(SourceAdapter):
         aid = f"{source_id}:features"
         bundle.artifacts.append(Artifact(artifact_id=aid, parent_artifact_id=bundle.artifacts[0].artifact_id, kind="vector_features", media_type="application/geo+json", path=relative(target, root), sha256=sha256_file(target), metadata={"feature_count": len(features)}))
         geometry_counts = dict(Counter(str((f.get("geometry") or {}).get("type")) for f in features))
-        bundle.spatial_assets.append({"asset_id": aid, "kind": "vector_features", "feature_count": len(features), "geometry_type_counts": geometry_counts, "path": relative(target, root)})
+        component_counts: Counter[str] = Counter()
+        for feature in features:
+            _geojson_component_counts(feature.get("geometry"), component_counts)
+        bundle.spatial_assets.append({"asset_id": aid, "kind": "vector_features", "feature_count": len(features), "geometry_type_counts": geometry_counts, "geometry_component_type_counts": dict(component_counts), "path": relative(target, root)})
         sample_size = min(100, len(features))
         stride = max(1, len(features) // max(1, sample_size))
         sampled = features[::stride][:sample_size]
         profile_uid = f"{source_id}:collection-profile"
-        profile = {"asset_id": aid, "feature_count": len(features), "geometry_type_counts": geometry_counts, "sample_features": [{"id": f["id"], "properties": f["properties"], "geometry_type": (f.get("geometry") or {}).get("type")} for f in sampled]}
+        profile = {"asset_id": aid, "feature_count": len(features), "geometry_type_counts": geometry_counts, "geometry_component_type_counts": dict(component_counts), "sample_features": [{"id": f["id"], "properties": f["properties"], "geometry_type": (f.get("geometry") or {}).get("type")} for f in sampled]}
         bundle.units.append(ContentUnit(unit_id=profile_uid, artifact_id=aid, kind="vector_collection_profile", sequence=1, text=json.dumps(profile, ensure_ascii=False), locator=SourceLocator(kind="file", artifact_id=aid, unit_id=profile_uid)))
         bundle.capabilities = ["read_geometry", "read_records", "query_records", "render_preview"]
         return bundle
@@ -394,28 +535,18 @@ class KMLAdapter(SourceAdapter):
         else:
             raw = path.read_bytes()
         xml_root = ET.fromstring(raw)
-        ns = {"k": "http://www.opengis.net/kml/2.2"}
-        features: list[dict[str, Any]] = []
-        for idx, placemark in enumerate(xml_root.findall(".//k:Placemark", ns), 1):
-            name = placemark.findtext("k:name", default="", namespaces=ns)
-            description = placemark.findtext("k:description", default="", namespaces=ns)
-            geometry = None
-            for tag, geo_type in (("Point", "Point"), ("LineString", "LineString"), ("Polygon", "Polygon")):
-                element = placemark.find(f".//k:{tag}/k:coordinates", ns)
-                if element is not None and element.text:
-                    tuples = [[float(v) for v in item.split(",")[:2]] for item in element.text.split() if "," in item]
-                    coordinates: Any = tuples[0] if geo_type == "Point" and tuples else tuples
-                    if geo_type == "Polygon": coordinates = [tuples]
-                    geometry = {"type": geo_type, "coordinates": coordinates}
-                    break
-            feature_id = placemark.attrib.get("id") or f"placemark-{idx}"
-            features.append({"type": "Feature", "id": feature_id, "properties": {"name": name, "description": description}, "geometry": geometry})
+        placemarks = [element for element in xml_root.iter() if _xml_local_name(element) == "Placemark"]
+        features = [_kml_placemark_feature(placemark, index) for index, placemark in enumerate(placemarks, 1)]
         collection = {"type": "FeatureCollection", "features": features}
         target = source_root / "derived" / "features.geojson"
         write_json(target, collection)
         aid = f"{source_id}:features"
         bundle.artifacts.append(Artifact(artifact_id=aid, parent_artifact_id=bundle.artifacts[0].artifact_id, kind="vector_features", media_type="application/geo+json", path=relative(target, root), sha256=sha256_file(target), metadata={"feature_count": len(features)}))
-        bundle.spatial_assets.append({"asset_id": aid, "kind": "vector_features", "feature_count": len(features), "geometry_type_counts": dict(Counter(str((f.get("geometry") or {}).get("type")) for f in features)), "path": relative(target, root)})
+        geometry_counts = dict(Counter(str((f.get("geometry") or {}).get("type")) for f in features))
+        component_counts: Counter[str] = Counter()
+        for feature in features:
+            _geojson_component_counts(feature.get("geometry"), component_counts)
+        bundle.spatial_assets.append({"asset_id": aid, "kind": "vector_features", "feature_count": len(features), "geometry_type_counts": geometry_counts, "geometry_component_type_counts": dict(component_counts), "path": relative(target, root)})
         # The complete geometry collection is preserved above. The model needs
         # the collection profile and a bounded semantic sample, not 100k
         # repetitive coordinate-bearing records copied into its context.
@@ -423,7 +554,7 @@ class KMLAdapter(SourceAdapter):
         stride = max(1, len(features) // max(1, sample_size))
         sampled = features[::stride][:sample_size]
         profile_uid = f"{source_id}:collection-profile"
-        profile = {"asset_id": aid, "feature_count": len(features), "geometry_type_counts": bundle.spatial_assets[0]["geometry_type_counts"], "sample_features": [{"id": f["id"], "properties": f["properties"], "geometry_type": (f.get("geometry") or {}).get("type")} for f in sampled]}
+        profile = {"asset_id": aid, "feature_count": len(features), "geometry_type_counts": geometry_counts, "geometry_component_type_counts": dict(component_counts), "sample_features": [{"id": f["id"], "properties": f["properties"], "geometry_type": (f.get("geometry") or {}).get("type")} for f in sampled]}
         bundle.units.append(ContentUnit(unit_id=profile_uid, artifact_id=aid, kind="vector_collection_profile", sequence=1, text=json.dumps(profile, ensure_ascii=False), locator=SourceLocator(kind="file", artifact_id=aid, unit_id=profile_uid)))
         bundle.capabilities = ["read_geometry", "read_records", "query_records", "render_preview"]
         return bundle

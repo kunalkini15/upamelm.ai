@@ -1,0 +1,15 @@
+{
+  "status": "completed",
+  "run_id": "bengaluru-subsurface",
+  "sources": 5,
+  "batches": 5,
+  "evidence_items": 303,
+  "features": 14,
+  "output": "final/ui_consolidated_package.json",
+  "cost": {
+    "input_tokens": 5224224,
+    "cached_input_tokens": 13689,
+    "output_tokens": 416664,
+    "cost_usd": 0.60441366
+  }
+}

@@ -1,0 +1,534 @@
+{
+  "feature_insights": [
+    {
+      "evidence_refs": [
+        "ev-city-extent",
+        "ev-water-level-2024",
+        "ev-water-level-2023",
+        "ev-gwra-overexploited"
+      ],
+      "feature_id": "f-bbmp-city",
+      "headline": "BBMP city study extent and stressed groundwater setting",
+      "insight_type": "administrative_geography",
+      "insights": [
+        {
+          "dataset_ids": [],
+          "evidence_refs": [
+            "ev-city-extent"
+          ],
+          "explanation": "Study frame is defined between 12.833 to 13.142 N and 77.462 to 77.786 E, covering 711 sq km BBMP.",
+          "grounding_status": "grounded",
+          "id": "ins-bbmp-1",
+          "interval_ids": [],
+          "observation_ids": [
+            "o-city-extent"
+          ],
+          "title": "Defined BBMP extent",
+          "type": "observation"
+        },
+        {
+          "dataset_ids": [],
+          "evidence_refs": [
+            "ev-water-level-2024",
+            "ev-water-level-2023"
+          ],
+          "explanation": "Wet year range shifts from pre 2.51 to 163.51 m bgl to post 2.00 to 135.15 m bgl with 72.04% rise and 27.96% fall, contrasting drought year pre 4.1 to 85.5 m bgl to post 3.19 to 92.6 m bgl with 15.9% rise and 84.1% fall.",
+          "grounding_status": "grounded",
+          "id": "ins-bbmp-2",
+          "interval_ids": [],
+          "observation_ids": [
+            "o-wl-2024",
+            "o-wl-2023"
+          ],
+          "title": "Interannual water level contrast",
+          "type": "measurement"
+        },
+        {
+          "dataset_ids": [],
+          "evidence_refs": [
+            "ev-gwra-overexploited"
+          ],
+          "explanation": "Extraction stage is 242.08% with recharge 91.89 MCM and extraction 200.21 MCM, categorized as overexploited.",
+          "grounding_status": "grounded",
+          "id": "ins-bbmp-3",
+          "interval_ids": [
+            "i-elevation-range",
+            "i-urban-wt"
+          ],
+          "observation_ids": [
+            "o-gwra"
+          ],
+          "title": "Overexploited balance",
+          "type": "observation"
+        }
+      ],
+      "secondary_context": null,
+      "status": "reported",
+      "summary": "Bengaluru City BBMP study area lies between 12.833 to 13.142 N and 77.462 to 77.786 E, covering 711 sq km.",
+      "visual_takeaway": "Map frame of BBMP boundary to locate aquifer, supply and scarcity overlays.",
+      "why_it_matters": "Same extent hosts extraction stage 242.08% with recharge 91.89 MCM against extraction 200.21 MCM, framing scarcity and supply stress."
+    },
+    {
+      "evidence_refs": [
+        "ev-aquifer-systems",
+        "ev-weathered-median"
+      ],
+      "feature_id": "f-aquifer1",
+      "headline": "Weathered phreatic aquifer forming shallow unconfined zone",
+      "insight_type": "aquifer",
+      "insights": [
+        {
+          "dataset_ids": [],
+          "evidence_refs": [
+            "ev-weathered-median"
+          ],
+          "explanation": "Weathered depth median is 19.35 m with IQR 10 to 30 m and range 1.15 to 58.4 m.",
+          "grounding_status": "grounded",
+          "id": "ins-aq1-1",
+          "interval_ids": [
+            "i-weathered-median"
+          ],
+          "observation_ids": [
+            "o-weathered-median",
+            "o-aquifer-system"
+          ],
+          "title": "Weathered zone thickness",
+          "type": "measurement"
+        },
+        {
+          "dataset_ids": [],
+          "evidence_refs": [
+            "ev-aquifer-systems"
+          ],
+          "explanation": "Urban depth to water is 1 to 5 m bgl in unconfined weathered aquifer.",
+          "grounding_status": "grounded",
+          "id": "ins-aq1-2",
+          "interval_ids": [
+            "i-urban-wt"
+          ],
+          "observation_ids": [
+            "o-aquifer-system"
+          ],
+          "title": "Shallow urban water table",
+          "type": "observation"
+        }
+      ],
+      "secondary_context": null,
+      "status": "reported",
+      "summary": "Aquifer-I is the city-wide weathered phreatic aquifer with median depth 19.35 m and IQR 10 to 30 m.",
+      "visual_takeaway": "Shallow weathered column above fractured bedrock to show unconfined storage.",
+      "why_it_matters": "It provides shallow unconfined storage with urban levels 1 to 5 m bgl, sensitive to paving and recharge change."
+    },
+    {
+      "evidence_refs": [
+        "ev-fracture-distribution"
+      ],
+      "feature_id": "f-aquifer2",
+      "headline": "Fractured aquifer with productive interval at mid depth",
+      "insight_type": "aquifer",
+      "insights": [
+        {
+          "dataset_ids": [],
+          "evidence_refs": [
+            "ev-fracture-distribution"
+          ],
+          "explanation": "Fracture share is 30% in 0 to 50 m, 52% in 50 to 100 m, 13% in 100 to 150 m and 5% in 150 to 200 m, making 50 to 100 m the most productive interval.",
+          "grounding_status": "grounded",
+          "id": "ins-aq2-1",
+          "interval_ids": [
+            "i-fracture-productive"
+          ],
+          "observation_ids": [
+            "o-fracture-dist"
+          ],
+          "title": "Fracture depth distribution",
+          "type": "interpretation"
+        }
+      ],
+      "secondary_context": null,
+      "status": "reported",
+      "summary": "Aquifer-II is the city-wide fractured and jointed rock aquifer, most productive in 50 to 100 m bgl with 52 percent of fractures.",
+      "visual_takeaway": "Depth bar highlighting mid-depth fractured interval beneath weathered cover.",
+      "why_it_matters": "Productivity concentrates in fractured rock, so yields depend on fracture presence rather than uniform depth."
+    },
+    {
+      "evidence_refs": [
+        "ev-geology-pgc",
+        "ev_bedrock_geology"
+      ],
+      "feature_id": "f-bedrock-pgc",
+      "headline": "Peninsular Gneissic basement defining hard-rock setting",
+      "insight_type": "bedrock_unit",
+      "insights": [
+        {
+          "dataset_ids": [],
+          "evidence_refs": [
+            "ev-geology-pgc"
+          ],
+          "explanation": "Basement is Peninsular Gneissic Complex of Archean 2500 to 3500 mya with Closepet granite averaging 4 km width and Gabbro Dolerite Norite Pyroxenite intrusions.",
+          "grounding_status": "grounded",
+          "id": "ins-pgc-1",
+          "interval_ids": [],
+          "observation_ids": [
+            "o-geology-pgc"
+          ],
+          "title": "Archean gneissic basement",
+          "type": "observation"
+        }
+      ],
+      "secondary_context": null,
+      "status": "reported",
+      "summary": "City basement is Peninsular Gneissic Complex, Archean 2500 to 3500 mya with Closepet granite and basic intrusions.",
+      "visual_takeaway": "Basement block underlying weathered and fractured aquifer zones.",
+      "why_it_matters": "Hard crystalline basement controls weathering depth and fracture flow, shaping foundations and borewell behavior."
+    },
+    {
+      "evidence_refs": [
+        "ev-soil-infiltration"
+      ],
+      "feature_id": "f-soil-red",
+      "headline": "Red laterite soil controlling surface intake",
+      "insight_type": "soil",
+      "insights": [
+        {
+          "dataset_ids": [],
+          "evidence_refs": [
+            "ev-soil-infiltration"
+          ],
+          "explanation": "Infiltration rate in Red Soil is 2.4 to 8.2 cm/hr, with higher intake where permeable cover remains.",
+          "grounding_status": "grounded",
+          "id": "ins-soil-1",
+          "interval_ids": [],
+          "observation_ids": [
+            "o-infiltration"
+          ],
+          "title": "Measured infiltration range",
+          "type": "measurement"
+        }
+      ],
+      "secondary_context": null,
+      "status": "reported",
+      "summary": "Dominant red lateritic soil shows infiltration rate 2.4 to 8.2 cm/hr over saprolite.",
+      "visual_takeaway": "Soil surface with intake gradient from paved to open ground.",
+      "why_it_matters": "Intake capacity links rainfall to shallow recharge, explaining runoff increase where cover is sealed."
+    },
+    {
+      "evidence_refs": [
+        "ev-kml-stats",
+        "ev-demand-supply"
+      ],
+      "feature_id": "f-bwssb-net",
+      "headline": "Piped network with partial coverage and large asset file",
+      "insight_type": "water_supply_infrastructure",
+      "insights": [
+        {
+          "dataset_ids": [
+            "ds-bwssb-kml"
+          ],
+          "evidence_refs": [
+            "ev-kml-stats"
+          ],
+          "explanation": "KML holds 97827 features with 95138 LineString and 2689 without geometry, with empty name and description in samples.",
+          "grounding_status": "grounded",
+          "id": "ins-bwssb-1",
+          "interval_ids": [],
+          "observation_ids": [
+            "o-kml-stats"
+          ],
+          "title": "Network asset size and gaps",
+          "type": "observation"
+        },
+        {
+          "dataset_ids": [],
+          "evidence_refs": [
+            "ev-demand-supply"
+          ],
+          "explanation": "Demand is 2676 MLD against supply 1893 MLD leaving deficit 783 MLD, with Cauvery 1450 MLD plus groundwater 746 MLD plus Stage-V 300 MLD and UAW 705 MLD.",
+          "grounding_status": "grounded",
+          "id": "ins-bwssb-2",
+          "interval_ids": [],
+          "observation_ids": [
+            "o-demand-supply"
+          ],
+          "title": "Demand supply imbalance",
+          "type": "observation"
+        }
+      ],
+      "secondary_context": null,
+      "status": "reported",
+      "summary": "BWSSB water supply lines network holds 97827 features with 95138 LineString and 2689 without geometry.",
+      "visual_takeaway": "City line map with density contrast between inner fully covered and outer partially covered zones.",
+      "why_it_matters": "Partial coverage forces borewell dependence, linking supply deficit to overexploitation and scarcity."
+    },
+    {
+      "evidence_refs": [
+        "ev-metro-corridors",
+        "ev-borehole-program",
+        "ev-subsurface-profile"
+      ],
+      "feature_id": "f-metro-c1",
+      "headline": "Phase 3 Corridor 3-1 elevated alignment and shallow ground profile",
+      "insight_type": "infrastructure_alignment",
+      "insights": [
+        {
+          "dataset_ids": [],
+          "evidence_refs": [
+            "ev-metro-corridors"
+          ],
+          "explanation": "Corridor length is 32.15 km with 22 stations, fully elevated double-decker viaduct shown schematically.",
+          "grounding_status": "grounded",
+          "id": "ins-c1-1",
+          "interval_ids": [],
+          "observation_ids": [
+            "o-metro-corridors"
+          ],
+          "title": "Corridor scale",
+          "type": "observation"
+        },
+        {
+          "dataset_ids": [],
+          "evidence_refs": [
+            "ev-borehole-program",
+            "ev-subsurface-profile"
+          ],
+          "explanation": "Program drilled 36 boreholes to 30 m at about 1000 m spacing with 150 mm dia and SPT every 3 m, showing 0 to 10 m cohesionless soil over moderately strong to strong rock.",
+          "grounding_status": "grounded",
+          "id": "ins-c1-2",
+          "interval_ids": [
+            "i-overburden-typical",
+            "i-bedrock-10-30"
+          ],
+          "observation_ids": [
+            "o-borehole-program",
+            "o-subsurface-profile"
+          ],
+          "title": "Investigation and ground model",
+          "type": "methodology"
+        }
+      ],
+      "secondary_context": null,
+      "status": "approximate",
+      "summary": "Bengaluru Metro Phase 3 Corridor 3-1 is 32.15 km with 22 stations, fully elevated double-decker, schematic only.",
+      "visual_takeaway": "Elevated alignment trace over soil-over-rock column to flag pier investigation needs.",
+      "why_it_matters": "Length and station spread set land, utility and foundation interfaces in PGC terrain."
+    },
+    {
+      "evidence_refs": [
+        "ev-metro-corridors",
+        "ev-corridor-def"
+      ],
+      "feature_id": "f-metro-c2",
+      "headline": "Phase 3 Corridor 3-2 shorter elevated spur",
+      "insight_type": "infrastructure_alignment",
+      "insights": [
+        {
+          "dataset_ids": [],
+          "evidence_refs": [
+            "ev-metro-corridors",
+            "ev-corridor-def"
+          ],
+          "explanation": "Corridor length is 12.50 km with 9 stations, fully elevated double-decker viaduct shown schematically.",
+          "grounding_status": "grounded",
+          "id": "ins-c2-1",
+          "interval_ids": [],
+          "observation_ids": [],
+          "title": "Corridor scale",
+          "type": "observation"
+        }
+      ],
+      "secondary_context": null,
+      "status": "approximate",
+      "summary": "Bengaluru Metro Phase 3 Corridor 3-2 is 12.50 km with 9 stations, fully elevated double-decker, schematic only.",
+      "visual_takeaway": "Shorter elevated trace linked to Corridor 3-1 for interchange context.",
+      "why_it_matters": "Shorter spur still requires pier-specific checks where overburden thickens."
+    },
+    {
+      "evidence_refs": [
+        "ev-gsi-drilling"
+      ],
+      "feature_id": "f-gsi-cluster",
+      "headline": "GSI cluster showing sharp lateral heterogeneity",
+      "insight_type": "borehole_cluster",
+      "insights": [
+        {
+          "dataset_ids": [],
+          "evidence_refs": [
+            "ev-gsi-drilling"
+          ],
+          "explanation": "Exploratory well depth is 202.3 m with SWL 140.84 m bmp and yield 3.75 lps, contrasting shallow fracture at 22 to 23 m and deep fracture at 195 to 196 m.",
+          "grounding_status": "grounded",
+          "id": "ins-gsi-1",
+          "interval_ids": [
+            "i-gsi-deep",
+            "i-gsi-shallow"
+          ],
+          "observation_ids": [
+            "o-gsi-drilling"
+          ],
+          "title": "Deep versus shallow fractures",
+          "type": "observation"
+        }
+      ],
+      "secondary_context": null,
+      "status": "reported",
+      "summary": "GSI Campus cluster shows EW depth 202.3 m with SWL 140.84 m bmp and yield 3.75 lps, set against shallow and deep fractures.",
+      "visual_takeaway": "Cluster of closely spaced wells with divergent levels to stress local variability.",
+      "why_it_matters": "Nearby wells tap different fracture systems, so productivity cannot be extrapolated across short distances."
+    },
+    {
+      "evidence_refs": [
+        "ev-tritium-recharge"
+      ],
+      "feature_id": "f-tritium-tc",
+      "headline": "T.C. Palya tracer site in granitic gneiss",
+      "insight_type": "tracer_test_site",
+      "insights": [
+        {
+          "dataset_ids": [],
+          "evidence_refs": [
+            "ev-tritium-recharge"
+          ],
+          "explanation": "Site lies in PGC granitic gneiss area and supports piston-flow recharge inference without new hydraulic claims.",
+          "grounding_status": "grounded",
+          "id": "ins-tc-1",
+          "interval_ids": [],
+          "observation_ids": [],
+          "title": "Recharge test setting",
+          "type": "observation"
+        }
+      ],
+      "secondary_context": null,
+      "status": "reported",
+      "summary": "T.C. Palya tracer test site is in PGC granitic gneiss area for rainfall recharge study.",
+      "visual_takeaway": "Point marker for injection site within basin context.",
+      "why_it_matters": "Geology-specific recharge helps explain why gneiss and granite areas respond differently."
+    },
+    {
+      "evidence_refs": [
+        "ev-tritium-recharge"
+      ],
+      "feature_id": "f-tritium-gsi",
+      "headline": "GSI tracer site in Closepet Granite",
+      "insight_type": "tracer_test_site",
+      "insights": [
+        {
+          "dataset_ids": [],
+          "evidence_refs": [
+            "ev-tritium-recharge"
+          ],
+          "explanation": "Site lies in Closepet Granite and supports piston-flow recharge inference without new hydraulic claims.",
+          "grounding_status": "grounded",
+          "id": "ins-gsi-t-1",
+          "interval_ids": [],
+          "observation_ids": [],
+          "title": "Recharge test setting",
+          "type": "observation"
+        }
+      ],
+      "secondary_context": null,
+      "status": "reported",
+      "summary": "GSI tritium injection site is in Closepet Granite for rainfall recharge study.",
+      "visual_takeaway": "Point marker for granite-hosted injection site.",
+      "why_it_matters": "Granite-hosted result complements gneiss sites to show lithology control on recharge."
+    },
+    {
+      "evidence_refs": [
+        "ev-bannerghatta-distance",
+        "ev-kba-table"
+      ],
+      "feature_id": "f-bannerghatta",
+      "headline": "Bannerghatta separation from metro alignment",
+      "insight_type": "protected_area",
+      "insights": [
+        {
+          "dataset_ids": [],
+          "evidence_refs": [
+            "ev-bannerghatta-distance",
+            "ev-kba-table"
+          ],
+          "explanation": "Shortest separation is 7.05 km from Line 3-2, with text value 7.1 km, and park area approx. 260.51 sq km.",
+          "grounding_status": "grounded",
+          "id": "ins-ban-1",
+          "interval_ids": [],
+          "observation_ids": [
+            "o-bannerghatta"
+          ],
+          "title": "Distance and park size",
+          "type": "observation"
+        }
+      ],
+      "secondary_context": null,
+      "status": "approximate",
+      "summary": "Bannerghatta National Park vicinity is 7.05 km from Line 3-2 southern end with area approx. 260.51 sq km and no direct overlap.",
+      "visual_takeaway": "Buffer view showing park well outside alignment corridor.",
+      "why_it_matters": "Separation indicates no direct footprint, focusing attention on urban ecology rather than protected-area impact."
+    },
+    {
+      "evidence_refs": [
+        "ev-scarcity-area"
+      ],
+      "feature_id": "f-scarcity-zone",
+      "headline": "Eastern and southeastern scarcity zone",
+      "insight_type": "management_zone",
+      "insights": [
+        {
+          "dataset_ids": [],
+          "evidence_refs": [
+            "ev-scarcity-area"
+          ],
+          "explanation": "Zone covers 238 sq km across 52 wards where post-monsoon levels exceed 50 m bgl and seasonal fall exceeds 5 m.",
+          "grounding_status": "grounded",
+          "id": "ins-scar-1",
+          "interval_ids": [],
+          "observation_ids": [
+            "o-scarcity"
+          ],
+          "title": "Scarcity delineation",
+          "type": "interpretation"
+        }
+      ],
+      "secondary_context": null,
+      "status": "derived",
+      "summary": "Groundwater scarcity vulnerable zone covers 238 sq km with 52 wards in eastern and southeastern Bengaluru.",
+      "visual_takeaway": "Shaded scarcity pocket in east and southeast to target management.",
+      "why_it_matters": "It concentrates deep levels and large falls where supply augmentation and regulation matter most."
+    },
+    {
+      "evidence_refs": [
+        "ev-lake-recharge"
+      ],
+      "feature_id": "f-lake-cascade",
+      "headline": "Cascading lake recharge system",
+      "insight_type": "environmental_constraint",
+      "insights": [
+        {
+          "dataset_ids": [],
+          "evidence_refs": [
+            "ev-lake-recharge"
+          ],
+          "explanation": "Series A recharge is 1.07 MCM per year and Series B is 1.90 MCM per year, totaling 2.97 MCM per year at 1.44 mm per day.",
+          "grounding_status": "grounded",
+          "id": "ins-lake-1",
+          "interval_ids": [],
+          "observation_ids": [
+            "o-lake-recharge"
+          ],
+          "title": "Cascade recharge volumes",
+          "type": "observation"
+        }
+      ],
+      "secondary_context": null,
+      "status": "reported",
+      "summary": "Lake cascade recharge system provides Series A 1.07 MCM per year and Series B 1.90 MCM per year.",
+      "visual_takeaway": "Linked lake chains showing distributed recharge contribution.",
+      "why_it_matters": "Cascading filling turns treated water and lake storage into measurable shallow recharge."
+    }
+  ],
+  "limitations": [
+    "Metro alignments are schematic and approximate, requiring pier-specific investigation before construction use.",
+    "BWSSB KML includes features without geometry and empty attributes, limiting hydraulic or service-level inference.",
+    "Seismic descriptions preserve conflicting zone statements without reconciliation.",
+    "Groundwater fluoride narrative and tabulated values conflict and remain unresolved.",
+    "Scarcity and yield zonations are interpretive and sensitive to monitoring density and thresholds."
+  ]
+}

@@ -73,6 +73,8 @@ Later run only visual classification, reusing the stored bundle and text evidenc
 
 Prerequisite artifacts must already exist when starting after step 1. Every invocation appends timing, status and output counts to the document version's `stage_telemetry.json`. Intermediate artifacts remain under `stages/`, and partial runs write `partial_status.json`. Stage selection does not change the semantic document version.
 
+Stage 3 uses aggressive long-context extraction by default: approximately 120K source-token batches, a 128K exact request ceiling, and a 128K maximum output allowance. Meta's exact input-token counter preflights each complete request. An oversized or incomplete batch is split token-equally and retried recursively (normally around 64K, then 32K) while completed siblings remain resumable. Changing Stage 3 batching or prompt configuration creates a new evidence version, but an identical source checksum reuses the prior immutable Stage 2 materialization through hardlinks where supported instead of parsing the document again.
+
 The provider is hard-locked to `muse-spark-1.3-contributor`. It loads `MODEL_API_KEY` from the environment, then `.env`, `research-engine-v2/.env`, or `doc-intelligence/.env`, without persisting the secret. Official contributor pricing is encoded in the run ledger: $0.10/M uncached input, $0.002/M cached input, and $0.20/M output. The default hard run ceiling is $19.
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for contracts and failure behavior. A compact, validated Bengaluru result is under [`examples/bengaluru`](examples/bengaluru); the complete generated artifact tree remains under `playground/bangalore/agentic_live` and is intentionally ignored by Git because it contains 726 MB of source-derived files.

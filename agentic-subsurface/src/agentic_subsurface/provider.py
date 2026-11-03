@@ -95,10 +95,10 @@ class MuseClient:
         body = response.json()
         return int(body.get("input_tokens") or body.get("total_tokens") or 0)
 
-    def complete(self, *, phase: str, instructions: str, input_content: Any, schema: dict[str, Any], max_output_tokens: int | None = None, reasoning_effort: str | None = None, cache_key: str | None = None) -> dict[str, Any]:
+    def complete(self, *, phase: str, instructions: str, input_content: Any, schema: dict[str, Any], max_output_tokens: int | None = None, reasoning_effort: str | None = None, cache_key: str | None = None, counted_input_tokens: int | None = None) -> dict[str, Any]:
         if not self.config.live: raise RuntimeError("live provider call attempted while live=false")
         output_limit = max_output_tokens or self.config.max_output_tokens
-        input_tokens = self.count_tokens(instructions, input_content, schema)
+        input_tokens = counted_input_tokens if counted_input_tokens is not None else self.count_tokens(instructions, input_content, schema)
         reservation_id = self._reserve(input_tokens, output_limit)
         call_id = f"call-{uuid.uuid4().hex}"
         call_dir = self.root / call_id

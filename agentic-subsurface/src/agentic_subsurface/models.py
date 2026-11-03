@@ -103,11 +103,12 @@ class ExtractionResult(BaseModel):
 class PipelineConfig(BaseModel):
     model: str = MODEL
     context_window: int = 1_048_576
-    target_batch_tokens: int = 180_000
-    max_batch_tokens: int = 250_000
+    # Aim below the exact ceiling so instructions, locators and metadata fit.
+    target_batch_tokens: int = Field(120_000, ge=1_000)
+    max_batch_tokens: int = Field(128_000, ge=1_000)
     overlap_tokens: int = 6_000
     reserve_tokens: int = 80_000
-    max_output_tokens: int = 40_000
+    max_output_tokens: int = Field(128_000, ge=1_000)
     reasoning_effort: Literal["minimal", "low", "medium", "high"] = "high"
     max_cost_usd: float = Field(19.0, gt=0, le=20.0)
     max_images_per_batch: int = Field(20, ge=0, le=50)
@@ -127,8 +128,10 @@ class PipelineConfig(BaseModel):
     def enforce_model_and_budget(self) -> "PipelineConfig":
         if self.model != MODEL:
             raise ValueError(f"only {MODEL} is permitted")
-        if self.max_batch_tokens + self.reserve_tokens > self.context_window:
-            raise ValueError("batch and reserve exceed context window")
+        if self.target_batch_tokens > self.max_batch_tokens:
+            raise ValueError("target batch tokens exceed exact batch ceiling")
+        if self.max_batch_tokens + self.max_output_tokens + self.reserve_tokens > self.context_window:
+            raise ValueError("batch, output allowance and reserve exceed context window")
         return self
 
 

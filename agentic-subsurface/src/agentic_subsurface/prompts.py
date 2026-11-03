@@ -1,6 +1,6 @@
 """Versioned prompts following Meta's stable-prefix and structured-output guidance."""
 
-EXTRACTION_PROMPT_VERSION = "evidence-extraction.v1"
+EXTRACTION_PROMPT_VERSION = "evidence-extraction.v2"
 VISUAL_CLASSIFICATION_PROMPT_VERSION = "visual-classification.v1"
 VISUAL_EXTRACTION_PROMPT_VERSION = "visual-extraction.v1"
 SYNTHESIS_PROMPT_VERSION = "spatial-synthesis.v1"

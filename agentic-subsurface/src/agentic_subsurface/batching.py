@@ -29,7 +29,7 @@ class EvidenceBatch:
 class SemanticBatcher:
     """Lossless, unit-aware batching; never splits a native unit unless unavoidable."""
 
-    def __init__(self, target_tokens: int = 180_000, max_tokens: int = 250_000, max_images: int = 20, token_estimator: Callable[[str], int] = approximate_tokens):
+    def __init__(self, target_tokens: int = 120_000, max_tokens: int = 128_000, max_images: int = 20, token_estimator: Callable[[str], int] = approximate_tokens):
         self.target_tokens = target_tokens
         self.max_tokens = max_tokens
         self.max_images = max_images

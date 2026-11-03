@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import base64
 import json
+import os
+import shutil
 import time
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
@@ -25,7 +27,7 @@ from .schemas import extraction_schema, visual_classification_schema
 from .util import read_json, sha256_file, stable_id, write_json
 
 
-LOOP1_CODE_VERSION = "document-loop1.v3"
+LOOP1_CODE_VERSION = "document-loop1.v4"
 DOCUMENT_PACKAGE_SCHEMA = "document-evidence.v2"
 MEANINGFUL_CLASSES = {"table", "map", "borehole_log", "geological_section", "chart", "engineering_drawing", "photograph", "other"}
 STAGES = {
@@ -94,7 +96,7 @@ class DocumentLoop1Processor:
         if self._selected(2, start_step, end_step):
             bundle = self._run_stage(version_root, 2, materialize, lambda value: {"adapter": value.adapter, "units": len(value.units), "artifacts": len(value.artifacts), "visuals": len(value.visual_assets), "structured_assets": len(value.structured_assets)})
         else:
-            bundle = self._require_bundle(bundle_target, 2)
+            bundle = self._require_or_reuse_bundle(bundle_target, version_root, document_id, checksum, 2)
         if end_step == 2:
             return self._partial_result(document_id, version_id, bundle.filename, start_step, end_step, version_root)
         corpus_context = self._corpus_context(exclude_document_id=document_id, include_ids=request.context_document_ids)
@@ -175,6 +177,40 @@ class DocumentLoop1Processor:
             raise RuntimeError(f"stage {prerequisite_step} artifact is missing: {target}; run with --start-step {prerequisite_step}")
         return SourceBundle.model_validate(read_json(target))
 
+    def _require_or_reuse_bundle(self, target: Path, version_root: Path, document_id: str, checksum: str, prerequisite_step: int) -> SourceBundle:
+        if target.exists():
+            return SourceBundle.model_validate(read_json(target))
+        versions_root = self.root / "documents" / document_id / "versions"
+        candidates = sorted(
+            (path for path in versions_root.glob("*/bundle.json") if path != target),
+            key=lambda path: path.stat().st_mtime,
+            reverse=True,
+        )
+        for candidate in candidates:
+            value = SourceBundle.model_validate(read_json(candidate))
+            if value.sha256 != checksum:
+                continue
+            previous_root = candidate.parent
+            source_tree = previous_root / "sources"
+            destination = version_root / "sources"
+            if source_tree.exists() and not destination.exists():
+                def link_or_copy(source: str, target_path: str) -> str:
+                    try:
+                        os.link(source, target_path)
+                        return target_path
+                    except OSError:
+                        return shutil.copy2(source, target_path)
+                shutil.copytree(source_tree, destination, copy_function=link_or_copy)
+            write_json(target, value.model_dump(mode="json"))
+            write_json(version_root / "reused_materialization.json", {
+                "source_version_root": str(previous_root),
+                "source_bundle": str(candidate),
+                "source_sha256": checksum,
+                "method": "hardlink_or_copy",
+            })
+            return value
+        raise RuntimeError(f"stage {prerequisite_step} artifact is missing: {target}; run with --start-step {prerequisite_step}")
+
     @staticmethod
     def _require_json(target: Path, prerequisite_step: int) -> Any:
         if not target.exists():
@@ -227,32 +263,28 @@ class DocumentLoop1Processor:
         return {"batch_id": batch.batch_id, "source_id": batch.source_id, "estimated_tokens": batch.estimated_tokens, "unit_ids": [u.unit_id for u in batch.units]}
 
     def _extract_text(self, request: DocumentRunRequest, root: Path, bundle: SourceBundle, batches: list[EvidenceBatch], context: list[dict[str, Any]], resume: bool) -> list[ExtractionResult]:
-        leaves = [leaf for batch in batches for leaf in self._planned_text_leaves(request, batch)]
-        with ThreadPoolExecutor(max_workers=min(request.config.max_workers, max(1, len(leaves))), thread_name_prefix="loop1-text") as executor:
-            groups = list(executor.map(lambda batch: self._extract_text_batch(request, root, bundle, batch, context, resume), leaves))
+        # Initial batches run concurrently. Each independently preflights its
+        # exact request and recursively splits only when necessary.
+        with ThreadPoolExecutor(max_workers=min(request.config.max_workers, max(1, len(batches))), thread_name_prefix="loop1-text") as executor:
+            groups = list(executor.map(lambda batch: self._extract_text_batch(request, root, bundle, batch, context, resume), batches))
         return [result for group in groups for result in group]
-
-    def _planned_text_leaves(self, request: DocumentRunRequest, batch: EvidenceBatch) -> list[EvidenceBatch]:
-        if request.config.live and batch.estimated_tokens > 45_000 and len(batch.units) > 1:
-            return [leaf for child in self._split_batch(batch) for leaf in self._planned_text_leaves(request, child)]
-        return [batch]
 
     def _extract_text_batch(self, request: DocumentRunRequest, root: Path, bundle: SourceBundle, batch: EvidenceBatch, context: list[dict[str, Any]], resume: bool) -> list[ExtractionResult]:
         target = root / "stages" / "text" / "results" / f"{batch.batch_id}.json"
         if resume and target.exists():
             return [ExtractionResult.model_validate(read_json(target))]
-        if request.config.live and batch.estimated_tokens > 45_000 and len(batch.units) > 1:
-            return [x for child in self._split_batch(batch) for x in self._extract_text_batch(request, root, bundle, child, context, resume)]
         if not request.config.live:
             result = ExtractionResult(batch_id=batch.batch_id, summary="Offline deterministic materialization only", limitations=["live=false"])
         else:
             profile = {"source_id": bundle.source_id, "filename": bundle.filename, "media_type": bundle.media_type, "adapter": bundle.adapter, "capabilities": bundle.capabilities, "structured_assets": bundle.structured_assets, "spatial_assets": bundle.spatial_assets}
             payload = json.dumps({"objective": request.objective, "current_document": profile, "other_document_catalog": context, "batch_id": batch.batch_id}, ensure_ascii=False) + batch.model_text()
+            schema = extraction_schema()
+            exact_input_tokens = self.client.count_tokens(EXTRACTION_INSTRUCTIONS, payload, schema)
+            if exact_input_tokens > request.config.max_batch_tokens:
+                return [x for child in self._split_batch(batch) for x in self._extract_text_batch(request, root, bundle, child, context, resume)]
             try:
-                raw = self.client.complete(phase=f"document-text-{batch.batch_id}", instructions=EXTRACTION_INSTRUCTIONS, input_content=payload, schema=extraction_schema(), max_output_tokens=request.config.max_output_tokens, reasoning_effort="high", cache_key=f"agentic-subsurface:{EXTRACTION_PROMPT_VERSION}")
+                raw = self.client.complete(phase=f"document-text-{batch.batch_id}", instructions=EXTRACTION_INSTRUCTIONS, input_content=payload, schema=schema, max_output_tokens=request.config.max_output_tokens, reasoning_effort="high", cache_key=f"agentic-subsurface:{EXTRACTION_PROMPT_VERSION}", counted_input_tokens=exact_input_tokens)
             except (IncompleteResponse, json.JSONDecodeError):
-                if len(batch.units) <= 1:
-                    raise
                 return [x for child in self._split_batch(batch) for x in self._extract_text_batch(request, root, bundle, child, context, resume)]
             raw["batch_id"] = batch.batch_id
             result = ExtractionResult.model_validate(raw)
@@ -260,7 +292,38 @@ class DocumentLoop1Processor:
         return [result]
 
     def _split_batch(self, batch: EvidenceBatch) -> list[EvidenceBatch]:
-        midpoint = len(batch.units) // 2
+        if len(batch.units) == 1:
+            unit = batch.units[0]
+            if len(unit.text) < 2:
+                raise ValueError(f"cannot split irreducible source unit in batch {batch.batch_id}")
+            midpoint = len(unit.text) // 2
+            # Prefer a nearby semantic boundary without allowing one child to
+            # become pathologically small.
+            lower, upper = len(unit.text) // 3, len(unit.text) * 2 // 3
+            candidates = [position for marker in ("\n\n", "\n", ". ", " ") for position in (unit.text.rfind(marker, lower, midpoint + 1), unit.text.find(marker, midpoint, upper)) if position >= lower]
+            if candidates:
+                midpoint = min(candidates, key=lambda position: abs(position - midpoint))
+            left_text, right_text = unit.text[:midpoint], unit.text[midpoint:]
+            if not left_text or not right_text:
+                raise ValueError(f"cannot split irreducible source unit in batch {batch.batch_id}")
+            children = []
+            for suffix, text in (("a", left_text), ("b", right_text)):
+                metadata = dict(unit.metadata) | {"segmented_from_unit_id": unit.unit_id, "segment": suffix}
+                segment = unit.model_copy(update={"unit_id": f"{unit.unit_id}:segment-{suffix}", "text": text, "metadata": metadata})
+                children.append(EvidenceBatch(batch_id=f"{batch.batch_id}-{suffix}", source_id=batch.source_id, units=[segment], estimated_tokens=max(1, len(text) // 3) + 80))
+            return children
+        if not batch.units:
+            raise ValueError(f"cannot split empty batch {batch.batch_id}")
+        weights = [max(1, len(unit.text) // 3) + 80 for unit in batch.units]
+        target = sum(weights) / 2
+        running = 0
+        midpoint = 1
+        best_distance = float("inf")
+        for index, weight in enumerate(weights[:-1], 1):
+            running += weight
+            distance = abs(target - running)
+            if distance < best_distance:
+                midpoint, best_distance = index, distance
         return [EvidenceBatch(batch_id=f"{batch.batch_id}-{suffix}", source_id=batch.source_id, units=units, estimated_tokens=sum(max(1, len(u.text) // 3) + 80 for u in units)) for suffix, units in (("a", batch.units[:midpoint]), ("b", batch.units[midpoint:]))]
 
     def _visual_content(self, root: Path, visuals: list[dict[str, Any]], header: dict[str, Any]) -> list[dict[str, Any]]:

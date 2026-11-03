@@ -93,8 +93,8 @@ class AgenticSubsurfacePipeline:
         else:
             try:
                 raw = self.client.complete(phase=f"extract-{batch.batch_id}", instructions=EXTRACTION_INSTRUCTIONS, input_content=self._batch_content(batch, bundles), schema=extraction_schema(), max_output_tokens=self.request.config.max_output_tokens, reasoning_effort="high", cache_key=f"agentic-subsurface:{EXTRACTION_PROMPT_VERSION}")
-            except (IncompleteResponse, json.JSONDecodeError):
-                if len(batch.units) <= 1: raise
+            except IncompleteResponse as exc:
+                if exc.reason not in {"max_output_tokens", "max_tokens", "length"} or len(batch.units) <= 1: raise
                 return [item for child in self._split_batch(batch) for item in self._extract_batch(bundles, child, resume)]
             raw["batch_id"] = batch.batch_id
             result = ExtractionResult.model_validate(raw)

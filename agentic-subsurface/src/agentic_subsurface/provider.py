@@ -18,7 +18,10 @@ from .util import write_json
 
 
 class BudgetExceeded(RuntimeError): pass
-class IncompleteResponse(RuntimeError): pass
+class IncompleteResponse(RuntimeError):
+    def __init__(self, reason: str):
+        self.reason = reason
+        super().__init__(f"Meta response incomplete: {reason}")
 
 
 class MuseClient:
@@ -145,7 +148,7 @@ class MuseClient:
         self._commit(reservation_id, record)
         if raw.get("status") == "incomplete":
             reason = (raw.get("incomplete_details") or {}).get("reason", "unknown")
-            raise IncompleteResponse(f"Meta response incomplete: {reason}")
+            raise IncompleteResponse(reason)
         for item in reversed(raw.get("output", [])):
             if item.get("type") != "message": continue
             for content in reversed(item.get("content", [])):

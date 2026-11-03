@@ -55,13 +55,30 @@ def test_stage3_incomplete_128k_response_falls_back_to_smaller_children(tmp_path
     monkeypatch.setattr(processor.client, "count_tokens", lambda instructions, payload, schema: 120_000 if payload.count("--- SOURCE UNIT") == 4 else 60_000)
     def complete(**kwargs):
         if kwargs["phase"] == "document-text-batch":
-            raise IncompleteResponse("Meta response incomplete: max_output_tokens")
+            raise IncompleteResponse("max_output_tokens")
         completed.append(kwargs["phase"])
         return {"batch_id": "ignored", "summary": "ok"}
     monkeypatch.setattr(processor.client, "complete", complete)
     results = processor._extract_text_batch(request, tmp_path / "version", bundle, batch, [], False)
     assert len(results) == 2
     assert completed == ["document-text-batch-a", "document-text-batch-b"]
+
+
+@pytest.mark.parametrize("error", [IncompleteResponse("content_filter"), json.JSONDecodeError("bad JSON", "x", 0)])
+def test_stage3_non_token_errors_do_not_split(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, error: Exception) -> None:
+    processor, request, bundle, batch = _stage3_fixture(tmp_path)
+    calls = 0
+    monkeypatch.setattr(processor.client, "count_tokens", lambda instructions, payload, schema: 120_000)
+
+    def complete(**kwargs):
+        nonlocal calls
+        calls += 1
+        raise error
+
+    monkeypatch.setattr(processor.client, "complete", complete)
+    with pytest.raises(type(error)):
+        processor._extract_text_batch(request, tmp_path / "version", bundle, batch, [], False)
+    assert calls == 1
 
 
 def test_stage3_oversized_single_unit_is_segmented_with_original_locator(tmp_path: Path) -> None:

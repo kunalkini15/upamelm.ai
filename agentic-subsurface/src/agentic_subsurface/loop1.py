@@ -284,7 +284,9 @@ class DocumentLoop1Processor:
                 return [x for child in self._split_batch(batch) for x in self._extract_text_batch(request, root, bundle, child, context, resume)]
             try:
                 raw = self.client.complete(phase=f"document-text-{batch.batch_id}", instructions=EXTRACTION_INSTRUCTIONS, input_content=payload, schema=schema, max_output_tokens=request.config.max_output_tokens, reasoning_effort="high", cache_key=f"agentic-subsurface:{EXTRACTION_PROMPT_VERSION}", counted_input_tokens=exact_input_tokens)
-            except (IncompleteResponse, json.JSONDecodeError):
+            except IncompleteResponse as exc:
+                if exc.reason not in {"max_output_tokens", "max_tokens", "length"}:
+                    raise
                 return [x for child in self._split_batch(batch) for x in self._extract_text_batch(request, root, bundle, child, context, resume)]
             raw["batch_id"] = batch.batch_id
             result = ExtractionResult.model_validate(raw)
@@ -384,8 +386,8 @@ class DocumentLoop1Processor:
             header = {"objective": request.objective, "document": {"source_id": bundle.source_id, "filename": bundle.filename}, "required_artifact_ids": [v["artifact_id"] for v in group], "classifications": [x for x in classifications if x["artifact_id"] in {v["artifact_id"] for v in group}], "other_document_catalog": context}
             try:
                 raw = self.client.complete(phase=f"visual-extract-{bundle.source_id}-{batch_id}", instructions=VISUAL_EXTRACTION_INSTRUCTIONS, input_content=self._visual_content(root, group, header), schema=extraction_schema(), max_output_tokens=request.config.max_output_tokens, reasoning_effort="high", cache_key=f"agentic-subsurface:{VISUAL_EXTRACTION_PROMPT_VERSION}")
-            except (IncompleteResponse, json.JSONDecodeError):
-                if len(group) <= 1:
+            except IncompleteResponse as exc:
+                if exc.reason not in {"max_output_tokens", "max_tokens", "length"} or len(group) <= 1:
                     raise
                 midpoint = len(group) // 2
                 return self._extract_visual_group(request, root, bundle, context, classifications, group[:midpoint], f"{batch_id}-a", resume) + self._extract_visual_group(request, root, bundle, context, classifications, group[midpoint:], f"{batch_id}-b", resume)

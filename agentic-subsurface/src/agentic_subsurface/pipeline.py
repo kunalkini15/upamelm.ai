@@ -83,18 +83,13 @@ class AgenticSubsurfacePipeline:
     def _extract_batch(self, bundles: list[SourceBundle], batch: EvidenceBatch, resume: bool) -> list[ExtractionResult]:
         target = self.root / "loop1" / "batches" / f"{batch.batch_id}.json"
         if resume and target.exists(): return [ExtractionResult.model_validate(read_json(target))]
-        # Image tokens are not captured by the local text estimator. Keep live
-        # leaf batches deliberately smaller; Meta's exact counter still guards
-        # every resulting request.
-        if self.request.config.live and batch.estimated_tokens > 100_000 and len(batch.units) > 1:
-            return [item for child in self._split_batch(batch) for item in self._extract_batch(bundles, child, resume)]
         if not self.request.config.live:
             result = ExtractionResult(batch_id=batch.batch_id, summary="Offline artifact-only extraction; model extraction not run.", limitations=["live=false"])
         else:
             try:
                 raw = self.client.complete(phase=f"extract-{batch.batch_id}", instructions=EXTRACTION_INSTRUCTIONS, input_content=self._batch_content(batch, bundles), schema=extraction_schema(), max_output_tokens=self.request.config.max_output_tokens, reasoning_effort="high", cache_key=f"agentic-subsurface:{EXTRACTION_PROMPT_VERSION}")
             except IncompleteResponse as exc:
-                if exc.reason not in {"max_output_tokens", "max_tokens", "length"} or len(batch.units) <= 1: raise
+                if exc.reason != "max_output_tokens" or len(batch.units) <= 1: raise
                 return [item for child in self._split_batch(batch) for item in self._extract_batch(bundles, child, resume)]
             raw["batch_id"] = batch.batch_id
             result = ExtractionResult.model_validate(raw)

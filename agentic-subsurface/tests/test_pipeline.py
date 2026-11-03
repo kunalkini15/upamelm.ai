@@ -20,12 +20,12 @@ def test_model_and_budget_are_hard_limited() -> None:
     with pytest.raises(ValueError): PipelineConfig(max_cost_usd=20.01)
     with pytest.raises(ValueError): PipelineConfig(max_workers=33)
     config = PipelineConfig()
-    assert config.target_batch_tokens == 120_000
+    assert config.target_batch_tokens == 128_000
     assert config.max_batch_tokens == config.max_output_tokens == 128_000
 
 
 def _stage3_fixture(tmp_path: Path) -> tuple[DocumentLoop1Processor, DocumentRunRequest, SourceBundle, EvidenceBatch]:
-    config = PipelineConfig(live=True, target_batch_tokens=120_000, max_batch_tokens=128_000, max_output_tokens=128_000)
+    config = PipelineConfig(live=True, target_batch_tokens=128_000, max_batch_tokens=128_000, max_output_tokens=128_000)
     processor = DocumentLoop1Processor(tmp_path / "corpus", config)
     source = tmp_path / "source.txt"
     source.write_text("source", encoding="utf-8")
@@ -36,17 +36,17 @@ def _stage3_fixture(tmp_path: Path) -> tuple[DocumentLoop1Processor, DocumentRun
     return processor, request, bundle, batch
 
 
-def test_stage3_exact_preflight_recursively_splits_only_oversized_batch(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_stage3_preflight_count_does_not_shrink_initial_128k_batch(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     processor, request, bundle, batch = _stage3_fixture(tmp_path)
     completed: list[tuple[str, int]] = []
-    monkeypatch.setattr(processor.client, "count_tokens", lambda instructions, payload, schema: 129_000 if payload.count("--- SOURCE UNIT") == 4 else 64_000)
+    monkeypatch.setattr(processor.client, "count_tokens", lambda instructions, payload, schema: 140_000)
     def complete(**kwargs):
         completed.append((kwargs["phase"], kwargs["counted_input_tokens"]))
         return {"batch_id": "ignored", "summary": "ok"}
     monkeypatch.setattr(processor.client, "complete", complete)
     results = processor._extract_text_batch(request, tmp_path / "version", bundle, batch, [], False)
-    assert len(results) == 2
-    assert completed == [("document-text-batch-a", 64_000), ("document-text-batch-b", 64_000)]
+    assert len(results) == 1
+    assert completed == [("document-text-batch", 140_000)]
 
 
 def test_stage3_incomplete_128k_response_falls_back_to_smaller_children(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -64,7 +64,7 @@ def test_stage3_incomplete_128k_response_falls_back_to_smaller_children(tmp_path
     assert completed == ["document-text-batch-a", "document-text-batch-b"]
 
 
-@pytest.mark.parametrize("error", [IncompleteResponse("content_filter"), json.JSONDecodeError("bad JSON", "x", 0)])
+@pytest.mark.parametrize("error", [IncompleteResponse("length"), IncompleteResponse("content_filter"), json.JSONDecodeError("bad JSON", "x", 0)])
 def test_stage3_non_token_errors_do_not_split(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, error: Exception) -> None:
     processor, request, bundle, batch = _stage3_fixture(tmp_path)
     calls = 0
@@ -79,6 +79,13 @@ def test_stage3_non_token_errors_do_not_split(tmp_path: Path, monkeypatch: pytes
     with pytest.raises(type(error)):
         processor._extract_text_batch(request, tmp_path / "version", bundle, batch, [], False)
     assert calls == 1
+
+
+def test_batcher_starts_with_128k_batches_and_keeps_final_remainder(tmp_path: Path) -> None:
+    units = [ContentUnit(unit_id=f"u-{index}", artifact_id="artifact", kind="text", sequence=index, text=str(tokens), locator=SourceLocator(kind="file", artifact_id="artifact", unit_id=f"u-{index}")) for index, tokens in enumerate([63_920, 63_920, 63_920, 63_920, 43_920], 1)]
+    bundle = SourceBundle(source_id="source", original_path="source.txt", filename="source.txt", media_type="text/plain", sha256="x", size_bytes=1, adapter="text", units=units)
+    batches = SemanticBatcher(token_estimator=lambda text: int(text)).build([bundle])
+    assert [batch.estimated_tokens for batch in batches] == [128_000, 128_000, 44_000]
 
 
 def test_stage3_oversized_single_unit_is_segmented_with_original_locator(tmp_path: Path) -> None:

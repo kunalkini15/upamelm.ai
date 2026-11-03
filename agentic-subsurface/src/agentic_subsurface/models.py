@@ -103,8 +103,9 @@ class ExtractionResult(BaseModel):
 class PipelineConfig(BaseModel):
     model: str = MODEL
     context_window: int = 1_048_576
-    # Aim below the exact ceiling so instructions, locators and metadata fit.
-    target_batch_tokens: int = Field(120_000, ge=1_000)
+    # Stage 3 starts with 128K source-evidence batches. A batch is reduced only
+    # when Meta explicitly reports output-token exhaustion.
+    target_batch_tokens: int = Field(128_000, ge=1_000)
     max_batch_tokens: int = Field(128_000, ge=1_000)
     overlap_tokens: int = 6_000
     reserve_tokens: int = 80_000

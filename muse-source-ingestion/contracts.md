@@ -43,10 +43,38 @@ a missing observation date to the publication date.
 Keys: `city`, `state`, `country`, `city_aliases[]`,
 `district_aliases[]`, `local_language_names[]`, `as_of_date`,
 `study_boundary` (free-text denominator for coverage claims),
-`evidence_gaps[]`, `target_capabilities[]`,
-`trusted_domains[]`, `preferred_publishers[]`. Optional `guidance` may express
+`evidence_gaps[]`, `target_capabilities[]`, `research_scope`,
+`source_policy`, `trusted_domains[]`, `preferred_publishers[]`. Optional `guidance` may express
 research preferences, but numeric activity or package limits are not part of the
 operating contract.
+
+`research_scope.mode` is `broad` or `focused`. In focused mode:
+
+- `include_domains[]` are the only primary discovery and selection domains;
+- `supporting_evidence[]` permits only evidence directly needed to interpret an
+  included domain, with that dependency stated per candidate;
+- `exclude_domains[]` are explicit non-goals;
+- held sources outside scope may be fingerprinted for dedupe but cannot count as
+  coverage, suppress a search lane, or enter the final manifest.
+
+Scope controls scientific subject matter, while `source_policy` controls
+freshness and file formats. Neither is inferred from invocation wording.
+
+`source_policy.recent_observation_window_years` is calculated backwards from
+`as_of_date`. Dynamic evidence outside that window cannot support a current-state
+claim. It may be retained only as an explicitly historical trend leg when a
+recent anchor exists. Older stable evidence is eligible only when a documented
+successor check shows unique primary measurements, geometry, depths, or
+stratigraphy. With `accept_any_useful_format: true`, `accepted_formats[]` is a
+non-exhaustive set of search hints, not an allowlist, quota, or ranking. PDF is
+fully eligible, while any useful native tabular, vector, raster, archive, API,
+database, scientific-array, point-cloud, or other asset must also be considered
+and retained when it adds usable evidence.
+
+Optional `selection_window_mode: "strict"` with `selection_cutoff_date` makes
+the cutoff a hard acquisition and selection gate for every evidence type.
+Older held or discovered sources remain leads only and must not be downloaded,
+reused, or selected in that run.
 Never inherit geography, administrative hierarchy, publishers, trusted domains,
 categories, dates, coverage conclusions, or source-selection decisions from a
 different request or prior run.
@@ -67,6 +95,19 @@ Each lane's `candidates.json` also records its `current_baseline_check`: the
 official repositories searched, newest authoritative candidate found, coverage
 class, observation and publication dates, and any predecessor/successor
 relationship established. Unknowns remain explicit.
+
+## Document information-value ranking
+
+`document_ranking.json` is an advisory ordering of the final selected sources;
+it does not change `manifest.json` membership or canonical paths. It contains
+`rubric_version`, `ranked_count`, and `ranked_documents[]`. Each ranked item has
+`rank`, `source_id`, `original_local_path`, `ranked_local_path`,
+`information_value_score`, `criterion_scores`, `rationale`, `key_information`,
+`limitations`, and `recommended_use`.
+
+Ranks are contiguous and every selected source appears once. Files under
+`ranked/` are byte-identical copies with zero-padded rank prefixes; their hashes
+must match the corresponding canonical manifest entries.
 
 The strategist's lane plan records, for every lane: `id`, bounded `objective`,
 `included_evidence_needs[]`, `supported_capabilities[]`, `exclusions[]`,

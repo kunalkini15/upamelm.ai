@@ -1,0 +1,55 @@
+{
+  "city": "Bengaluru",
+  "state": "Karnataka",
+  "country": "India",
+  "city_aliases": ["Bangalore"],
+  "district_aliases": ["Bangalore Urban", "Bengaluru Urban"],
+  "local_language_names": ["ಬೆಂಗಳೂರು"],
+  "as_of_date": "2026-11-04",
+  "study_boundary": "BBMP municipal footprint (~711 sq km, 12.833-13.142N 77.462-77.786E) as the city denominator; Bangalore Urban district (East, North, South, Anekal taluks) as the wider frame. Taluk evidence stays labelled taluk.",
+  "research_scope": {
+    "mode": "focused",
+    "include_domains": [
+      "aquifer geometry, disposition, boundaries, thickness, weathered zones, fractured zones, and productive depths",
+      "groundwater levels, monitoring wells, seasonal and long-term trends",
+      "groundwater resource assessment, recharge, extraction, stress, and status",
+      "groundwater quality, sampling locations, parameters, exceedances, and trends",
+      "exploratory wells, piezometers, pumping tests, and borehole logs that directly characterize aquifers or groundwater"
+    ],
+    "supporting_evidence": [
+      "geology, lithology, structure, soils, or land use only when directly required to interpret aquifer geometry, recharge, groundwater flow, quality, or well depths"
+    ],
+    "exclude_domains": [
+      "general geology or lineament mapping without a direct aquifer or groundwater role",
+      "standalone soil mapping without recharge, infiltration, groundwater-quality, or aquifer relevance",
+      "seismic hazard, deformation, and microzonation without a direct groundwater relationship",
+      "metro, utility, tunnel, and infrastructure studies without groundwater observations or aquifer evidence"
+    ]
+  },
+  "evidence_gaps": [
+    "city-scale aquifer geometry and depth",
+    "recent located groundwater-level observations and trends",
+    "current groundwater resource status and extraction stress",
+    "recent located groundwater-quality observations",
+    "aquifer-characterization wells, fractures, yields, and pumping-test evidence"
+  ],
+  "target_capabilities": [
+    "aquifer cross-section",
+    "aquifer depth and fracture-zone map",
+    "groundwater monitoring time series",
+    "groundwater status and extraction map",
+    "groundwater quality map"
+  ],
+  "source_policy": {
+    "recent_observation_window_years": 5,
+    "selection_cutoff_date": "2021-11-04",
+    "selection_window_mode": "strict",
+    "older_dynamic_evidence": "exclude from acquisition and selection; record only as an unresolved or historical lead",
+    "older_stable_evidence": "exclude from acquisition and selection; record only as an unresolved lead and search for an in-window successor",
+    "accept_any_useful_format": true,
+    "accepted_formats": ["pdf", "csv", "tsv", "xlsx", "json", "geojson", "kml", "kmz", "shapefile", "geopackage", "geotiff", "raster", "api"],
+    "require_native_companion_search": true
+  },
+  "trusted_domains": ["gov.in", "nic.in", "ac.in", "org.in"],
+  "preferred_publishers": ["CGWB", "CGWB SWR", "Groundwater Directorate Karnataka", "BWSSB", "IISc"]
+}

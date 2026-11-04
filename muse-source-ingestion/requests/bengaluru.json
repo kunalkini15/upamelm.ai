@@ -9,6 +9,20 @@
   "study_boundary": "BBMP municipal footprint (~711 sq km, 12.833-13.142N 77.462-77.786E) as the city denominator; Bangalore Urban district (East, North, South, Anekal taluks) as the wider frame. Taluk evidence stays labelled taluk.",
   "evidence_gaps": ["borehole lithology with depth", "soil horizons", "recent groundwater observations"],
   "target_capabilities": ["subsurface cross-section", "depth-to-rock map", "monitoring time series"],
+  "research_scope": {
+    "mode": "broad",
+    "include_domains": ["the wider subsurface evidence landscape"],
+    "supporting_evidence": [],
+    "exclude_domains": []
+  },
+  "source_policy": {
+    "recent_observation_window_years": 6,
+    "older_dynamic_evidence": "exclude unless needed as an explicitly historical trend leg alongside a recent anchor",
+    "older_stable_evidence": "allow only for unique primary measurements, geometry, depths, or stratigraphy after a successor check",
+    "accept_any_useful_format": true,
+    "accepted_formats": ["pdf", "csv", "tsv", "xlsx", "json", "geojson", "kml", "kmz", "shapefile", "geopackage", "geotiff", "raster", "api"],
+    "require_native_companion_search": true
+  },
   "trusted_domains": ["gov.in", "nic.in", "ac.in", "org.in"],
   "preferred_publishers": ["CGWB", "GSI", "CGWB SWR", "KSRSAC", "NBSS&LUP"]
 }

@@ -69,6 +69,16 @@ const finalizeData = () => ({
   selected_count: 3,
 });
 
+const rankingData = () => ({
+  complete: true,
+  evidence: ['ranking written'],
+  unresolved: [],
+  ranking_path: `${OUT}/document_ranking.json`,
+  ranking_markdown_path: `${OUT}/document_ranking.md`,
+  ranked_dir: `${OUT}/ranked`,
+  ranked_count: 3,
+});
+
 function makeHost({ scoutResult, distillResult }) {
   const agent = async ({ label }) => {
     if (label === 'scout') return scoutResult;
@@ -76,6 +86,7 @@ function makeHost({ scoutResult, distillResult }) {
     if (label === 'consolidate') return compact(consolidateData(), 'ref-consolidate');
     if (label === 'strategic-review') return compact(reviewData(), 'ref-review');
     if (label === 'repair-and-finalize') return compact(finalizeData(), 'ref-finalize');
+    if (label === 'information-value-ranking') return compact(rankingData(), 'ref-ranking');
     throw new Error(`unexpected agent label: ${label}`);
   };
   const parallel = async (inputs) =>
@@ -94,10 +105,12 @@ describe('ingest-workflow spill handling', () => {
     });
     const report = await workflow(host);
     assert.equal(report.status, 'complete');
-    assert.equal(report.wonder_calls, 2);
+    assert.equal(report.wonder_calls, 3);
     const scopes = report.stages.map((s) => s.scope);
     assert.ok(scopes.includes('lane-geology'));
     assert.ok(scopes.includes('lane-boreholes'));
+    assert.ok(scopes.includes('information-value-ranking'));
+    assert.equal(report.outputs.ranked_count, 3);
     assert.ok(report.stages.every((s) => s.complete));
   });
 

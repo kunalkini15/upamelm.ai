@@ -49,7 +49,10 @@ muse-source-ingestion/runs/<run-id>/
 ├── comparison.md           # selection/rejection reasons, dedupe log
 ├── handoff.md              # per-source pointers for document-processing runs
 ├── run_summary.json        # activity, stopping rationale, blockers, gaps
-└── verification.md         # Spark final checks and unresolved items
+├── verification.md         # Spark final checks and unresolved items
+├── document_ranking.json   # Wonder information-value ordering for top-N use
+├── document_ranking.md     # concise human-readable ranking
+└── ranked/                 # ordered byte-identical copies: 01__..., 02__...
 ```
 
 `manifest.json` keeps the `SourceManifest` / `AcquiredSource` core from
@@ -60,10 +63,17 @@ added fields (see [contracts.md](contracts.md)). Each manifest entry's
 the git-ignored `playground/` workspace
 (see [playground/README.md](playground/README.md)), never in `runs/`.
 
-The runner routes strategic planning and independent critique to Wonder, while
-Spark performs parallel discovery, synthesis, targeted repair, and final
-verification. This routing is explicit in `ingest-workflow.js`; changing the
-wording of the invocation does not change the model assignment.
+The runner routes strategic planning, independent critique, and final
+information-value ranking to Wonder, while Spark performs parallel discovery,
+synthesis, targeted repair, and final verification. Ranking uses compact
+evidence artifacts and high-signal document sections rather than rereading all
+content. This routing is explicit in `ingest-workflow.js`; changing the wording
+of the invocation does not change the model assignment.
+
+Canonical downloads retain their original names and manifest paths. Ordered
+copies under `ranked/` add a zero-padded rank prefix, allowing a downstream
+workflow to select the first five or six documents without changing provenance
+or invalidating hashes.
 
 ## Local lessons
 
@@ -98,3 +108,10 @@ numbered lessons. Whether the file was loaded is recorded in the run artifacts.
   before selecting specialist or older sources. Weight freshness strongly for
   changing observations, while retaining older material only when it contributes
   unique primary measurements, geometry, depths, or historical comparison.
+- Apply the request's recent-observation window to current dynamic evidence.
+  Older dynamic material is historical-only and requires a recent anchor; older
+  stable material requires a successor check and unique-evidence justification.
+- Remain format-neutral. PDFs are first-class evidence, while every lane also
+  searches applicable native tabular, vector, raster, archive, API, and
+  companion assets. Select on evidence value and downstream usability, never a
+  format quota.

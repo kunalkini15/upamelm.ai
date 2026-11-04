@@ -1,0 +1,56 @@
+{
+  "schema_version": "muse-scene-package.v1",
+  "crs": "EPSG:4326",
+  "metadata": {
+    "title": "TEST FIXTURE — synthetic 3D evidence only, never shipped",
+    "description": "Deterministic browser/unit fixture proving the enabled 3D path renders validated heights without inventing geometry."
+  },
+  "layers": [
+    { "id": "syn3d-points", "title": "Synthetic elevated points", "capability": "point-observation" },
+    { "id": "syn3d-profile", "title": "Synthetic vertical profile", "capability": "vertical-profile" }
+  ],
+  "features": [
+    {
+      "id": "syn3d-a",
+      "layer": "syn3d-points",
+      "label": "Synthetic mast A",
+      "geometry": { "kind": "point", "coordinates": [10.0, 50.0], "elevationMeters": 12.5 }
+    },
+    {
+      "id": "syn3d-b",
+      "layer": "syn3d-points",
+      "label": "Synthetic mast B",
+      "geometry": { "kind": "point", "coordinates": [10.0012, 50.0008], "elevationMeters": 40.0 }
+    },
+    {
+      "id": "syn3d-c",
+      "layer": "syn3d-profile",
+      "label": "Synthetic sounding C",
+      "geometry": { "kind": "point", "coordinates": [10.0006, 49.9995], "elevationMeters": 87.5 }
+    },
+    {
+      "id": "syn3d-link",
+      "layer": "syn3d-profile",
+      "label": "Synthetic transect",
+      "geometry": { "kind": "line", "coordinates": [[10.0003, 49.9998], [10.0009, 50.0004]], "elevationMeters": 25.0 }
+    }
+  ],
+  "narrative": [
+    {
+      "id": "syn3d-insight-1",
+      "title": "Synthetic 3D insight",
+      "body": "Links mast A to the transect for 3D selection coordination checks.",
+      "features": ["syn3d-a", "syn3d-link"]
+    }
+  ],
+  "reports": [
+    {
+      "id": "syn3d-section-1",
+      "title": "Synthetic 3D section",
+      "body": "Structured section referencing sounding C.",
+      "features": ["syn3d-c"]
+    }
+  ],
+  "limitations": ["Synthetic 3D fixture limitation."],
+  "unresolved": []
+}

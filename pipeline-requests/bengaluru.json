@@ -1,0 +1,13 @@
+{
+  "ingest_request": "muse-source-ingestion/requests/bengaluru.json",
+  "ingest_run": "muse-source-ingestion/runs/bengaluru-pipeline-v1",
+  "studies_dir": "muse-document-processing/runs/bengaluru-pipeline-v1",
+  "translate_dir": "muse-translate/runs/bengaluru-pipeline-v1",
+  "pipeline_dir": "runs/bengaluru-pipeline-v1",
+  "max_docs": 5,
+  "doc_ids": [],
+  "languages": ["Kannada", "Hindi"],
+  "study_fanout": "sequential",
+  "translate_fanout": "parallel",
+  "guidance": "Top-5 ranked sources, plain-language translations for a lay reader."
+}

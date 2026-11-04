@@ -1,11 +1,23 @@
-// Periodic build, browser, fixture, and registry health check.
-// Args: { module_dir, run_id?, allow_fix? }
-//
-// Model routing: Spark only, except one Wonder incident review per incident
-// after two consecutive unhealthy runs. Deduplication persists in
-// <module_dir>/verification/guardian-incidents.json so a daily schedule cannot
-// invoke Wonder repeatedly for the same incident. Wonder reviews compact
-// artifacts only, never edits source, and is never re-invoked after repair.
+/**
+ * @file adaptive-ui-guardian.js
+ * @module .agents/workflows/adaptive-ui-guardian
+ * @description Continuous health, regression, and integrity monitor for the adaptive UI module.
+ * Runs on periodic schedules or CI/CD hooks to validate schema compliance, execute unit tests,
+ * audit browser hydration, and inspect capability registries.
+ *
+ * @workflow
+ *   1. Registry Validation (Spark) -> Verifies schema syntax and capability-package cross references.
+ *   2. Build & Unit Test Verification (Spark) -> Executes full Vitest suite.
+ *   3. Browser Hydration & Console Audit (Spark) -> Launches headless browser to inspect canvas and logs.
+ *   4. Incident Deduplication & Logging -> Records incident state in guardian-incidents.json.
+ *   5. Optional Incident Review (Wonder) -> Triggered only after consecutive failures (max 1 call).
+ *
+ * @param {Object} host - The Muse workflow host context.
+ * @param {string} host.args.module_dir - Target module directory (e.g. "muse-ui").
+ * @param {string} [host.args.run_id] - Optional run identifier.
+ * @param {boolean} [host.args.allow_fix=false] - Whether automatic repair by Spark is permitted.
+ * @returns {Promise<Object>} Execution report containing status, diagnostics, and test results.
+ */
 
 const SPARK = "muse-spark-1.3-contributor";
 const WONDER = "muse-wonder-1.0";

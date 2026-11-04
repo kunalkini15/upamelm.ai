@@ -53,6 +53,8 @@ docs/
 # Root-level playground only (anchored so module playgrounds keep their own rules)
 /playground/
 .playwright-cli/
+/muse-ui/.scratch/
+/muse-ui/tests/browser/__m1*.spec.ts
 
 # Generated example outputs (keep curated sample_*.json fixtures tracked)
 doc-intelligence/examples/cli_test_*.json
@@ -68,6 +70,7 @@ muse-source-ingestion/runs/*/
 # Local, human-curated agent lessons (machine/user specific)
 /muse-source-ingestion/lessons/
 /muse-ui/lessons/
+/muse-document-processing/lessons/
 
 # Agent playground (downloads, extraction scratch, intermediate artifacts)
 muse-document-processing/playground/*/

@@ -8,6 +8,10 @@ description: Build or evolve the repository's generic scientific visualization a
 Read `<module_dir>/BASELINE.md`, `<module_dir>/AGENTS.md`, and
 `<module_dir>/WORKFLOW.md` completely before planning or editing. Together they
 own the product, architectural, correctness, and verification contract.
+When the saved experience-foundation or refinement workflow invokes this skill,
+also read `<module_dir>/EXPERIENCE.md` completely; it owns the reusable visual
+and interaction language for that run. Refinement must additionally read the
+active requirement and preserve its frozen package/registry boundary.
 
 ## Working posture
 

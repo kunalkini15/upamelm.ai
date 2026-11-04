@@ -1,11 +1,26 @@
-// Build the neutral adaptive visualization application foundation.
-// Args: { module_dir?, run_id? }
-//
-// Model routing: Spark writes code and runs active checks. Wonder reviews
-// compact artifacts only and never edits source. Hard cap: 2 Wonder calls
-// (architecture review + final review). Wonder is never re-invoked after
-// repair; a Wonder outage degrades to Spark-only with a recorded unresolved
-// item instead of failing the run.
+/**
+ * @file adaptive-ui-bootstrap.js
+ * @module .agents/workflows/adaptive-ui-bootstrap
+ * @description Bootstraps the neutral adaptive scientific visualization foundation from scratch.
+ * Operates without any document-specific study package, establishing the baseline MapLibre 2D GIS map,
+ * Three.js 3D viewport, unified interaction store, and capability negotiation framework.
+ *
+ * @workflow
+ *   1. Architecture Design (Spark) -> Defines invariants and boundary interfaces.
+ *   2. Architecture Review (Wonder) -> Validates clean-room design and rejects document couplings.
+ *   3. Application Build (Spark) -> Synthesizes shell, map, 3D workspace, and tests.
+ *   4. Visual & Interaction Critique (Spark/Wonder) -> Headless browser checks and screenshots.
+ *   5. Registry Promotion & Staged Rollback -> Promotes capabilities with full schema validation.
+ *
+ * @modelRouting
+ *   - Spark: Writes code and runs active checks.
+ *   - Wonder: Reviews compact artifacts only; capped at 2 calls (architecture + final).
+ *
+ * @param {Object} host - The Muse workflow host context.
+ * @param {string} [host.args.module_dir="muse-ui"] - Target module directory.
+ * @param {string} [host.args.run_id="bootstrap-default"] - Identifier for verification artifacts.
+ * @returns {Promise<Object>} Execution report containing status, verification paths, and stages.
+ */
 
 const SPARK = "muse-spark-1.3-contributor";
 const WONDER = "muse-wonder-1.0";

@@ -1,10 +1,24 @@
-// Evolve the application from a human requirement or a new study package.
-// Args: { module_dir, trigger_type: "requirement"|"package", trigger_path, run_id? }
-//
-// Model routing: Spark by default. Wonder is used at most once per run, and
-// only for a design review when the analysis finds a new registry capability
-// or a genuinely cross-cutting renderer change. Wonder reviews compact
-// artifacts only, never edits source, and is never looped after repair.
+/**
+ * @file adaptive-ui-evolve.js
+ * @module .agents/workflows/adaptive-ui-evolve
+ * @description Evolves the scientific visualization application from a human requirement or new study package.
+ * Inspects incoming domain data, derives new visual capabilities, updates renderers,
+ * and stages capability registry updates with rigorous browser verification.
+ *
+ * @workflow
+ *   1. Capability Analysis (Spark) -> Compares trigger data against live capability registry.
+ *   2. Design Direction Review (Wonder) -> Evaluates cross-cutting renderer changes (max 1 call).
+ *   3. Implementation (Spark) -> Extends renderers and registers test fixtures.
+ *   4. Visual Acceptance (Spark) -> Verifies in headless browser and captures screenshots.
+ *   5. Promotion & Verification -> Promotes validated capability registry safely.
+ *
+ * @param {Object} host - The Muse workflow host context.
+ * @param {string} host.args.module_dir - Target module directory (e.g. "muse-ui").
+ * @param {"requirement"|"package"} host.args.trigger_type - Type of input triggering evolution.
+ * @param {string} host.args.trigger_path - File path to requirement markdown or study package JSON.
+ * @param {string} [host.args.run_id] - Optional verification run identifier.
+ * @returns {Promise<Object>} Execution report containing status, verification paths, and stages.
+ */
 
 const SPARK = "muse-spark-1.3-contributor";
 const WONDER = "muse-wonder-1.0";

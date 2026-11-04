@@ -1,0 +1,14 @@
+{
+  "city": "Bengaluru",
+  "state": "Karnataka",
+  "country": "India",
+  "city_aliases": ["Bangalore"],
+  "district_aliases": ["Bangalore Urban", "Bengaluru Urban"],
+  "local_language_names": ["ಬೆಂಗಳೂರು"],
+  "as_of_date": "2026-11-04",
+  "study_boundary": "BBMP municipal footprint (~711 sq km, 12.833-13.142N 77.462-77.786E) as the city denominator; Bangalore Urban district (East, North, South, Anekal taluks) as the wider frame. Taluk evidence stays labelled taluk.",
+  "evidence_gaps": ["borehole lithology with depth", "soil horizons", "recent groundwater observations"],
+  "target_capabilities": ["subsurface cross-section", "depth-to-rock map", "monitoring time series"],
+  "trusted_domains": ["gov.in", "nic.in", "ac.in", "org.in"],
+  "preferred_publishers": ["CGWB", "GSI", "CGWB SWR", "KSRSAC", "NBSS&LUP"]
+}

@@ -79,3 +79,5 @@ muse-document-processing/playground/*/
 # Agent ingestion playground (search scratch, probes, failed downloads)
 muse-source-ingestion/playground/*/
 !muse-source-ingestion/playground/.gitkeep
+
+runs/

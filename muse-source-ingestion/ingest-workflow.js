@@ -20,6 +20,8 @@
  * @param {Object} host - Muse workflow host context.
  * @param {string} host.args.request - Path to the city request specification JSON (e.g., requests/bengaluru.json).
  * @param {string} host.args.output_dir - Run output directory (e.g., runs/bengaluru-2025).
+ * @param {boolean} [host.args.dry_run=false] - Reuse a compatible completed run.
+ * @param {string} [host.args.runs_dir=muse-source-ingestion/runs] - Dry-run search root when output_dir is omitted.
  * @returns {Promise<Object>} Execution report containing status, manifest paths, and stage telemetry.
  */
 
@@ -34,7 +36,8 @@ export default async function workflow(host) {
   }
   const request = args.request;
   const outputDir = args.output_dir;
-  if (!request || !outputDir) {
+  const dryRun = args.dry_run === true;
+  if (!request || (!outputDir && !dryRun)) {
     const report = {
       status: "invalid_args",
       unresolved: ["args must include request and output_dir"],
@@ -55,6 +58,37 @@ export default async function workflow(host) {
     },
   });
   const pathProp = { type: "string" };
+
+  if (dryRun) {
+    const searchRoot = args.runs_dir || "muse-source-ingestion/runs";
+    const result = await host.agent({
+      label: "dry-run-resolver",
+      model: SPARK,
+      input: `Dry-run only: do not create, edit, copy, rename, download, or regenerate anything. Read ${request} completely. ${outputDir ? `First inspect the exact candidate run ${outputDir}; if that path does not exist, search direct run folders under ${searchRoot}. If it exists but is incompatible or incomplete, fail instead of silently substituting another run.` : `Search direct run folders under ${searchRoot}.`} Select the newest successfully completed ingestion run whose frozen request.json is semantically compatible with the supplied request (city/geography, research scope, source policy, and material guidance must match; ignore only run-output paths). Never select by folder name alone. Require and validate manifest.json, handoff.md, verification.md, document_ranking.json, document_ranking.md, ranked/, and run_summary.json; normally require run_summary status to start with complete. For a legacy run_summary that has no status field, accept it only when verification.md explicitly records every hard gate as passing, the manifest/ranking counts reconcile, and every ranked_local_path exists with its recorded checksum/size validation. Return complete=false rather than using a partial or mismatched run. Return paths only; perform no writes.`,
+      schema: stageSchema({
+        reused_from: pathProp,
+        request_path: pathProp,
+        request_sha256: pathProp,
+        manifest_path: pathProp,
+        handoff_path: pathProp,
+        verification_path: pathProp,
+        ranking_path: pathProp,
+        ranking_markdown_path: pathProp,
+        ranked_dir: pathProp,
+        run_summary_path: pathProp,
+        ranked_count: { type: "integer" },
+        selected_count: { type: "integer" },
+      }),
+    });
+    const data = result?.data;
+    if (!result || result.error_kind || result.data_spilled_for_size || !data || data.complete !== true) {
+      const report = { status: "partial", failed_stage: "dry-run-resolver", dry_run: true, request, output_dir: outputDir || null, unresolved: data?.unresolved || ["no compatible completed ingestion run found"], stages: [{ scope: "dry-run-resolver", ref: result?.ref || null, complete: false, model: SPARK, error_kind: result?.error_kind || "incomplete" }], notes: [] };
+      return { ...report, summary: JSON.stringify(report) };
+    }
+    const outputs = { manifest: data.manifest_path, handoff: data.handoff_path, verification: data.verification_path, document_ranking: data.ranking_path, document_ranking_markdown: data.ranking_markdown_path, ranked_dir: data.ranked_dir, run_summary: data.run_summary_path, ranked_count: data.ranked_count, selected_count: data.selected_count };
+    const report = { status: "complete_reused", dry_run: true, request, output_dir: data.reused_from, reused_from: data.reused_from, request_sha256: data.request_sha256, outputs, stages: [{ scope: "dry-run-resolver", ref: result.ref || null, complete: true, model: SPARK, error_kind: null }], unresolved: data.unresolved || [], notes: [] };
+    return { ...report, summary: JSON.stringify(report) };
+  }
 
   const brief = [
     `Ingest subsurface sources for the city in request file: ${request}.`,

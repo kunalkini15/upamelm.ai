@@ -98,6 +98,29 @@ function makeHost({ scoutResult, distillResult }) {
 }
 
 describe('ingest-workflow spill handling', () => {
+  it('reuses a compatible completed ingestion run in dry-run mode', async () => {
+    const host = {
+      args: { ...ARGS, dry_run: true },
+      agent: async ({ label, input }) => {
+        assert.equal(label, 'dry-run-resolver');
+        assert.match(input, /semantically compatible/);
+        return compact({
+          complete: true, evidence: [], unresolved: [], reused_from: OUT,
+          request_path: `${OUT}/request.json`, request_sha256: 'abc123',
+          manifest_path: `${OUT}/manifest.json`, handoff_path: `${OUT}/handoff.md`,
+          verification_path: `${OUT}/verification.md`, ranking_path: `${OUT}/document_ranking.json`,
+          ranking_markdown_path: `${OUT}/document_ranking.md`, ranked_dir: `${OUT}/ranked`,
+          run_summary_path: `${OUT}/run_summary.json`, ranked_count: 20, selected_count: 20,
+        }, 'ref-dry-run');
+      },
+    };
+    const report = await workflow(host);
+    assert.equal(report.status, 'complete_reused');
+    assert.equal(report.dry_run, true);
+    assert.equal(report.outputs.ranked_count, 20);
+    assert.equal(report.outputs.document_ranking, `${OUT}/document_ranking.json`);
+  });
+
   it('recovers from a spilled scout result via distiller and completes', async () => {
     const host = makeHost({
       scoutResult: spilled('ref-scout'),

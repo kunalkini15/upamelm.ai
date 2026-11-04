@@ -9,11 +9,14 @@ const CFG = {
   studies_dir: "muse-document-processing/runs/test-pipe",
   translate_dir: "muse-translate/runs/test-pipe",
   pipeline_dir: "runs/test-pipeline",
+  dry_run: false,
   max_docs: 3,
   languages: ["kn", "hi"],
   doc_ids: [],
   study_fanout: "sequential",
   translate_fanout: "parallel",
+  study_concurrency: 3,
+  translate_concurrency: 3,
 };
 
 const DOCS = [
@@ -61,6 +64,10 @@ describe("pipeline orchestrator", () => {
     const report = await workflow(host);
     assert.equal(report.status, "complete");
     assert.deepEqual(host.calls.map((c) => c.label), ["pipeline-planner", "promote-ingestion", "promote-studies", "promote-translations"]);
+    const translationPromotion = host.calls.find((c) => c.label === "promote-translations").input;
+    assert.match(translationPromotion, /narrative_package_<lang>\.json/);
+    assert.match(translationPromotion, /report_<lang>\.json/);
+    assert.match(translationPromotion, /into BOTH .*\/studies\/<doc-id>\//);
     const ingest = host.runnerCalls.find((c) => c.stage === "ingest");
     assert.equal(ingest.args.request, CFG.ingest_request);
     assert.equal(ingest.args.output_dir, CFG.ingest_run);
@@ -101,5 +108,69 @@ describe("pipeline orchestrator", () => {
     const report = await workflow(host);
     assert.equal(report.status, "partial");
     assert.match(report.unresolved[0], /languages/);
+  });
+
+  it("limits study and translation fan-out to the configured concurrency", async () => {
+    const docs = Array.from({ length: 7 }, (_, index) => ({
+      id: `doc-${index + 1}`,
+      rank: index + 1,
+      source_path: `${CFG.ingest_run}/ranked/${index + 1}.pdf`,
+    }));
+    const host = hostFor({
+      docs,
+      planner: { ...CFG, max_docs: 7, study_fanout: "parallel", study_concurrency: 3, translate_concurrency: 3 },
+    });
+    let activeStudies = 0;
+    let activeTranslations = 0;
+    let maxActiveStudies = 0;
+    let maxActiveTranslations = 0;
+    host.runners.study = async () => {
+      activeStudies += 1;
+      maxActiveStudies = Math.max(maxActiveStudies, activeStudies);
+      await new Promise((resolve) => setTimeout(resolve, 5));
+      activeStudies -= 1;
+      return okReport({});
+    };
+    host.runners.translate = async () => {
+      activeTranslations += 1;
+      maxActiveTranslations = Math.max(maxActiveTranslations, activeTranslations);
+      await new Promise((resolve) => setTimeout(resolve, 5));
+      activeTranslations -= 1;
+      return okReport({});
+    };
+
+    const report = await workflow(host);
+
+    assert.equal(report.status, "complete");
+    assert.equal(maxActiveStudies, 3);
+    assert.equal(maxActiveTranslations, 3);
+  });
+
+  it("threads dry-run reuse through all stages and uses resolved cached directories", async () => {
+    const host = hostFor({ planner: { ...CFG, dry_run: false } });
+    host.args.dry_run = true;
+    host.runners.ingest = async (h) => {
+      host.runnerCalls.push({ stage: "ingest", args: h.args });
+      return okReport({ status: "complete_reused", output_dir: "cached/ingestion", outputs: { document_ranking: "cached/ingestion/document_ranking.json", ranked_dir: "cached/ingestion/ranked" } });
+    };
+    host.runners.study = async (h) => {
+      host.runnerCalls.push({ stage: "study", args: h.args });
+      const id = h.args.output_dir.split("/").pop();
+      return okReport({ status: "complete_reused", output_dir: "", reused_from: "", outputs: { study_package: `cached/studies/${id}/study_package.json` } });
+    };
+    host.runners.translate = async (h) => {
+      host.runnerCalls.push({ stage: "translate", args: h.args });
+      const id = h.args.output_dir.split("/").pop();
+      return okReport({ status: "complete_reused", output_dir: `cached/translations/${id}` });
+    };
+
+    const report = await workflow(host);
+
+    assert.equal(report.status, "complete");
+    assert.equal(report.dry_run, true);
+    assert.ok(host.runnerCalls.every((call) => call.args.dry_run === true));
+    assert.deepEqual(host.runnerCalls.filter((call) => call.stage === "translate").map((call) => call.args.input), DOCS.map((doc) => `cached/studies/${doc.id}`));
+    assert.deepEqual(report.outputs.translations.map((item) => item.output_dir), DOCS.map((doc) => `cached/translations/${doc.id}`));
+    assert.match(host.calls.find((call) => call.label === "promote-ingestion").input, /cached\/ingestion/);
   });
 });

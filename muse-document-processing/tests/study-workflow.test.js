@@ -35,6 +35,26 @@ function hostFor({ warnings = 0, authorWarnings = 0, compilerFallbacks = 0, comp
 }
 
 describe("deep study workflow", () => {
+  it("reuses a compatible completed study in dry-run mode", async () => {
+    const host = {
+      args: { document: "source.pdf", output_dir: OUT, dry_run: true },
+      agent: async ({ label, input }) => {
+        assert.equal(label, "dry-run-resolver");
+        assert.match(input, /exact source document/);
+        return result(label, {
+          reused_from: "", source_sha256: "abc123",
+          study_package: `${OUT}/study_package.json`, narrative_package: `${OUT}/narrative_package.json`,
+          report: `${OUT}/report.json`, grounding_selfcheck: `${OUT}/grounding_selfcheck.json`,
+        });
+      },
+    };
+    const report = await workflow(host);
+    assert.equal(report.status, "complete_reused");
+    assert.equal(report.output_dir, OUT);
+    assert.equal(report.output_dir, OUT);
+    assert.equal(report.outputs.study_package, `${OUT}/study_package.json`);
+  });
+
   it("runs dynamic extraction, Wonder visual direction, Spark authoring, and Wonder finalization", async () => {
     const host = hostFor();
     const report = await workflow(host);

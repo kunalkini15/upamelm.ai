@@ -18,6 +18,8 @@
  * @param {Object} host - Muse workflow host context.
  * @param {string} host.args.document - Path to the input technical document.
  * @param {string} host.args.output_dir - Run output directory for artifacts.
+ * @param {boolean} [host.args.dry_run=false] - Reuse a compatible completed study.
+ * @param {string} [host.args.runs_dir=muse-document-processing/runs] - Dry-run search root when output_dir is omitted.
  * @returns {Promise<Object>} Execution report containing status, artifact paths, and token telemetry.
  */
 const SPARK = "muse-spark-1.3-contributor";
@@ -29,7 +31,8 @@ export default async function workflow(host) {
   if (typeof args === "string") { try { args = JSON.parse(args); } catch { args = {}; } }
   const document = args.document;
   const outputDir = args.output_dir;
-  if (!document || !outputDir) return finish({ status: "invalid_args", unresolved: ["args must include document and output_dir"] });
+  const dryRun = args.dry_run === true;
+  if (!document || (!outputDir && !dryRun)) return finish({ status: "invalid_args", unresolved: ["args must include document and output_dir (output_dir may be omitted in dry_run mode)"] });
 
   const path = { type: "string" };
   const schema = (extra) => ({
@@ -43,6 +46,24 @@ export default async function workflow(host) {
     },
   });
   const COMPACT = "Return under 3KB: at most 6 short evidence/unresolved strings; keep full detail in files and return paths/counts only.";
+  if (dryRun) {
+    const searchRoot = args.runs_dir || "muse-document-processing/runs";
+    let result;
+    try {
+      result = await host.agent({
+        label: "dry-run-resolver",
+        model: SPARK,
+        input: `Dry-run only: do not create, edit, copy, rename, or regenerate anything. Source document: ${document}. ${outputDir ? `First inspect the exact candidate study run ${outputDir}; if that path does not exist, search direct run folders under ${searchRoot}. If it exists but is incompatible or incomplete, fail instead of silently substituting another run.` : `Search direct run folders under ${searchRoot}.`} Select the newest successfully completed study for this exact source document. Match using recorded source identity and checksum when available, not folder name; a ranked byte-identical copy may match its canonical source by checksum. Require valid study_package.json, narrative_package.json, report.json, grounding_selfcheck.json, and a completion record/checkpoint showing status starts with complete. Return complete=false for partial, stale, mismatched, or invalid runs. Return paths only; perform no writes.`,
+        schema: schema({ reused_from: path, source_sha256: path, study_package: path, narrative_package: path, report: path, grounding_selfcheck: path }),
+      });
+    } catch { result = null; }
+    const data = result?.data;
+    if (!result || result.error_kind || result.data_spilled_for_size || !data || data.complete !== true) return finish({ status: "partial", failed_stage: "dry-run-resolver", dry_run: true, document, output_dir: outputDir || null, stages: [{ scope: "dry-run-resolver", ref: result?.ref || null, complete: false, model: SPARK, error_kind: result?.error_kind || "incomplete" }], unresolved: data?.unresolved || ["no compatible completed study run found"], notes: [] });
+    const outputs = { study_package: data.study_package, narrative_package: data.narrative_package, report: data.report, grounding_selfcheck: data.grounding_selfcheck };
+    const resolvedDir = data.reused_from || String(data.study_package || "").replace(/\/[^/]+$/, "");
+    if (!resolvedDir) return finish({ status: "partial", failed_stage: "dry-run-resolver", dry_run: true, document, output_dir: outputDir || null, stages: [{ scope: "dry-run-resolver", ref: result.ref || null, complete: false, model: SPARK, error_kind: "missing_resolved_dir" }], unresolved: ["compatible study was found but its resolved directory could not be derived"], notes: [] });
+    return finish({ status: "complete_reused", dry_run: true, document, output_dir: resolvedDir, reused_from: resolvedDir, source_sha256: data.source_sha256, outputs, stages: [{ scope: "dry-run-resolver", ref: result.ref || null, complete: true, model: SPARK, error_kind: null }], unresolved: data.unresolved || [], notes: [] });
+  }
   const BASE = [
     `Source: ${document}. Output directory: ${outputDir}/.`,
     "Read muse-document-processing/WORKFLOW.md, contracts.md, and ui-output-contracts.json completely.",

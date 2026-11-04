@@ -4,10 +4,13 @@
   "studies_dir": "muse-document-processing/runs/bengaluru-pipeline-v1",
   "translate_dir": "muse-translate/runs/bengaluru-pipeline-v1",
   "pipeline_dir": "runs/bengaluru-pipeline-v1",
+  "dry_run": false,
   "max_docs": 5,
   "doc_ids": [],
   "languages": ["Kannada", "Hindi"],
-  "study_fanout": "sequential",
+  "study_fanout": "parallel",
   "translate_fanout": "parallel",
+  "study_concurrency": 3,
+  "translate_concurrency": 3,
   "guidance": "Top-5 ranked sources, plain-language translations for a lay reader."
 }

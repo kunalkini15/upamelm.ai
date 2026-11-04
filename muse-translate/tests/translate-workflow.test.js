@@ -37,6 +37,27 @@ function hostFor({ laneCount = 2 } = {}) {
 }
 
 describe("translate workflow", () => {
+  it("reuses a compatible completed translation in dry-run mode", async () => {
+    const host = {
+      args: { input: "study/run", output_dir: OUT, languages: ["kn", "hi"], dry_run: true },
+      agent: async ({ label, input }) => {
+        assert.equal(label, "dry-run-resolver");
+        assert.match(input, /normalized requested language set/);
+        return result(label, {
+          reused_from: "", input_sha256: "abc123", request_path: `${OUT}/request.json`,
+          inventory_path: `${OUT}/inventory.json`, verification_path: `${OUT}/verification.md`,
+          summary_path: `${OUT}/run_summary.json`, lane_ids: ["kn", "hi"],
+          output_paths: [`${OUT}/study_package_kn.json`, `${OUT}/study_package_hi.json`],
+        });
+      },
+    };
+    const report = await workflow(host);
+    assert.equal(report.status, "complete_reused");
+    assert.equal(report.output_dir, OUT);
+    assert.deepEqual(report.outputs.lane_ids, ["kn", "hi"]);
+    assert.deepEqual(report.outputs.lane_outputs.kn, [`${OUT}/study_package_kn.json`]);
+  });
+
   it("runs planning, parallel final-package lanes, and one verification pass", async () => {
     const host = hostFor({ laneCount: 2 });
     const report = await workflow(host);

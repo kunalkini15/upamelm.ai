@@ -1,0 +1,36 @@
+{"event":"start","run_dir":"agentic-sourcing/runs/bengaluru-2026-11-04/gap-structure","cwd":"/Users/kunal.kini/Kunal/Projects/meta-gloabl-ai-hackathon-oct/subsurface","brief":"source-intelligence/examples/bengaluru.json","ts":"2026-11-04T01:37Z"}
+{"event":"search","n":1,"query":"CGWB Bangalore Urban exploratory well lithology report PDF","hits":["cgwb East NAQUIM pdf","ijres exploration paper","cgwb Anekal download/965","antharjala North NAQUIM pdf"]}
+{"event":"search","n":2,"query":"GSI Bengaluru district geology memoir borehole litholog","hits":["iisc J-15 weathered/engineering bedrock","sitharam 900-borelog GIS model"]}
+{"event":"search","n":3,"query":"Bengaluru depth to bedrock weathered granite gneiss thickness","hits":["iisc J-15 (1-21m weathered)","varthur weathered zone 1.5-14.6m"]}
+{"event":"search","n":4,"query":"Bangalore borehole log geotechnical investigation soil rock profile PDF","hits":["site-level GIRs (too small-scale, rejected)","iisc J-7 borelog"]}
+{"event":"search","n":5,"query":"CGWB aquifer mapping Bangalore North South Anekal taluk fence diagram lithology","hits":["ijres fence diagrams","cgwb 2012 Urban booklet","cgwb 2008 brochure"]}
+{"event":"search","n":6,"query":"GSI Bhukosh Bangalore Urban geological map granite gneiss Peninsular Gneiss","hits":["opencity GIR vol-III (BHUKOSH map)","GSI MP30 Karnataka&Goa flipbook"]}
+{"event":"search","n":7,"query":"Bengaluru suburban rail Metro geotechnical investigation report borehole corridor PDF","hits":["airport metro phase-2B DPR (16 boreholes, vol2 bore logs)"]}
+{"event":"search","n":8,"query":"\"Bangalore Urban\" CGWB NAQUIM aquifer management plan lithology section download","hits":["East NAQUIM pdf direct","North NAQUIM antharjala","South pub-detail/964","Anekal download/965","North pub-detail/634"]}
+{"event":"search","n":9,"query":"Anbazhagan Sitharam Bangalore rock depth borehole database 900 boreholes site characterization","hits":["docslib microzonation mirror","IGJ liquefaction TABLE 2 soil distribution","JSEE shallow bedrock"]}
+{"event":"search","n":10,"query":"Geological Survey India \"Miscellaneous Publication\" No.30 Karnataka Goa geology mineral resources PDF","hits":["indiawaterportal MP30 copy","gsi.gov.in release notice"]}
+{"event":"search","n":11,"query":"Bangalore microzonation soil profile \"clayey sand\" \"weathered rock\" borehole depth water table Anbazhagan","hits":["iisc J-11 (170 borelogs)","iisc J-6 soil profile table","vdocuments shear-wave mirror"]}
+{"event":"fetch","n":1,"via":"web_fetch","url":"https://cgwb.gov.in/cgwbpnm/public/uploads/documents/1687415760853575201file.pdf","result":"fail: UnknownIssuer cert"}
+{"event":"fetch","n":2,"via":"web_fetch","url":"https://cgwb.gov.in/cgwbpnm/publication-detail/964","result":"fail: UnknownIssuer cert"}
+{"event":"fetch","n":3,"via":"web_fetch","url":"https://antharjala.karnataka.gov.in/storage/pdf-files/NAQUIM%20REPORTS/12.pdf","result":"fail: UnknownIssuer cert"}
+{"event":"fetch","n":4,"via":"web_fetch","url":"http://civil.iisc.ac.in/~anbazhagan/pdf/Anbu%20IISc%20J-15.pdf","result":"fail: cert name mismatch"}
+{"event":"probe","note":"curl HEAD/Range<=201B; counted separately from fetches","results":["cgwb East pdf: 200, 1409919B","antharjala raw url: malformed (unencoded space)","2012 booklet: HEAD 403 (GET works)","iisc J-15: 403"],"urls":4}
+{"event":"probe","results":["antharjala encoded: 200, 1806485B pdf","2012 booklet range-GET: 206 %PDF-1.5","iisc https: 403","iisc http range-GET: 403 HTML"],"urls":4}
+{"event":"probe","results":["iisc J-15 +browser UA: 403","opencity GIR: 404","airport metro DPR: 200, 1496886B pdf"],"urls":3}
+{"event":"fetch","n":5,"via":"web_fetch","url":"https://data.opencity.in/dataset/c56973c8-fe30-45e8-a0cf-b97d954f6db4","result":"fail: HTTP 404 (GIR dataset gone)"}
+{"event":"fetch","n":6,"via":"web_fetch","url":"https://docslib.org/doc/11134871/seismic-microzonation-of-bangalore-india","result":"ok: 200, 83331B page; abstract+intro inspected, body truncated -> C6 partial"}
+{"event":"fetch","n":7,"via":"curl -k full-GET","bytes":1409919,"result":"ok -> C1","url":"https://cgwb.gov.in/cgwbpnm/public/uploads/documents/1687415760853575201file.pdf"}
+{"event":"fetch","n":8,"via":"curl -k full-GET","bytes":1806485,"result":"ok -> C2","url":"https://antharjala.karnataka.gov.in/storage/pdf-files/NAQUIM%20REPORTS/12.pdf"}
+{"event":"fetch","n":9,"via":"curl full-GET","bytes":1496886,"result":"ok -> C5 (Vol 1 summary; logs in unacquired Vol 2)","url":"https://data.opencity.in/.../1436bf47-c731-4841-b92a-ecc7bc798eb7.pdf"}
+{"event":"fetch","n":10,"via":"curl full-GET","bytes":882094,"result":"ok -> C3","url":"https://ijres.org/papers/Volume-11/Issue-12/1112158164.pdf"}
+{"event":"fetch","n":11,"via":"curl full-GET","bytes":22910,"result":"HTML (JS-gated), no PDF; C6 stays partial","url":"https://docslib.org/download/11134871/seismic-microzonation-of-bangalore-india"}
+{"event":"fetch","n":12,"via":"curl -k full-GET","bytes":1644787,"result":"ok -> C4","url":"https://cgwb.gov.in/old_website/District_Profile/karnataka/2012/BANGALORE_URBAN-2012.pdf"}
+{"event":"probe","results":["Anekal download/965: 200 pdf 3275605B -> C8 located","GSI MP30 indiawaterportal: HEAD timeout 60s -> unresolved"],"urls":2}
+{"event":"fetch","n":13,"via":"web_fetch","url":"https://vdocuments.mx/amp/mapping-of-average-shear-wave-velocity-for-bangalore-region-a-civiliiscernetinanbazhaganpdfanbu.html","result":"fail: HTTP 404"}
+{"event":"fetch","n":14,"via":"curl -k full-GET","bytes":15352,"result":"ok: confirms South NAQUIM 2022 + file link /download/964 -> C7 located","url":"https://cgwb.gov.in/cgwbpnm/publication-detail/964"}
+{"event":"verify","detail":"pypdf 6.21.4 page counts + mastheads: east 21pp, north 27pp, metro-dpr 27pp, ijres 7pp, booklet2012 31pp; text dumped to /tmp for excerpting","tool":"source-intelligence/.venv/bin/python"}
+{"event":"download","dst":"downloads/cgwb-naquim-bangalore-east-2022.pdf","id":"C1","sha256":"f1a7ac88f0655974916b5e3764dea0d039d500364e39a7b7098c2fcb70acf98e","verify":"shasum match, pypdf 21pp"}
+{"event":"download","dst":"downloads/cgwb-naquim-bangalore-north-2022.pdf","id":"C2","sha256":"1a7a4ccb877d931b265038852c2a0bc60852340b94f6be21bc9b6c26e227cd2c","verify":"shasum match, pypdf 27pp"}
+{"event":"download","dst":"downloads/cgwb-exploration-bangalore-south-ijres2023.pdf","id":"C3","sha256":"72b70225df7c828a0fa89aeacd545dceb96ff3880d35128008ba6dcda86e335b","verify":"shasum match, pypdf 7pp"}
+{"event":"write","files":["candidates.json","excerpts.md","validation.json","trace.jsonl","usage.json"]}
+{"event":"done","bytes":7373764,"downloads":3,"fetches":14,"probes_separate":13,"searches":11}

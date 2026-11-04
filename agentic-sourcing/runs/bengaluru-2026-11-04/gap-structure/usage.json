@@ -1,0 +1,1 @@
+{"bytes":7373764,"downloads":3,"fetches":14,"fetch_definition":"one full-body content retrieval (web_fetch call or curl full-GET); 13 header/range probes (<=201B) tracked separately in trace.jsonl","searches":11}

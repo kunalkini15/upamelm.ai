@@ -1,3 +1,14 @@
+/**
+ * @file ExecutiveDossierDrawer.tsx
+ * @module ui-v2/components/report/ExecutiveDossierDrawer
+ * @description Slide-out executive dossier presenting lay-accessible scientific summaries,
+ * categorized key findings, risk callouts, and page-level source citations.
+ *
+ * Provides bidirectional focus actions:
+ * - "Focus on Map": Centers the 2D GIS map on the finding's geographic coordinates.
+ * - "Inspect in 3D": Tilts and flies the 3D scene camera to the specific borehole or depth horizon.
+ */
+
 import React, { useState, useMemo } from 'react';
 import {
   Sparkles,
@@ -167,7 +178,7 @@ export const ExecutiveDossierDrawer: React.FC<ExecutiveDossierDrawerProps> = ({
                 }`}
               >
                 <MapPinned className="w-3.5 h-3.5" />
-                <span>Station Evidence ({stationFindings.length})</span>
+                <span>Object Evidence ({stationFindings.length})</span>
               </button>
               <button
                 onClick={() => setActiveTab('executive')}
@@ -190,7 +201,7 @@ export const ExecutiveDossierDrawer: React.FC<ExecutiveDossierDrawerProps> = ({
               <div className="space-y-4">
                 <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800 space-y-1">
                   <div className="text-[10px] uppercase text-cyan-400 font-bold tracking-wider">
-                    Target Station
+                    Selected Object
                   </div>
                   <div className="text-sm font-bold text-slate-100 font-sans">{focusedFeature.name}</div>
                   <div className="text-[11px] text-slate-400">
@@ -200,13 +211,13 @@ export const ExecutiveDossierDrawer: React.FC<ExecutiveDossierDrawerProps> = ({
 
                 <div className="space-y-2">
                   <div className="text-[10px] uppercase text-slate-400 font-bold tracking-wider flex items-center justify-between">
-                    <span>Direct Report Findings Referencing This Well</span>
+                    <span>Direct Report Findings Referencing This Object</span>
                     <span>{stationFindings.length} found</span>
                   </div>
 
                   {stationFindings.length === 0 ? (
                     <div className="p-4 rounded-xl border border-slate-800 bg-slate-950/40 text-center text-slate-400 space-y-2">
-                      <p>No chapter findings explicitly cite this single station ID by name.</p>
+                      <p>No chapter findings explicitly cite this object ID.</p>
                       <button
                         onClick={() => setActiveTab('executive')}
                         className="text-indigo-400 underline hover:text-indigo-300 text-xs font-mono"
@@ -249,7 +260,7 @@ export const ExecutiveDossierDrawer: React.FC<ExecutiveDossierDrawerProps> = ({
                               className="px-2.5 py-1 rounded bg-amber-400/10 hover:bg-amber-400/20 text-amber-300 border border-amber-400/30 text-[10px] font-bold transition flex items-center gap-1"
                             >
                               <Layers className="w-3 h-3" />
-                              <span>View 3D Aquifer Layers</span>
+                              <span>Inspect Vertical Evidence</span>
                             </button>
                           )}
                         </div>
@@ -301,7 +312,7 @@ export const ExecutiveDossierDrawer: React.FC<ExecutiveDossierDrawerProps> = ({
             {keyCallouts.length > 0 && (
               <div className="space-y-2">
                 <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider font-bold">
-                  Core District Metrics
+                  Key Report Metrics
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {keyCallouts.map((stat, i) => {
@@ -318,7 +329,7 @@ export const ExecutiveDossierDrawer: React.FC<ExecutiveDossierDrawerProps> = ({
                           {formatValue(stat.value, stat.unit)}
                         </div>
                         <div className="text-[9px] text-slate-500 line-clamp-1">
-                          {stat.qualifier || 'Validated NAQUIM observation'}
+                          {stat.qualifier || 'Evidence-linked report statistic'}
                         </div>
                       </div>
                     );
@@ -472,7 +483,7 @@ export const ExecutiveDossierDrawer: React.FC<ExecutiveDossierDrawerProps> = ({
                           <button
                             onClick={() => onFocusOnMap(finding)}
                             className="px-2 py-1 rounded bg-cyan-500/20 hover:bg-cyan-500 text-cyan-300 hover:text-slate-950 border border-cyan-500/30 text-[10px] font-mono font-bold transition flex items-center gap-1"
-                            title="Highlight stations on map"
+                            title="Highlight referenced objects on map"
                           >
                             <MapPinned className="w-3 h-3" />
                             <span>Map ({finding.resolvedFeatureIds.length})</span>
@@ -527,8 +538,8 @@ export const ExecutiveDossierDrawer: React.FC<ExecutiveDossierDrawerProps> = ({
             </div>
 
             <p className="mt-4 text-xs text-slate-400 font-sans leading-relaxed">
-              Every hydrogeological synthesis depends on boundary assumptions, field extraction approximations, and
-              aquifer geometry limits. Below are the report-level caveats, followed by {auditContextCount} detailed source-audit notes retained from the source package.
+              Every scientific synthesis depends on source scope, extraction quality, measurement compatibility, and
+              interpretation limits. Below are the report-level caveats, followed by {auditContextCount} detailed source-audit notes retained from the source package.
             </p>
 
             <div className="mt-5 space-y-3 flex-1">

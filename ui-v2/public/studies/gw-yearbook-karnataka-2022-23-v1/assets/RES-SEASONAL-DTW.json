@@ -1,0 +1,5306 @@
+{
+ "schema": "seasonal-dtw-district-tables.v1",
+ "source_document": "muse-source-ingestion/runs/bengaluru-aquifer-groundwater-v1/lanes/levels-resources/downloads/gw-yearbook-karnataka-2022-23.pdf",
+ "unit": "m bgl",
+ "bands_m_bgl": [
+  "0-2",
+  "2-5",
+  "5-10",
+  "10-20",
+  "20-40",
+  ">40"
+ ],
+ "tables": {
+  "T8-may2022-phreatic": {
+   "table": "Table-8",
+   "season": "May 2022",
+   "aquifer": "phreatic (dug wells)",
+   "unit": "m bgl",
+   "bands": [
+    "0-2",
+    "2-5",
+    "5-10",
+    "10-20",
+    "20-40",
+    ">40"
+   ],
+   "source_ref": "PDF p20 (Table-8)",
+   "rows": [
+    {
+     "district": "Bagalkot",
+     "n_analysed": 26,
+     "min": 1.05,
+     "max": 29.5,
+     "counts": [
+      3,
+      15,
+      6,
+      1,
+      1,
+      0
+     ],
+     "pcts_printed": [
+      11.54,
+      57.69,
+      23.08,
+      3.85,
+      3.85,
+      0
+     ]
+    },
+    {
+     "district": "Bangalore Rural",
+     "n_analysed": 33,
+     "min": 0.2,
+     "max": 12.48,
+     "counts": [
+      13,
+      11,
+      8,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      39.39,
+      33.33,
+      24.24,
+      3.03,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Bangalore Urban",
+     "n_analysed": 19,
+     "min": 0.05,
+     "max": 13.25,
+     "counts": [
+      8,
+      8,
+      2,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      42.11,
+      42.11,
+      10.53,
+      5.26,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Belgaum",
+     "n_analysed": 83,
+     "min": 0.38,
+     "max": 14.35,
+     "counts": [
+      15,
+      35,
+      24,
+      9,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      18.07,
+      42.17,
+      28.92,
+      10.84,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Bellary",
+     "n_analysed": 30,
+     "min": 1.15,
+     "max": 10.3,
+     "counts": [
+      7,
+      15,
+      7,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      23.33,
+      50,
+      23.33,
+      3.33,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Bidar",
+     "n_analysed": 38,
+     "min": 1.42,
+     "max": 17.86,
+     "counts": [
+      4,
+      9,
+      10,
+      15,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      10.53,
+      23.68,
+      26.32,
+      39.47,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Bijapur",
+     "n_analysed": 62,
+     "min": 1.33,
+     "max": 26.0,
+     "counts": [
+      3,
+      28,
+      25,
+      5,
+      1,
+      0
+     ],
+     "pcts_printed": [
+      4.84,
+      45.16,
+      40.32,
+      8.06,
+      1.61,
+      0
+     ]
+    },
+    {
+     "district": "Chamarajanagar",
+     "n_analysed": 20,
+     "min": 0.6,
+     "max": 8.4,
+     "counts": [
+      8,
+      8,
+      4,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      40.0,
+      40,
+      20,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Chikmagalur",
+     "n_analysed": 72,
+     "min": 0.6,
+     "max": 16.2,
+     "counts": [
+      7,
+      24,
+      32,
+      9,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      9.72,
+      33.33,
+      44.44,
+      12.5,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Chitradurga",
+     "n_analysed": 29,
+     "min": 0.68,
+     "max": 17.64,
+     "counts": [
+      7,
+      15,
+      2,
+      5,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      24.14,
+      51.72,
+      6.9,
+      17.24,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Dakshin Kannada",
+     "n_analysed": 90,
+     "min": 1.42,
+     "max": 14.85,
+     "counts": [
+      5,
+      20,
+      44,
+      21,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      5.56,
+      22.22,
+      48.89,
+      23.33,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Davanagere",
+     "n_analysed": 51,
+     "min": 0.15,
+     "max": 14.5,
+     "counts": [
+      30,
+      13,
+      5,
+      3,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      58.82,
+      25.49,
+      9.8,
+      5.88,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Dharwad",
+     "n_analysed": 24,
+     "min": 0.95,
+     "max": 13.81,
+     "counts": [
+      7,
+      7,
+      6,
+      4,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      29.17,
+      29.17,
+      25,
+      16.67,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Gadag",
+     "n_analysed": 20,
+     "min": 0.15,
+     "max": 17.06,
+     "counts": [
+      5,
+      9,
+      5,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      25,
+      45,
+      25,
+      5,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Gulbarga",
+     "n_analysed": 82,
+     "min": 0.85,
+     "max": 14.6,
+     "counts": [
+      8,
+      29,
+      37,
+      8,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      9.76,
+      35.37,
+      45.12,
+      9.76,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Hassan",
+     "n_analysed": 74,
+     "min": 0.45,
+     "max": 18.2,
+     "counts": [
+      17,
+      23,
+      27,
+      7,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      22.97,
+      31.08,
+      36.49,
+      9.46,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Haveri",
+     "n_analysed": 23,
+     "min": 0.97,
+     "max": 12.6,
+     "counts": [
+      6,
+      11,
+      5,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      26.09,
+      47.83,
+      21.74,
+      4.35,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Kodagu",
+     "n_analysed": 68,
+     "min": 0.93,
+     "max": 16.68,
+     "counts": [
+      7,
+      15,
+      28,
+      18,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      10.29,
+      22.06,
+      41.18,
+      26.74,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Kolar",
+     "n_analysed": 33,
+     "min": 0.05,
+     "max": 8.5,
+     "counts": [
+      15,
+      16,
+      2,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      45.45,
+      48.48,
+      6.06,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Koppal",
+     "n_analysed": 27,
+     "min": 1.41,
+     "max": 12.65,
+     "counts": [
+      3,
+      18,
+      5,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      11.11,
+      66.67,
+      18.52,
+      3.7,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Mandya",
+     "n_analysed": 42,
+     "min": 0.4,
+     "max": 7.48,
+     "counts": [
+      27,
+      13,
+      2,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      64.29,
+      30.95,
+      4.76,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Mysore",
+     "n_analysed": 54,
+     "min": 0.3,
+     "max": 16.1,
+     "counts": [
+      24,
+      15,
+      13,
+      2,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      44.44,
+      27.78,
+      24.07,
+      3.7,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Raichur",
+     "n_analysed": 49,
+     "min": 0.4,
+     "max": 10.9,
+     "counts": [
+      15,
+      19,
+      13,
+      2,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      30.61,
+      38.78,
+      26.53,
+      4.08,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Shimoga",
+     "n_analysed": 78,
+     "min": 0.23,
+     "max": 16.5,
+     "counts": [
+      23,
+      10,
+      30,
+      15,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      29.49,
+      12.82,
+      38.46,
+      19.23,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Tumkur",
+     "n_analysed": 45,
+     "min": 0.05,
+     "max": 12.32,
+     "counts": [
+      28,
+      11,
+      5,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      62.22,
+      24.44,
+      "11..11",
+      2.22,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Udupi",
+     "n_analysed": 59,
+     "min": 0.04,
+     "max": 13.0,
+     "counts": [
+      2,
+      14,
+      28,
+      15,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      3.39,
+      23.73,
+      47.46,
+      25.42,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Uttara Kannada",
+     "n_analysed": 81,
+     "min": 0.4,
+     "max": 17.07,
+     "counts": [
+      4,
+      32,
+      37,
+      8,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      4.94,
+      39.51,
+      45.68,
+      9.88,
+      0,
+      0
+     ]
+    }
+   ],
+   "total_printed": {
+    "n": 1312,
+    "min": 0.04,
+    "max": 29.5,
+    "counts": [
+     301,
+     443,
+     412,
+     154,
+     2,
+     0
+    ],
+    "pcts": [
+     23,
+     34,
+     31,
+     11,
+     1,
+     0
+    ]
+   }
+  },
+  "T9-may2022-piezometric": {
+   "table": "Table-9",
+   "season": "May 2022",
+   "aquifer": "piezometric (hard-rock piezometers)",
+   "unit": "m bgl",
+   "bands": [
+    "0-2",
+    "2-5",
+    "5-10",
+    "10-20",
+    "20-40",
+    ">40"
+   ],
+   "source_ref": "PDF pp24-25 (Table-9)",
+   "rows": [
+    {
+     "district": "Bagalkot",
+     "n_analysed": 3,
+     "min": 1.85,
+     "max": 26.85,
+     "counts": [
+      1,
+      1,
+      0,
+      0,
+      1,
+      0
+     ],
+     "pcts_printed": [
+      33.33,
+      33.33,
+      0,
+      0,
+      33.33,
+      0
+     ]
+    },
+    {
+     "district": "Bangalore Rural",
+     "n_analysed": 11,
+     "min": 3.5,
+     "max": 30.2,
+     "counts": [
+      0,
+      2,
+      1,
+      4,
+      4,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      18.18,
+      9.09,
+      36.36,
+      36.36,
+      0
+     ]
+    },
+    {
+     "district": "Bangalore Urban",
+     "n_analysed": 15,
+     "min": 1.42,
+     "max": 24.7,
+     "counts": [
+      1,
+      2,
+      3,
+      6,
+      3,
+      0
+     ],
+     "pcts_printed": [
+      6.67,
+      13.33,
+      20,
+      40,
+      20,
+      0
+     ]
+    },
+    {
+     "district": "Belgaum",
+     "n_analysed": 12,
+     "min": 2.2,
+     "max": 17.95,
+     "counts": [
+      0,
+      6,
+      4,
+      2,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      50,
+      33.33,
+      16.67,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Bellary",
+     "n_analysed": 8,
+     "min": 1.1,
+     "max": 38.3,
+     "counts": [
+      1,
+      1,
+      1,
+      2,
+      3,
+      0
+     ],
+     "pcts_printed": [
+      12.5,
+      12.5,
+      12.5,
+      25,
+      37.5,
+      0
+     ]
+    },
+    {
+     "district": "Bidar",
+     "n_analysed": 3,
+     "min": 17.74,
+     "max": 18.73,
+     "counts": [
+      0,
+      0,
+      0,
+      3,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      0,
+      0,
+      100,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Bijapur",
+     "n_analysed": 8,
+     "min": 2.6,
+     "max": 26.99,
+     "counts": [
+      0,
+      2,
+      2,
+      3,
+      1,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      25,
+      25,
+      37.5,
+      12.5,
+      0
+     ]
+    },
+    {
+     "district": "Chamarajanagar",
+     "n_analysed": 5,
+     "min": 3.53,
+     "max": 40.1,
+     "counts": [
+      0,
+      1,
+      2,
+      1,
+      0,
+      1
+     ],
+     "pcts_printed": [
+      0,
+      20,
+      40,
+      20,
+      0,
+      20
+     ]
+    },
+    {
+     "district": "Chikmagalur",
+     "n_analysed": 2,
+     "min": 1.48,
+     "max": 8.61,
+     "counts": [
+      1,
+      0,
+      1,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      50,
+      0,
+      50,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Chitradurga",
+     "n_analysed": 9,
+     "min": 6.25,
+     "max": 20.5,
+     "counts": [
+      0,
+      0,
+      3,
+      5,
+      1,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      0,
+      33.33,
+      55.56,
+      11.11,
+      0
+     ]
+    },
+    {
+     "district": "Dakshin Kannada",
+     "n_analysed": 8,
+     "min": 6.86,
+     "max": 26.3,
+     "counts": [
+      0,
+      0,
+      3,
+      4,
+      1,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      0,
+      37.5,
+      50,
+      12.5,
+      0
+     ]
+    },
+    {
+     "district": "Davanagere",
+     "n_analysed": 5,
+     "min": 2.0,
+     "max": 6.1,
+     "counts": [
+      1,
+      3,
+      1,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      20,
+      60,
+      20,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Dharwad",
+     "n_analysed": 1,
+     "min": 12.31,
+     "max": 12.31,
+     "counts": [
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      0,
+      0,
+      100,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Gadag",
+     "n_analysed": 2,
+     "min": 11.37,
+     "max": 16.85,
+     "counts": [
+      0,
+      0,
+      0,
+      2,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      0,
+      0,
+      100,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Gulbarga",
+     "n_analysed": 13,
+     "min": 1.54,
+     "max": 17.45,
+     "counts": [
+      1,
+      2,
+      6,
+      4,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      7.69,
+      15.38,
+      46.15,
+      30.77,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Hassan",
+     "n_analysed": 2,
+     "min": 7.7,
+     "max": 18.69,
+     "counts": [
+      0,
+      0,
+      1,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      0,
+      50,
+      50,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Haveri",
+     "n_analysed": 2,
+     "min": 5.36,
+     "max": 8.72,
+     "counts": [
+      0,
+      0,
+      2,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      0,
+      100,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Kolar",
+     "n_analysed": 22,
+     "min": 1.85,
+     "max": 73.4,
+     "counts": [
+      1,
+      0,
+      3,
+      8,
+      8,
+      2
+     ],
+     "pcts_printed": [
+      4.55,
+      0,
+      13.64,
+      36.36,
+      36.36,
+      9.09
+     ]
+    },
+    {
+     "district": "Koppal",
+     "n_analysed": 3,
+     "min": 4.13,
+     "max": 7.93,
+     "counts": [
+      0,
+      1,
+      2,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      33.33,
+      66.67,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Raichur",
+     "n_analysed": 7,
+     "min": 0.04,
+     "max": 7.7,
+     "counts": [
+      1,
+      5,
+      1,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      14.29,
+      71.43,
+      14.29,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Shimoga",
+     "n_analysed": 3,
+     "min": 1.87,
+     "max": 8.68,
+     "counts": [
+      1,
+      0,
+      2,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      33.33,
+      0,
+      66.67,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Tumkur",
+     "n_analysed": 38,
+     "min": 0.35,
+     "max": 97.5,
+     "counts": [
+      2,
+      2,
+      5,
+      18,
+      8,
+      3
+     ],
+     "pcts_printed": [
+      5.26,
+      5.26,
+      13.16,
+      47.37,
+      21.05,
+      7.89
+     ]
+    },
+    {
+     "district": "Udupi",
+     "n_analysed": 2,
+     "min": 8.74,
+     "max": 15.04,
+     "counts": [
+      0,
+      0,
+      1,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      0,
+      50,
+      50,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Uttara Kannada",
+     "n_analysed": 7,
+     "min": 2.53,
+     "max": 12.98,
+     "counts": [
+      0,
+      3,
+      1,
+      3,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      42.86,
+      14.29,
+      42.86,
+      0,
+      0
+     ]
+    }
+   ],
+   "total_printed": {
+    "n": 191,
+    "min": 0.04,
+    "max": 97.5,
+    "counts": [
+     11,
+     31,
+     45,
+     68,
+     30,
+     6
+    ],
+    "pcts": [
+     6,
+     16,
+     23,
+     36,
+     16,
+     3
+    ]
+   }
+  },
+  "T10-aug2022-phreatic": {
+   "table": "Table-10",
+   "season": "August 2022",
+   "aquifer": "phreatic (dug wells)",
+   "unit": "m bgl",
+   "bands": [
+    "0-2",
+    "2-5",
+    "5-10",
+    "10-20",
+    "20-40",
+    ">40"
+   ],
+   "source_ref": "PDF pp28-29 (Table-10)",
+   "rows": [
+    {
+     "district": "Bagalkot",
+     "n_analysed": 24,
+     "min": 0.81,
+     "max": 24.7,
+     "counts": [
+      3,
+      16,
+      6,
+      0,
+      1,
+      0
+     ],
+     "pcts_printed": [
+      11.54,
+      61.54,
+      23.08,
+      0,
+      3.85,
+      0
+     ]
+    },
+    {
+     "district": "Bangalore Rural",
+     "n_analysed": 39,
+     "min": 0.2,
+     "max": 9.97,
+     "counts": [
+      26,
+      7,
+      6,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      66.67,
+      17.95,
+      15.38,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Bangalore Urban",
+     "n_analysed": 20,
+     "min": 0.15,
+     "max": 6.38,
+     "counts": [
+      12,
+      6,
+      2,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      60,
+      30,
+      10,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Belgaum",
+     "n_analysed": 83,
+     "min": 0.01,
+     "max": 11.37,
+     "counts": [
+      40,
+      31,
+      10,
+      2,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      48.19,
+      37.35,
+      12.05,
+      2.41,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Bellary",
+     "n_analysed": 31,
+     "min": 0.48,
+     "max": 7.53,
+     "counts": [
+      18,
+      10,
+      3,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      58,
+      32,
+      9.68,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Bidar",
+     "n_analysed": 39,
+     "min": 0.03,
+     "max": 12.83,
+     "counts": [
+      23,
+      7,
+      8,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      58.97,
+      17.95,
+      20.51,
+      2.56,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Bijapur",
+     "n_analysed": 62,
+     "min": 0.43,
+     "max": 26.0,
+     "counts": [
+      12,
+      31,
+      17,
+      1,
+      1,
+      0
+     ],
+     "pcts_printed": [
+      19.35,
+      50,
+      27.42,
+      1.61,
+      1.61,
+      0
+     ]
+    },
+    {
+     "district": "Chamarajanagar",
+     "n_analysed": 20,
+     "min": 0.03,
+     "max": 8.1,
+     "counts": [
+      12,
+      5,
+      3,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      60,
+      25,
+      15,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Chikmagalur",
+     "n_analysed": 75,
+     "min": 0.1,
+     "max": 10.03,
+     "counts": [
+      39,
+      22,
+      13,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      52,
+      29.33,
+      17.33,
+      1.33,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Chitradurga",
+     "n_analysed": 27,
+     "min": 0.02,
+     "max": 14.5,
+     "counts": [
+      26,
+      0,
+      0,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      96.3,
+      0,
+      0,
+      3.7,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Dakshin Kannada",
+     "n_analysed": 91,
+     "min": 0.15,
+     "max": 12.26,
+     "counts": [
+      28,
+      46,
+      16,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      30.77,
+      50.55,
+      17.58,
+      1.1,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Davanagere",
+     "n_analysed": 54,
+     "min": 0.05,
+     "max": 14.5,
+     "counts": [
+      40,
+      10,
+      3,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      74.07,
+      18.52,
+      5.56,
+      1.85,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Dharwad",
+     "n_analysed": 24,
+     "min": 0.18,
+     "max": 14.43,
+     "counts": [
+      12,
+      4,
+      6,
+      2,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      50,
+      16.67,
+      25,
+      8.33,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Gadag",
+     "n_analysed": 20,
+     "min": 0.1,
+     "max": 21.8,
+     "counts": [
+      5,
+      9,
+      4,
+      1,
+      1,
+      0
+     ],
+     "pcts_printed": [
+      25,
+      45,
+      20,
+      5,
+      5,
+      0
+     ]
+    },
+    {
+     "district": "Gulbarga",
+     "n_analysed": 83,
+     "min": 0.2,
+     "max": 11.15,
+     "counts": [
+      45,
+      28,
+      9,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      54.22,
+      33.73,
+      10.84,
+      1.2,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Hassan",
+     "n_analysed": 71,
+     "min": 0.08,
+     "max": 11.36,
+     "counts": [
+      37,
+      23,
+      10,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      52.11,
+      32.39,
+      14.08,
+      1.41,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Haveri",
+     "n_analysed": 24,
+     "min": 0.16,
+     "max": 6.73,
+     "counts": [
+      16,
+      3,
+      5,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      66.67,
+      12.5,
+      20.83,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Kodagu",
+     "n_analysed": 68,
+     "min": 0.8,
+     "max": 12.7,
+     "counts": [
+      10,
+      24,
+      29,
+      5,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      14.71,
+      35.29,
+      42.65,
+      7.35,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Kolar",
+     "n_analysed": 36,
+     "min": 0.12,
+     "max": 7.12,
+     "counts": [
+      28,
+      6,
+      2,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      77.78,
+      16.67,
+      5.56,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Koppal",
+     "n_analysed": 31,
+     "min": 0.8,
+     "max": 11.22,
+     "counts": [
+      9,
+      15,
+      5,
+      2,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      29.03,
+      48.39,
+      16.13,
+      6.45,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Mandya",
+     "n_analysed": 47,
+     "min": 0.25,
+     "max": 5.46,
+     "counts": [
+      31,
+      15,
+      1,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      65.96,
+      31.91,
+      2.13,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Mysore",
+     "n_analysed": 54,
+     "min": 0.38,
+     "max": 9.3,
+     "counts": [
+      25,
+      21,
+      8,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      46.3,
+      38.89,
+      14.81,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Raichur",
+     "n_analysed": 46,
+     "min": 0.05,
+     "max": 8.1,
+     "counts": [
+      27,
+      15,
+      4,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      58.7,
+      32.61,
+      8.7,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Shimoga",
+     "n_analysed": 79,
+     "min": 0.03,
+     "max": 8.85,
+     "counts": [
+      38,
+      32,
+      9,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      48.1,
+      40.51,
+      11.39,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Tumkur",
+     "n_analysed": 46,
+     "min": 0.02,
+     "max": 8.2,
+     "counts": [
+      34,
+      10,
+      2,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      73.91,
+      21.74,
+      4.35,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Udupi",
+     "n_analysed": 59,
+     "min": 0.02,
+     "max": 9.08,
+     "counts": [
+      22,
+      30,
+      7,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      37.29,
+      50.85,
+      11.86,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Uttara Kannada",
+     "n_analysed": 80,
+     "min": 0.04,
+     "max": 15.18,
+     "counts": [
+      34,
+      29,
+      14,
+      3,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      42.5,
+      36.25,
+      17.5,
+      3.75,
+      0,
+      0
+     ]
+    }
+   ],
+   "total_printed": {
+    "n": 1335,
+    "min": 0.01,
+    "max": 24.7,
+    "counts": [
+     652,
+     455,
+     202,
+     23,
+     3,
+     0
+    ],
+    "pcts": [
+     49,
+     34,
+     15,
+     1.8,
+     0.2,
+     0
+    ]
+   }
+  },
+  "T11-aug2022-piezometric": {
+   "table": "Table-11",
+   "season": "August 2022",
+   "aquifer": "piezometric (hard-rock piezometers)",
+   "unit": "m bgl",
+   "bands": [
+    "0-2",
+    "2-5",
+    "5-10",
+    "10-20",
+    "20-40",
+    ">40"
+   ],
+   "source_ref": "PDF pp32-33 (Table-11)",
+   "rows": [
+    {
+     "district": "Bagalkot",
+     "n_analysed": 3,
+     "min": 2.91,
+     "max": 21.04,
+     "counts": [
+      0,
+      1,
+      1,
+      0,
+      1,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      33.33,
+      33.33,
+      0,
+      33.33,
+      0
+     ]
+    },
+    {
+     "district": "Bangalore Rural",
+     "n_analysed": 12,
+     "min": 2.29,
+     "max": 26.33,
+     "counts": [
+      0,
+      5,
+      3,
+      1,
+      3,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      41.67,
+      25,
+      8.33,
+      25,
+      0
+     ]
+    },
+    {
+     "district": "Bangalore Urban",
+     "n_analysed": 18,
+     "min": 1.95,
+     "max": 31.0,
+     "counts": [
+      1,
+      3,
+      3,
+      8,
+      3,
+      0
+     ],
+     "pcts_printed": [
+      5.5,
+      16.67,
+      16.67,
+      44.44,
+      16.67,
+      0
+     ]
+    },
+    {
+     "district": "Belgaum",
+     "n_analysed": 13,
+     "min": 0.36,
+     "max": 7.06,
+     "counts": [
+      3,
+      7,
+      3,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      23.08,
+      53.85,
+      23.08,
+      0,
+      null,
+      0
+     ]
+    },
+    {
+     "district": "Bellary",
+     "n_analysed": 8,
+     "min": 0.25,
+     "max": 31.82,
+     "counts": [
+      2,
+      3,
+      0,
+      0,
+      3,
+      0
+     ],
+     "pcts_printed": [
+      25,
+      37.5,
+      0,
+      0,
+      37.5,
+      0
+     ]
+    },
+    {
+     "district": "Bidar",
+     "n_analysed": 3,
+     "min": 11.54,
+     "max": 13.6,
+     "counts": [
+      0,
+      0,
+      0,
+      3,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      0,
+      0,
+      100,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Bijapur",
+     "n_analysed": 8,
+     "min": 2.4,
+     "max": 15.64,
+     "counts": [
+      0,
+      5,
+      1,
+      2,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      62.5,
+      12.5,
+      25,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Chamarajanagar",
+     "n_analysed": 5,
+     "min": 3.55,
+     "max": 36.49,
+     "counts": [
+      0,
+      2,
+      2,
+      0,
+      1,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      40,
+      40,
+      0,
+      20,
+      0
+     ]
+    },
+    {
+     "district": "Chikmagalur",
+     "n_analysed": 5,
+     "min": 1.2,
+     "max": 6.57,
+     "counts": [
+      3,
+      1,
+      1,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      60,
+      20,
+      20,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Chitradurga",
+     "n_analysed": 7,
+     "min": 0.8,
+     "max": 20.05,
+     "counts": [
+      2,
+      2,
+      1,
+      1,
+      1,
+      0
+     ],
+     "pcts_printed": [
+      28.57,
+      28.57,
+      14.29,
+      14.29,
+      14.29,
+      0
+     ]
+    },
+    {
+     "district": "Dakshin Kannada",
+     "n_analysed": 8,
+     "min": 2.36,
+     "max": 13.49,
+     "counts": [
+      0,
+      4,
+      1,
+      3,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      50,
+      12.5,
+      37.5,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Davanagere",
+     "n_analysed": 7,
+     "min": 1.06,
+     "max": 8.35,
+     "counts": [
+      5,
+      1,
+      1,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      71.43,
+      14.29,
+      14.29,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Dharwad",
+     "n_analysed": 1,
+     "min": 12.12,
+     "max": 12.12,
+     "counts": [
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      0,
+      0,
+      100,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Gadag",
+     "n_analysed": 2,
+     "min": 1.04,
+     "max": 16.78,
+     "counts": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      50,
+      0,
+      0,
+      50,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Gulbarga",
+     "n_analysed": 12,
+     "min": 0.1,
+     "max": 14.99,
+     "counts": [
+      4,
+      3,
+      4,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      33.33,
+      25,
+      33.33,
+      8.33,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Hassan",
+     "n_analysed": 4,
+     "min": 3.07,
+     "max": 11.47,
+     "counts": [
+      0,
+      2,
+      1,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      50,
+      25,
+      25,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Haveri",
+     "n_analysed": 2,
+     "min": 4.54,
+     "max": 7.71,
+     "counts": [
+      0,
+      1,
+      1,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      50,
+      50,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Kodagu",
+     "n_analysed": 5,
+     "min": 4.1,
+     "max": 15.3,
+     "counts": [
+      0,
+      1,
+      1,
+      3,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      20,
+      20,
+      60,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Kolar",
+     "n_analysed": 18,
+     "min": 1.92,
+     "max": 64.6,
+     "counts": [
+      1,
+      3,
+      1,
+      10,
+      2,
+      1
+     ],
+     "pcts_printed": [
+      5.56,
+      16.67,
+      5.56,
+      55.56,
+      11.11,
+      5.56
+     ]
+    },
+    {
+     "district": "Koppal",
+     "n_analysed": 2,
+     "min": 2.62,
+     "max": 3.0,
+     "counts": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      100,
+      0,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Mandya",
+     "n_analysed": 5,
+     "min": 0.11,
+     "max": 7.84,
+     "counts": [
+      2,
+      2,
+      1,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      40,
+      40,
+      20,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Mysore",
+     "n_analysed": 11,
+     "min": 2.05,
+     "max": 11.82,
+     "counts": [
+      0,
+      4,
+      5,
+      2,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      36.36,
+      45.45,
+      18.18,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Raichur",
+     "n_analysed": 1,
+     "min": 0.51,
+     "max": 0.51,
+     "counts": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      100,
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Shimoga",
+     "n_analysed": 3,
+     "min": 1.22,
+     "max": 3.84,
+     "counts": [
+      1,
+      2,
+      0,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      33.33,
+      66.67,
+      0,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Tumkur",
+     "n_analysed": 29,
+     "min": 0.4,
+     "max": 25.54,
+     "counts": [
+      2,
+      7,
+      9,
+      8,
+      3,
+      0
+     ],
+     "pcts_printed": [
+      6.9,
+      24.14,
+      31.03,
+      27.59,
+      10.34,
+      0
+     ]
+    },
+    {
+     "district": "Udupi",
+     "n_analysed": 2,
+     "min": 4.1,
+     "max": 7.6,
+     "counts": [
+      0,
+      0,
+      2,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      0,
+      100,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Uttara Kannada",
+     "n_analysed": 7,
+     "min": 1.18,
+     "max": 6.22,
+     "counts": [
+      2,
+      1,
+      4,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      28.57,
+      14.29,
+      57.14,
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "total_printed": {
+    "n": 201,
+    "min": 0.1,
+    "max": 64.6,
+    "counts": [
+     30,
+     62,
+     46,
+     45,
+     17,
+     1
+    ],
+    "pcts": [
+     15,
+     31,
+     23,
+     22,
+     8.5,
+     0.5
+    ]
+   }
+  },
+  "T12-nov2022-phreatic": {
+   "table": "Table-12",
+   "season": "November 2022",
+   "aquifer": "phreatic (dug wells)",
+   "unit": "m bgl",
+   "bands": [
+    "0-2",
+    "2-5",
+    "5-10",
+    "10-20",
+    "20-40",
+    ">40"
+   ],
+   "source_ref": "PDF pp36-37 (Table-12)",
+   "rows": [
+    {
+     "district": "Bagalkot",
+     "n_analysed": 24,
+     "min": 0.66,
+     "max": 27.3,
+     "counts": [
+      5,
+      15,
+      3,
+      0,
+      1,
+      0
+     ],
+     "pcts_printed": [
+      21,
+      63,
+      13,
+      0,
+      4,
+      0
+     ]
+    },
+    {
+     "district": "Bangalore Rural",
+     "n_analysed": 49,
+     "min": 0.03,
+     "max": 24.08,
+     "counts": [
+      27,
+      13,
+      5,
+      2,
+      2,
+      0
+     ],
+     "pcts_printed": [
+      55,
+      27,
+      10,
+      4,
+      4,
+      0
+     ]
+    },
+    {
+     "district": "Bangalore Urban",
+     "n_analysed": 31,
+     "min": 0.1,
+     "max": 27.1,
+     "counts": [
+      11,
+      11,
+      2,
+      5,
+      2,
+      0
+     ],
+     "pcts_printed": [
+      35,
+      35,
+      6,
+      16,
+      6,
+      0
+     ]
+    },
+    {
+     "district": "Belgaum",
+     "n_analysed": 93,
+     "min": 0.02,
+     "max": 16.11,
+     "counts": [
+      31,
+      42,
+      18,
+      2,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      33,
+      45,
+      19,
+      2,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Bellary",
+     "n_analysed": 33,
+     "min": 0.64,
+     "max": 24.26,
+     "counts": [
+      11,
+      20,
+      1,
+      0,
+      1,
+      0
+     ],
+     "pcts_printed": [
+      33,
+      61,
+      3,
+      0,
+      3,
+      0
+     ]
+    },
+    {
+     "district": "Bidar",
+     "n_analysed": 38,
+     "min": 1.2,
+     "max": 16.9,
+     "counts": [
+      8,
+      17,
+      9,
+      4,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      21,
+      45,
+      24,
+      11,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Bijapur",
+     "n_analysed": 60,
+     "min": 0.45,
+     "max": 12.18,
+     "counts": [
+      13,
+      37,
+      8,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      22,
+      62,
+      13,
+      2,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Chamarajanagar",
+     "n_analysed": 22,
+     "min": 0.08,
+     "max": 23.13,
+     "counts": [
+      12,
+      6,
+      3,
+      0,
+      1,
+      0
+     ],
+     "pcts_printed": [
+      55,
+      27,
+      14,
+      0,
+      5,
+      0
+     ]
+    },
+    {
+     "district": "Chikmagalur",
+     "n_analysed": 72,
+     "min": 0.48,
+     "max": 9.55,
+     "counts": [
+      15,
+      30,
+      27,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      21,
+      42,
+      38,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Chitradurga",
+     "n_analysed": 35,
+     "min": 0.16,
+     "max": 15.38,
+     "counts": [
+      16,
+      11,
+      5,
+      3,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      46,
+      31,
+      14,
+      9,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Dakshin Kannada",
+     "n_analysed": 94,
+     "min": 1.0,
+     "max": 18.91,
+     "counts": [
+      6,
+      29,
+      46,
+      13,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      6,
+      31,
+      49,
+      14,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Davanagere",
+     "n_analysed": 55,
+     "min": 0.1,
+     "max": 9.76,
+     "counts": [
+      34,
+      15,
+      6,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      62,
+      27,
+      11,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Dharwad",
+     "n_analysed": 22,
+     "min": 0.5,
+     "max": 13.91,
+     "counts": [
+      12,
+      3,
+      5,
+      2,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      55,
+      14,
+      23,
+      9,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Gadag",
+     "n_analysed": 20,
+     "min": 0.1,
+     "max": 19.98,
+     "counts": [
+      4,
+      10,
+      4,
+      2,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      20,
+      50,
+      20,
+      10,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Gulbarga",
+     "n_analysed": 91,
+     "min": 0.01,
+     "max": 15.0,
+     "counts": [
+      30,
+      45,
+      14,
+      2,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      33,
+      49,
+      15,
+      2,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Hassan",
+     "n_analysed": 69,
+     "min": 0.3,
+     "max": 9.87,
+     "counts": [
+      25,
+      29,
+      15,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      36,
+      42,
+      22,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Haveri",
+     "n_analysed": 25,
+     "min": 0.14,
+     "max": 10.98,
+     "counts": [
+      13,
+      8,
+      3,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      52,
+      32,
+      12,
+      4,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Kodagu",
+     "n_analysed": 66,
+     "min": 0.85,
+     "max": 18.6,
+     "counts": [
+      7,
+      19,
+      31,
+      9,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      11,
+      29,
+      47,
+      14,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Kolar",
+     "n_analysed": 50,
+     "min": 0.04,
+     "max": 20.97,
+     "counts": [
+      31,
+      9,
+      1,
+      6,
+      3,
+      0
+     ],
+     "pcts_printed": [
+      62,
+      18,
+      2,
+      12,
+      6,
+      0
+     ]
+    },
+    {
+     "district": "Koppal",
+     "n_analysed": 30,
+     "min": 0.82,
+     "max": 10.6,
+     "counts": [
+      10,
+      15,
+      4,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      33,
+      50,
+      13,
+      3,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Mandya",
+     "n_analysed": 45,
+     "min": 0.05,
+     "max": 7.36,
+     "counts": [
+      20,
+      23,
+      2,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      44,
+      51,
+      4,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Mysore",
+     "n_analysed": 58,
+     "min": 0.4,
+     "max": 10.82,
+     "counts": [
+      21,
+      24,
+      12,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      36,
+      41,
+      21,
+      2,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Raichur",
+     "n_analysed": 43,
+     "min": 0.05,
+     "max": 6.65,
+     "counts": [
+      24,
+      16,
+      3,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      56,
+      37,
+      7,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Shimoga",
+     "n_analysed": 77,
+     "min": 0.65,
+     "max": 14.0,
+     "counts": [
+      13,
+      25,
+      36,
+      3,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      17,
+      32,
+      47,
+      4,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Tumkur",
+     "n_analysed": 55,
+     "min": 0.06,
+     "max": 20.52,
+     "counts": [
+      35,
+      13,
+      4,
+      2,
+      7,
+      0
+     ],
+     "pcts_printed": [
+      64,
+      24,
+      7,
+      4,
+      2,
+      0
+     ]
+    },
+    {
+     "district": "Udupi",
+     "n_analysed": 61,
+     "min": 0.4,
+     "max": 12.12,
+     "counts": [
+      3,
+      17,
+      37,
+      4,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      5,
+      28,
+      61,
+      7,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Uttara Kannada",
+     "n_analysed": 83,
+     "min": 0.51,
+     "max": 15.68,
+     "counts": [
+      14,
+      31,
+      34,
+      4,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      17,
+      37,
+      41,
+      5,
+      0,
+      0
+     ]
+    }
+   ],
+   "total_printed": {
+    "n": 1406,
+    "min": 0.01,
+    "max": 27.3,
+    "counts": [
+     451,
+     533,
+     338,
+     67,
+     16,
+     1
+    ],
+    "pcts": [
+     32,
+     38,
+     24,
+     5,
+     0.9,
+     0.1
+    ]
+   }
+  },
+  "T13-nov2022-piezometric": {
+   "table": "Table-13",
+   "season": "November 2022",
+   "aquifer": "piezometric (hard-rock piezometers)",
+   "unit": "m bgl",
+   "bands": [
+    "0-2",
+    "2-5",
+    "5-10",
+    "10-20",
+    "20-40",
+    ">40"
+   ],
+   "source_ref": "PDF pp40-41 (Table-13)",
+   "rows": [
+    {
+     "district": "Bagalkot",
+     "n_analysed": 1,
+     "min": 9.26,
+     "max": 9.26,
+     "counts": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      0,
+      100,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Bangalore Rural",
+     "n_analysed": 12,
+     "min": 0.6,
+     "max": 24.08,
+     "counts": [
+      2,
+      3,
+      3,
+      2,
+      2,
+      0
+     ],
+     "pcts_printed": [
+      16,
+      26,
+      26,
+      16,
+      16,
+      0
+     ]
+    },
+    {
+     "district": "Bangalore Urban",
+     "n_analysed": 14,
+     "min": 0.1,
+     "max": 23.84,
+     "counts": [
+      3,
+      4,
+      2,
+      4,
+      1,
+      0
+     ],
+     "pcts_printed": [
+      22,
+      28,
+      14,
+      28,
+      8,
+      0
+     ]
+    },
+    {
+     "district": "Belgaum",
+     "n_analysed": 13,
+     "min": 2.29,
+     "max": 16.11,
+     "counts": [
+      0,
+      9,
+      3,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      69,
+      23,
+      8,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Bellary",
+     "n_analysed": 10,
+     "min": 1.24,
+     "max": 26.09,
+     "counts": [
+      1,
+      4,
+      2,
+      0,
+      3,
+      0
+     ],
+     "pcts_printed": [
+      10,
+      40,
+      20,
+      0,
+      30,
+      0
+     ]
+    },
+    {
+     "district": "Bidar",
+     "n_analysed": 3,
+     "min": 14.6,
+     "max": 16.9,
+     "counts": [
+      0,
+      0,
+      0,
+      3,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      0,
+      0,
+      100,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Chamarajanagar",
+     "n_analysed": 5,
+     "min": 2.65,
+     "max": 33.43,
+     "counts": [
+      0,
+      2,
+      2,
+      0,
+      1,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      40,
+      40,
+      0,
+      20,
+      0
+     ]
+    },
+    {
+     "district": "Chikmagalur",
+     "n_analysed": 5,
+     "min": 1.3,
+     "max": 10.0,
+     "counts": [
+      1,
+      3,
+      1,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      20,
+      60,
+      20,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Chitradurga",
+     "n_analysed": 6,
+     "min": 2.0,
+     "max": 16.0,
+     "counts": [
+      0,
+      3,
+      1,
+      2,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      50,
+      17,
+      33,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Dakshin Kannada",
+     "n_analysed": 8,
+     "min": 4.37,
+     "max": 18.91,
+     "counts": [
+      0,
+      1,
+      3,
+      4,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      13,
+      37,
+      50,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Davanagere",
+     "n_analysed": 6,
+     "min": 1.54,
+     "max": 4.88,
+     "counts": [
+      2,
+      4,
+      0,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      34,
+      66,
+      0,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Dharwad",
+     "n_analysed": 1,
+     "min": 12.06,
+     "max": 12.06,
+     "counts": [
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      0,
+      0,
+      100,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Gadag",
+     "n_analysed": 2,
+     "min": 1.0,
+     "max": 16.26,
+     "counts": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      50,
+      0,
+      0,
+      50,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Gulbarga",
+     "n_analysed": 9,
+     "min": 0.95,
+     "max": 15.0,
+     "counts": [
+      1,
+      3,
+      3,
+      2,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      11,
+      34,
+      34,
+      21,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Hassan",
+     "n_analysed": 8,
+     "min": 3.48,
+     "max": 21.31,
+     "counts": [
+      0,
+      2,
+      3,
+      2,
+      1,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      25,
+      38,
+      25,
+      12,
+      0
+     ]
+    },
+    {
+     "district": "Haveri",
+     "n_analysed": 2,
+     "min": 4.3,
+     "max": 10.98,
+     "counts": [
+      0,
+      1,
+      0,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      50,
+      0,
+      50,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Kodagu",
+     "n_analysed": 5,
+     "min": 3.02,
+     "max": 18.6,
+     "counts": [
+      0,
+      2,
+      0,
+      3,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      40,
+      0,
+      60,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Kolar",
+     "n_analysed": 26,
+     "min": 0.89,
+     "max": 50.97,
+     "counts": [
+      3,
+      5,
+      1,
+      10,
+      6,
+      1
+     ],
+     "pcts_printed": [
+      11,
+      19,
+      4,
+      39,
+      23,
+      4
+     ]
+    },
+    {
+     "district": "Koppal",
+     "n_analysed": 4,
+     "min": 2.27,
+     "max": 3.58,
+     "counts": [
+      0,
+      4,
+      0,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      100,
+      0,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Mandya",
+     "n_analysed": 4,
+     "min": 0.05,
+     "max": 3.8,
+     "counts": [
+      2,
+      2,
+      0,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      50,
+      50,
+      0,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Mysore",
+     "n_analysed": 10,
+     "min": 3.4,
+     "max": 10.82,
+     "counts": [
+      0,
+      3,
+      6,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      30,
+      60,
+      10,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Raichur",
+     "n_analysed": 8,
+     "min": 0.27,
+     "max": 4.0,
+     "counts": [
+      2,
+      6,
+      0,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      25,
+      75,
+      0,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Shimoga",
+     "n_analysed": 3,
+     "min": 2.72,
+     "max": 5.56,
+     "counts": [
+      0,
+      2,
+      1,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      67,
+      33,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Tumkur",
+     "n_analysed": 38,
+     "min": 0.66,
+     "max": 122.0,
+     "counts": [
+      7,
+      10,
+      10,
+      6,
+      4,
+      1
+     ],
+     "pcts_printed": [
+      15,
+      26,
+      26,
+      20,
+      10,
+      3
+     ]
+    },
+    {
+     "district": "Udupi",
+     "n_analysed": 2,
+     "min": 10.0,
+     "max": 12.12,
+     "counts": [
+      0,
+      0,
+      1,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      0,
+      50,
+      50,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Uttara Kannada",
+     "n_analysed": 6,
+     "min": 2.1,
+     "max": 9.5,
+     "counts": [
+      0,
+      2,
+      4,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      33,
+      67,
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "total_printed": {
+    "n": 211,
+    "min": 0.05,
+    "max": 122.0,
+    "counts": [
+     25,
+     75,
+     47,
+     44,
+     18,
+     2
+    ],
+    "pcts": [
+     12,
+     35,
+     22,
+     21,
+     9,
+     1
+    ]
+   }
+  },
+  "T14-jan2023-phreatic": {
+   "table": "Table-14",
+   "season": "January 2023",
+   "aquifer": "phreatic (dug wells)",
+   "unit": "m bgl",
+   "bands": [
+    "0-2",
+    "2-5",
+    "5-10",
+    "10-20",
+    "20-40",
+    ">40"
+   ],
+   "source_ref": "PDF pp44-45 (Table-14)",
+   "note": "Chikmagalur and Chitradurga rows are printed identically in the source; kept as printed",
+   "rows": [
+    {
+     "district": "Bagalkot",
+     "n_analysed": 28,
+     "min": 1.7,
+     "max": 19.25,
+     "counts": [
+      2,
+      15,
+      7,
+      4,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      7,
+      54,
+      25,
+      14,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Bangalore Rural",
+     "n_analysed": 56,
+     "min": 1.65,
+     "max": 13.98,
+     "counts": [
+      4,
+      31,
+      11,
+      10,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      7,
+      55,
+      20,
+      18,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Bangalore Urban",
+     "n_analysed": 35,
+     "min": 1.31,
+     "max": 19.96,
+     "counts": [
+      2,
+      13,
+      11,
+      9,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      6,
+      37,
+      31,
+      26,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Belgaum",
+     "n_analysed": 95,
+     "min": 0.95,
+     "max": 14.65,
+     "counts": [
+      9,
+      35,
+      37,
+      14,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      9,
+      37,
+      39,
+      15,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Bellary",
+     "n_analysed": 34,
+     "min": 1.84,
+     "max": 19.2,
+     "counts": [
+      1,
+      17,
+      12,
+      4,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      3,
+      50,
+      35,
+      12,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Bidar",
+     "n_analysed": 37,
+     "min": 1.78,
+     "max": 18.36,
+     "counts": [
+      2,
+      10,
+      16,
+      9,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      5,
+      27,
+      43,
+      25,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Bijapur",
+     "n_analysed": 68,
+     "min": 1.98,
+     "max": 14.48,
+     "counts": [
+      1,
+      35,
+      25,
+      7,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      1,
+      51,
+      37,
+      11,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Chamarajanagar",
+     "n_analysed": 22,
+     "min": 1.5,
+     "max": 17.4,
+     "counts": [
+      1,
+      13,
+      7,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      5,
+      59,
+      31,
+      5,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Chikmagalur",
+     "n_analysed": 74,
+     "min": 1.8,
+     "max": 19.45,
+     "counts": [
+      1,
+      19,
+      37,
+      17,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      1,
+      26,
+      50,
+      23,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Chitradurga",
+     "n_analysed": 74,
+     "min": 1.55,
+     "max": 19.15,
+     "counts": [
+      1,
+      19,
+      37,
+      17,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      1,
+      26,
+      50,
+      23,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Dakshin Kannada",
+     "n_analysed": 97,
+     "min": 2.1,
+     "max": 13.3,
+     "counts": [
+      0,
+      13,
+      58,
+      26,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      13,
+      60,
+      27,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Davanagere",
+     "n_analysed": 52,
+     "min": 1.0,
+     "max": 18.21,
+     "counts": [
+      9,
+      26,
+      15,
+      2,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      17,
+      50,
+      29,
+      4,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Dharwad",
+     "n_analysed": 23,
+     "min": 1.96,
+     "max": 14.05,
+     "counts": [
+      1,
+      10,
+      4,
+      8,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      4,
+      43,
+      17,
+      36,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Gadag",
+     "n_analysed": 22,
+     "min": 0.56,
+     "max": 20.14,
+     "counts": [
+      2,
+      12,
+      5,
+      2,
+      1,
+      0
+     ],
+     "pcts_printed": [
+      9,
+      55,
+      23,
+      9,
+      4,
+      0
+     ]
+    },
+    {
+     "district": "Gulbarga",
+     "n_analysed": 99,
+     "min": 0.95,
+     "max": 18.4,
+     "counts": [
+      3,
+      45,
+      38,
+      13,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      3,
+      45,
+      38,
+      14,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Hassan",
+     "n_analysed": 79,
+     "min": 1.93,
+     "max": 19.9,
+     "counts": [
+      1,
+      26,
+      33,
+      19,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      1,
+      33,
+      42,
+      24,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Haveri",
+     "n_analysed": 24,
+     "min": 1.13,
+     "max": 12.11,
+     "counts": [
+      2,
+      9,
+      11,
+      2,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      8,
+      38,
+      46,
+      8,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Kodagu",
+     "n_analysed": 70,
+     "min": 1.8,
+     "max": 12.85,
+     "counts": [
+      1,
+      11,
+      31,
+      27,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      1,
+      16,
+      45,
+      39,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Kolar",
+     "n_analysed": 59,
+     "min": 1.25,
+     "max": 17.83,
+     "counts": [
+      9,
+      27,
+      7,
+      16,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      15,
+      46,
+      12,
+      27,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Koppal",
+     "n_analysed": 31,
+     "min": 1.35,
+     "max": 8.5,
+     "counts": [
+      5,
+      18,
+      8,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      16,
+      58,
+      26,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Mandya",
+     "n_analysed": 51,
+     "min": 0.26,
+     "max": 11.15,
+     "counts": [
+      6,
+      25,
+      18,
+      2,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      12,
+      49,
+      35,
+      4,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Mysore",
+     "n_analysed": 58,
+     "min": 1.35,
+     "max": 18.2,
+     "counts": [
+      3,
+      27,
+      16,
+      12,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      5,
+      47,
+      28,
+      20,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Raichur",
+     "n_analysed": 55,
+     "min": 0.8,
+     "max": 9.1,
+     "counts": [
+      14,
+      28,
+      13,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      25,
+      51,
+      24,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Shimoga",
+     "n_analysed": 82,
+     "min": 1.3,
+     "max": 16.9,
+     "counts": [
+      3,
+      18,
+      44,
+      17,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      4,
+      22,
+      54,
+      20,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Tumkur",
+     "n_analysed": 75,
+     "min": 1.5,
+     "max": 18.11,
+     "counts": [
+      8,
+      28,
+      19,
+      20,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      11,
+      37,
+      24,
+      27,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Udupi",
+     "n_analysed": 76,
+     "min": 1.45,
+     "max": 14.46,
+     "counts": [
+      1,
+      6,
+      51,
+      18,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      1,
+      8,
+      67,
+      24,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Uttara Kannada",
+     "n_analysed": 82,
+     "min": 1.35,
+     "max": 16.4,
+     "counts": [
+      1,
+      25,
+      45,
+      11,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      1,
+      30,
+      55,
+      14,
+      0,
+      0
+     ]
+    }
+   ],
+   "total_printed": {
+    "n": 1558,
+    "min": 0.26,
+    "max": 20.14,
+    "counts": [
+     93,
+     561,
+     616,
+     287,
+     1,
+     0
+    ],
+    "pcts": [
+     6,
+     36,
+     39,
+     18,
+     1,
+     0
+    ]
+   }
+  },
+  "T15-jan2023-piezometric": {
+   "table": "Table-15",
+   "season": "January 2023",
+   "aquifer": "piezometric (hard-rock piezometers)",
+   "unit": "m bgl",
+   "bands": [
+    "0-2",
+    "2-5",
+    "5-10",
+    "10-20",
+    "20-40",
+    ">40"
+   ],
+   "source_ref": "PDF pp48-49 (Table-15)",
+   "rows": [
+    {
+     "district": "Bagalkot",
+     "n_analysed": 4,
+     "min": 4.41,
+     "max": 14.42,
+     "counts": [
+      0,
+      1,
+      1,
+      2,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      25,
+      25,
+      50,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Bangalore Rural",
+     "n_analysed": 13,
+     "min": 1.65,
+     "max": 13.15,
+     "counts": [
+      1,
+      7,
+      3,
+      2,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      8,
+      52,
+      24,
+      16,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Bangalore Urban",
+     "n_analysed": 15,
+     "min": 4.3,
+     "max": 29.96,
+     "counts": [
+      0,
+      1,
+      6,
+      6,
+      2,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      7,
+      39,
+      39,
+      15,
+      0
+     ]
+    },
+    {
+     "district": "Belgaum",
+     "n_analysed": 12,
+     "min": 3.36,
+     "max": 13.19,
+     "counts": [
+      0,
+      2,
+      8,
+      2,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      17,
+      66,
+      17,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Bellary",
+     "n_analysed": 10,
+     "min": 6.3,
+     "max": 29.2,
+     "counts": [
+      1,
+      3,
+      3,
+      0,
+      3,
+      0
+     ],
+     "pcts_printed": [
+      10,
+      30,
+      30,
+      0,
+      30,
+      0
+     ]
+    },
+    {
+     "district": "Bidar",
+     "n_analysed": 2,
+     "min": 16.9,
+     "max": 18.36,
+     "counts": [
+      0,
+      0,
+      0,
+      2,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      0,
+      0,
+      100,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Bijapur",
+     "n_analysed": 14,
+     "min": 4.62,
+     "max": 14.48,
+     "counts": [
+      0,
+      2,
+      8,
+      4,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      14,
+      58,
+      28,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Chamarajanagar",
+     "n_analysed": 5,
+     "min": 5.8,
+     "max": 27.4,
+     "counts": [
+      0,
+      0,
+      4,
+      0,
+      1,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      0,
+      80,
+      0,
+      20,
+      0
+     ]
+    },
+    {
+     "district": "Chikmagalur",
+     "n_analysed": 6,
+     "min": 2.86,
+     "max": 16.0,
+     "counts": [
+      0,
+      3,
+      2,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      52,
+      32,
+      16,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Chitradurga",
+     "n_analysed": 6,
+     "min": 5.17,
+     "max": 19.15,
+     "counts": [
+      0,
+      0,
+      4,
+      2,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      0,
+      58,
+      28,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Dakshin Kannada",
+     "n_analysed": 8,
+     "min": 6.84,
+     "max": 23.3,
+     "counts": [
+      0,
+      0,
+      3,
+      4,
+      1,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      0,
+      38,
+      50,
+      12,
+      0
+     ]
+    },
+    {
+     "district": "Davanagere",
+     "n_analysed": 7,
+     "min": 1.14,
+     "max": 18.21,
+     "counts": [
+      1,
+      0,
+      4,
+      2,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      14,
+      0,
+      58,
+      28,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Dharwad",
+     "n_analysed": 1,
+     "min": 12.92,
+     "max": 12.92,
+     "counts": [
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      0,
+      0,
+      100,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Gadag",
+     "n_analysed": 2,
+     "min": 5.6,
+     "max": 16.87,
+     "counts": [
+      0,
+      0,
+      1,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      0,
+      50,
+      50,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Gulbarga",
+     "n_analysed": 9,
+     "min": 5.57,
+     "max": 15.54,
+     "counts": [
+      0,
+      0,
+      6,
+      3,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      0,
+      67,
+      33,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Hassan",
+     "n_analysed": 8,
+     "min": 6.52,
+     "max": 59.9,
+     "counts": [
+      0,
+      0,
+      3,
+      2,
+      1,
+      2
+     ],
+     "pcts_printed": [
+      0,
+      0,
+      38,
+      25,
+      12,
+      25
+     ]
+    },
+    {
+     "district": "Haveri",
+     "n_analysed": 2,
+     "min": 9.83,
+     "max": 16.86,
+     "counts": [
+      0,
+      0,
+      1,
+      1,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      0,
+      50,
+      50,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Kodagu",
+     "n_analysed": 5,
+     "min": 6.5,
+     "max": 22.85,
+     "counts": [
+      0,
+      1,
+      0,
+      3,
+      1,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      20,
+      0,
+      60,
+      20,
+      0
+     ]
+    },
+    {
+     "district": "Kolar",
+     "n_analysed": 32,
+     "min": 2.18,
+     "max": 47.83,
+     "counts": [
+      0,
+      4,
+      7,
+      14,
+      6,
+      1
+     ],
+     "pcts_printed": [
+      0,
+      12,
+      21,
+      46,
+      18,
+      3
+     ]
+    },
+    {
+     "district": "Koppal",
+     "n_analysed": 4,
+     "min": 2.15,
+     "max": 4.96,
+     "counts": [
+      0,
+      4,
+      0,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      100,
+      0,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Mandya",
+     "n_analysed": 6,
+     "min": 1.22,
+     "max": 7.56,
+     "counts": [
+      1,
+      1,
+      1,
+      3,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      20,
+      20,
+      20,
+      60,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Mysore",
+     "n_analysed": 10,
+     "min": 4.9,
+     "max": 15.4,
+     "counts": [
+      0,
+      1,
+      4,
+      5,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      10,
+      40,
+      50,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Raichur",
+     "n_analysed": 8,
+     "min": 1.05,
+     "max": 6.4,
+     "counts": [
+      2,
+      3,
+      3,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      24,
+      38,
+      38,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Shimoga",
+     "n_analysed": 3,
+     "min": 3.16,
+     "max": 6.65,
+     "counts": [
+      0,
+      1,
+      2,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      33,
+      67,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Tumkur",
+     "n_analysed": 37,
+     "min": 1.91,
+     "max": 128.0,
+     "counts": [
+      1,
+      5,
+      10,
+      15,
+      5,
+      1
+     ],
+     "pcts_printed": [
+      3,
+      15,
+      30,
+      34,
+      15,
+      3
+     ]
+    },
+    {
+     "district": "Udupi",
+     "n_analysed": 2,
+     "min": 11.02,
+     "max": 14.46,
+     "counts": [
+      0,
+      0,
+      0,
+      2,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      0,
+      0,
+      100,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Uttara Kannada",
+     "n_analysed": 6,
+     "min": 3.4,
+     "max": 12.54,
+     "counts": [
+      0,
+      1,
+      3,
+      2,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      0,
+      17,
+      49,
+      34,
+      0,
+      0
+     ]
+    },
+    {
+     "district": "Yadgir",
+     "n_analysed": 6,
+     "min": 1.0,
+     "max": 9.25,
+     "counts": [
+      1,
+      2,
+      3,
+      0,
+      0,
+      0
+     ],
+     "pcts_printed": [
+      17,
+      33,
+      50,
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "total_printed": {
+    "n": 243,
+    "min": 1.0,
+    "max": 128.0,
+    "counts": [
+     8,
+     42,
+     90,
+     79,
+     20,
+     4
+    ],
+    "pcts": [
+     3,
+     17,
+     38,
+     33,
+     8,
+     1
+    ]
+   }
+  }
+ },
+ "validation": {
+  "tables_checked": [
+   {
+    "table": "T8-may2022-phreatic",
+    "district_rows": 27,
+    "sum_n_analysed": 1312,
+    "printed_n": 1312,
+    "n_match": true,
+    "col_sums": [
+     301,
+     443,
+     412,
+     154,
+     2,
+     0
+    ],
+    "printed_col_counts": [
+     301,
+     443,
+     412,
+     154,
+     2,
+     0
+    ],
+    "col_match": true
+   },
+   {
+    "table": "T9-may2022-piezometric",
+    "district_rows": 24,
+    "sum_n_analysed": 191,
+    "printed_n": 191,
+    "n_match": true,
+    "col_sums": [
+     11,
+     31,
+     45,
+     68,
+     30,
+     6
+    ],
+    "printed_col_counts": [
+     11,
+     31,
+     45,
+     68,
+     30,
+     6
+    ],
+    "col_match": true
+   },
+   {
+    "table": "T10-aug2022-phreatic",
+    "district_rows": 27,
+    "sum_n_analysed": 1333,
+    "printed_n": 1335,
+    "n_match": false,
+    "col_sums": [
+     652,
+     455,
+     202,
+     23,
+     3,
+     0
+    ],
+    "printed_col_counts": [
+     652,
+     455,
+     202,
+     23,
+     3,
+     0
+    ],
+    "col_match": true
+   },
+   {
+    "table": "T11-aug2022-piezometric",
+    "district_rows": 27,
+    "sum_n_analysed": 201,
+    "printed_n": 201,
+    "n_match": true,
+    "col_sums": [
+     30,
+     62,
+     46,
+     45,
+     17,
+     1
+    ],
+    "printed_col_counts": [
+     30,
+     62,
+     46,
+     45,
+     17,
+     1
+    ],
+    "col_match": true
+   },
+   {
+    "table": "T12-nov2022-phreatic",
+    "district_rows": 27,
+    "sum_n_analysed": 1401,
+    "printed_n": 1406,
+    "n_match": false,
+    "col_sums": [
+     451,
+     533,
+     338,
+     67,
+     17,
+     0
+    ],
+    "printed_col_counts": [
+     451,
+     533,
+     338,
+     67,
+     16,
+     1
+    ],
+    "col_match": false
+   },
+   {
+    "table": "T13-nov2022-piezometric",
+    "district_rows": 26,
+    "sum_n_analysed": 211,
+    "printed_n": 211,
+    "n_match": true,
+    "col_sums": [
+     25,
+     75,
+     47,
+     44,
+     18,
+     2
+    ],
+    "printed_col_counts": [
+     25,
+     75,
+     47,
+     44,
+     18,
+     2
+    ],
+    "col_match": true
+   },
+   {
+    "table": "T14-jan2023-phreatic",
+    "district_rows": 27,
+    "sum_n_analysed": 1558,
+    "printed_n": 1558,
+    "n_match": true,
+    "col_sums": [
+     93,
+     561,
+     616,
+     287,
+     1,
+     0
+    ],
+    "printed_col_counts": [
+     93,
+     561,
+     616,
+     287,
+     1,
+     0
+    ],
+    "col_match": true
+   },
+   {
+    "table": "T15-jan2023-piezometric",
+    "district_rows": 28,
+    "sum_n_analysed": 243,
+    "printed_n": 243,
+    "n_match": true,
+    "col_sums": [
+     8,
+     42,
+     90,
+     79,
+     20,
+     4
+    ],
+    "printed_col_counts": [
+     8,
+     42,
+     90,
+     79,
+     20,
+     4
+    ],
+    "col_match": true
+   }
+  ],
+  "row_flags": [
+   {
+    "table": "T8-may2022-phreatic",
+    "district": "Tumkur",
+    "flag": "non_numeric_printed_pct_'11..11'_band_5-10"
+   },
+   {
+    "table": "T10-aug2022-phreatic",
+    "district": "Bagalkot",
+    "flag": "row_counts_sum_26_vs_n_24"
+   },
+   {
+    "table": "T10-aug2022-phreatic",
+    "district": "Bagalkot",
+    "flag": "pct_variance_band_2-5_printed_61.54_vs_computed_66.67"
+   },
+   {
+    "table": "T11-aug2022-piezometric",
+    "district": "Belgaum",
+    "flag": "missing_printed_pct_band_20-40"
+   },
+   {
+    "table": "T12-nov2022-phreatic",
+    "district": "Bijapur",
+    "flag": "row_counts_sum_59_vs_n_60"
+   },
+   {
+    "table": "T12-nov2022-phreatic",
+    "district": "Tumkur",
+    "flag": "row_counts_sum_61_vs_n_55"
+   },
+   {
+    "table": "T12-nov2022-phreatic",
+    "district": "Tumkur",
+    "flag": "pct_variance_band_20-40_printed_2_vs_computed_12.73"
+   },
+   {
+    "table": "T13-nov2022-piezometric",
+    "district": "Tumkur",
+    "flag": "pct_variance_band_0-2_printed_15_vs_computed_18.42"
+   },
+   {
+    "table": "T13-nov2022-piezometric",
+    "district": "Tumkur",
+    "flag": "pct_variance_band_10-20_printed_20_vs_computed_15.79"
+   },
+   {
+    "table": "T15-jan2023-piezometric",
+    "district": "Chitradurga",
+    "flag": "pct_variance_band_5-10_printed_58_vs_computed_66.67"
+   },
+   {
+    "table": "T15-jan2023-piezometric",
+    "district": "Chitradurga",
+    "flag": "pct_variance_band_10-20_printed_28_vs_computed_33.33"
+   },
+   {
+    "table": "T15-jan2023-piezometric",
+    "district": "Kolar",
+    "flag": "pct_variance_band_10-20_printed_46_vs_computed_43.75"
+   },
+   {
+    "table": "T15-jan2023-piezometric",
+    "district": "Mandya",
+    "flag": "pct_variance_band_0-2_printed_20_vs_computed_16.67"
+   },
+   {
+    "table": "T15-jan2023-piezometric",
+    "district": "Mandya",
+    "flag": "pct_variance_band_2-5_printed_20_vs_computed_16.67"
+   },
+   {
+    "table": "T15-jan2023-piezometric",
+    "district": "Mandya",
+    "flag": "pct_variance_band_5-10_printed_20_vs_computed_16.67"
+   },
+   {
+    "table": "T15-jan2023-piezometric",
+    "district": "Mandya",
+    "flag": "pct_variance_band_10-20_printed_60_vs_computed_50.0"
+   },
+   {
+    "table": "T15-jan2023-piezometric",
+    "district": "Tumkur",
+    "flag": "pct_variance_band_5-10_printed_30_vs_computed_27.03"
+   },
+   {
+    "table": "T15-jan2023-piezometric",
+    "district": "Tumkur",
+    "flag": "pct_variance_band_10-20_printed_34_vs_computed_40.54"
+   }
+  ],
+  "column_flags": [
+   {
+    "table": "T12-nov2022-phreatic",
+    "band": "20-40",
+    "flag": "column_sum_17_vs_printed_total_16"
+   },
+   {
+    "table": "T12-nov2022-phreatic",
+    "band": ">40",
+    "flag": "column_sum_0_vs_printed_total_1"
+   }
+  ]
+ }
+}

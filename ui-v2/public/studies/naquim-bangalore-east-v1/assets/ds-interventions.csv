@@ -1,0 +1,19 @@
+sl_no,resource_detail,value_2020,unit_or_note
+1,Net Ground Water Availability,2726.97,ham
+2,Existing ground water draft for all uses,4393.98,ham
+3,Existing Stage of Ground Water Development,161,%
+4,Expected Recharge from Artificial Recharge sources,218,ham
+5,Cumulative Ground water availability,2944.97,ham; 2726.97 + 218
+6,Expected improvement in stage of ground water development,12,% points
+7,Saving due to adopting water Use Efficiency measures,153,ham
+8,Saving due to adopting grey water,Nil,treated water transferred to Kolar/Chikballapur for AR
+9,Cumulative availability after WUE and AR,3098,ham; 2944.97 + 153
+10,Expected improved stage after WUE and Grey water,161 to 142,%; Table 12 prints '113 from 142' (print anomaly; Table 13 + text confirm 161 to 142)
+11,Total water likely to be saved after all implementations,371,ham; 218 + 153
+-,Area feasible for artificial recharge,108,sq km
+-,Non-committed monsoon runoff available,2.9,MCM (= 290 ham)
+-,Check dams proposed,15,tentative; Annexure-II
+-,Percolation tanks proposed,3,tentative; Annexure-III
+-,Recharge efficiency assumed,75,%
+-,Tentative total project cost,210,Rs lakh; pre-field studies/DPR required
+-,Sewage water available for treatment,796,"ham; transferred out, nil reuse in taluk"

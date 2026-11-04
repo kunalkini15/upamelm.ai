@@ -1,0 +1,1075 @@
+{
+ "dataset": "district rainfall 2022, CGWB GW Year Book Karnataka 2022-23",
+ "source_document": "muse-source-ingestion/runs/bengaluru-aquifer-groundwater-v1/lanes/levels-resources/downloads/gw-yearbook-karnataka-2022-23.pdf",
+ "units": {
+  "rainfall": "mm",
+  "departure": "percent of normal"
+ },
+ "class_criteria": {
+  "Excess": "120% of normal or more",
+  "Normal": "81-119% of normal",
+  "Deficit": "80% of normal or less"
+ },
+ "district_names_note": "spellings expanded from source abbreviations (Bengaluru R, D./Uttra Kannada, Chikkamagalur, Koppala); 'Bengaluru' = Bengaluru Urban",
+ "tables": {
+  "table3_premonsoon_jan_may": {
+   "source_ref": "PDF pp10-11, Table-3",
+   "state": {
+    "sl_no": null,
+    "district": "State",
+    "normal_mm": 120.0,
+    "actual_mm": 238.0,
+    "departure_pct": 98,
+    "class": "Excess"
+   },
+   "districts": [
+    {
+     "sl_no": 1,
+     "district": "Bagalkote",
+     "normal_mm": 79.8,
+     "actual_mm": 159.0,
+     "departure_pct": 99,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 2,
+     "district": "Belagavi",
+     "normal_mm": 94.8,
+     "actual_mm": 208.0,
+     "departure_pct": 119,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 3,
+     "district": "Bellary",
+     "normal_mm": 74.4,
+     "actual_mm": 111.0,
+     "departure_pct": 49,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 4,
+     "district": "Bengaluru",
+     "normal_mm": 156.1,
+     "actual_mm": 325.5,
+     "departure_pct": 109,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 5,
+     "district": "Bengaluru Rural",
+     "normal_mm": 141.3,
+     "actual_mm": 302.2,
+     "departure_pct": 114,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 6,
+     "district": "Bidar",
+     "normal_mm": 70.9,
+     "actual_mm": 74.0,
+     "departure_pct": 5,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 7,
+     "district": "Chamarajanagara",
+     "normal_mm": 203.4,
+     "actual_mm": 314.0,
+     "departure_pct": 55,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 8,
+     "district": "Chikkaballapura",
+     "normal_mm": 108.1,
+     "actual_mm": 196.0,
+     "departure_pct": 81,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 9,
+     "district": "Chikkamagaluru",
+     "normal_mm": 164.3,
+     "actual_mm": 339.1,
+     "departure_pct": 106,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 10,
+     "district": "Chitradurga",
+     "normal_mm": 103.3,
+     "actual_mm": 180.0,
+     "departure_pct": 74,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 11,
+     "district": "Dakshina Kannada",
+     "normal_mm": 242.5,
+     "actual_mm": 495.3,
+     "departure_pct": 104,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 12,
+     "district": "Davanagere",
+     "normal_mm": 105.0,
+     "actual_mm": 287.0,
+     "departure_pct": 173,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 13,
+     "district": "Dharwad",
+     "normal_mm": 125.4,
+     "actual_mm": 269.7,
+     "departure_pct": 115,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 14,
+     "district": "Gadag",
+     "normal_mm": 105.5,
+     "actual_mm": 233.8,
+     "departure_pct": 122,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 15,
+     "district": "Hassan",
+     "normal_mm": 168.3,
+     "actual_mm": 351.7,
+     "departure_pct": 109,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 16,
+     "district": "Haveri",
+     "normal_mm": 121.5,
+     "actual_mm": 298.0,
+     "departure_pct": 145,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 17,
+     "district": "Kalaburagi",
+     "normal_mm": 67.0,
+     "actual_mm": 88.0,
+     "departure_pct": 32,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 18,
+     "district": "Kodagu",
+     "normal_mm": 252.8,
+     "actual_mm": 423.0,
+     "departure_pct": 67,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 19,
+     "district": "Kolar",
+     "normal_mm": 117.2,
+     "actual_mm": 249.8,
+     "departure_pct": 113,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 20,
+     "district": "Koppala",
+     "normal_mm": 81.7,
+     "actual_mm": 138.0,
+     "departure_pct": 69,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 21,
+     "district": "Mandya",
+     "normal_mm": 166.2,
+     "actual_mm": 383.1,
+     "departure_pct": 131,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 22,
+     "district": "Mysuru",
+     "normal_mm": 205.2,
+     "actual_mm": 356.0,
+     "departure_pct": 74,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 23,
+     "district": "Raichur",
+     "normal_mm": 68.5,
+     "actual_mm": 94.0,
+     "departure_pct": 37,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 24,
+     "district": "Ramanagara",
+     "normal_mm": 177.5,
+     "actual_mm": 312.0,
+     "departure_pct": 76,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 25,
+     "district": "Shivamogga",
+     "normal_mm": 129.0,
+     "actual_mm": 338.2,
+     "departure_pct": 162,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 26,
+     "district": "Tumakuru",
+     "normal_mm": 124.9,
+     "actual_mm": 283.6,
+     "departure_pct": 127,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 27,
+     "district": "Udupi",
+     "normal_mm": 200.8,
+     "actual_mm": 433.7,
+     "departure_pct": 116,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 28,
+     "district": "Uttara Kannada",
+     "normal_mm": 103.0,
+     "actual_mm": 234.1,
+     "departure_pct": 127,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 29,
+     "district": "Vijayanagara",
+     "normal_mm": 98.6,
+     "actual_mm": 166.4,
+     "departure_pct": 69,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 30,
+     "district": "Vijayapura",
+     "normal_mm": 62.8,
+     "actual_mm": 117.1,
+     "departure_pct": 86,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 31,
+     "district": "Yadgir",
+     "normal_mm": 67.5,
+     "actual_mm": 102.0,
+     "departure_pct": 51,
+     "class": "Excess"
+    }
+   ],
+   "narrative": "State 238 mm vs normal 120 mm (+98%, Excess); 30 districts Excess, 1 (Bidar) Normal"
+  },
+  "table4_sw_monsoon_jun_sep": {
+   "source_ref": "PDF p13, Table-4",
+   "state": {
+    "sl_no": null,
+    "district": "State",
+    "normal_mm": 851.6,
+    "actual_mm": 1019.0,
+    "departure_pct": 20,
+    "class": "Excess"
+   },
+   "districts": [
+    {
+     "sl_no": 1,
+     "district": "Bagalkote",
+     "normal_mm": 362,
+     "actual_mm": 486,
+     "departure_pct": 34,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 2,
+     "district": "Belagavi",
+     "normal_mm": 599,
+     "actual_mm": 790,
+     "departure_pct": 32,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 3,
+     "district": "Bellary",
+     "normal_mm": 366,
+     "actual_mm": 510,
+     "departure_pct": 39,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 4,
+     "district": "Bengaluru",
+     "normal_mm": 471,
+     "actual_mm": 790,
+     "departure_pct": 68,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 5,
+     "district": "Bengaluru Rural",
+     "normal_mm": 444,
+     "actual_mm": 838,
+     "departure_pct": 89,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 6,
+     "district": "Bidar",
+     "normal_mm": 650,
+     "actual_mm": 746,
+     "departure_pct": 15,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 7,
+     "district": "Chamarajanagara",
+     "normal_mm": 320,
+     "actual_mm": 510,
+     "departure_pct": 59,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 8,
+     "district": "Chikkaballapura",
+     "normal_mm": 416,
+     "actual_mm": 635,
+     "departure_pct": 53,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 9,
+     "district": "Chikkamagaluru",
+     "normal_mm": 1447,
+     "actual_mm": 1700,
+     "departure_pct": 17,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 10,
+     "district": "Chitradurga",
+     "normal_mm": 282,
+     "actual_mm": 477,
+     "departure_pct": 69,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 11,
+     "district": "Dakshina Kannada",
+     "normal_mm": 3388,
+     "actual_mm": 3527,
+     "departure_pct": 4,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 12,
+     "district": "Davanagere",
+     "normal_mm": 393,
+     "actual_mm": 637,
+     "departure_pct": 62,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 13,
+     "district": "Dharwad",
+     "normal_mm": 514,
+     "actual_mm": 570,
+     "departure_pct": 11,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 14,
+     "district": "Gadag",
+     "normal_mm": 372,
+     "actual_mm": 582,
+     "departure_pct": 56,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 15,
+     "district": "Hassan",
+     "normal_mm": 754,
+     "actual_mm": 1090,
+     "departure_pct": 45,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 16,
+     "district": "Haveri",
+     "normal_mm": 512,
+     "actual_mm": 572,
+     "departure_pct": 12,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 17,
+     "district": "Kalaburagi",
+     "normal_mm": 576,
+     "actual_mm": 633,
+     "departure_pct": 10,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 18,
+     "district": "Kodagu",
+     "normal_mm": 2188,
+     "actual_mm": 2369,
+     "departure_pct": 8,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 19,
+     "district": "Kolar",
+     "normal_mm": 399,
+     "actual_mm": 649,
+     "departure_pct": 63,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 20,
+     "district": "Koppala",
+     "normal_mm": 383,
+     "actual_mm": 452,
+     "departure_pct": 18,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 21,
+     "district": "Mandya",
+     "normal_mm": 316,
+     "actual_mm": 730,
+     "departure_pct": 131,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 22,
+     "district": "Mysuru",
+     "normal_mm": 419,
+     "actual_mm": 653,
+     "departure_pct": 56,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 23,
+     "district": "Raichur",
+     "normal_mm": 440,
+     "actual_mm": 569,
+     "departure_pct": 29,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 24,
+     "district": "Ramanagara",
+     "normal_mm": 436,
+     "actual_mm": 814,
+     "departure_pct": 87,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 25,
+     "district": "Shivamogga",
+     "normal_mm": 1991,
+     "actual_mm": 1930,
+     "departure_pct": -3,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 26,
+     "district": "Tumakuru",
+     "normal_mm": 358,
+     "actual_mm": 769,
+     "departure_pct": 115,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 27,
+     "district": "Udupi",
+     "normal_mm": 4022,
+     "actual_mm": 3998,
+     "departure_pct": -1,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 28,
+     "district": "Uttara Kannada",
+     "normal_mm": 2647,
+     "actual_mm": 3593,
+     "departure_pct": 36,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 29,
+     "district": "Vijayanagara",
+     "normal_mm": 389,
+     "actual_mm": 535,
+     "departure_pct": 38,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 30,
+     "district": "Vijayapura",
+     "normal_mm": 396,
+     "actual_mm": 520,
+     "departure_pct": 31,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 31,
+     "district": "Yadgir",
+     "normal_mm": 517,
+     "actual_mm": 689,
+     "departure_pct": 33,
+     "class": "Excess"
+    }
+   ],
+   "narrative": "State 1019 mm vs normal 851.6 mm (+20%, Excess); 21 districts Excess, 10 Normal"
+  },
+  "table5_ne_monsoon_oct_dec": {
+   "source_ref": "PDF p15, Table-5",
+   "state": {
+    "sl_no": null,
+    "district": "State",
+    "normal_mm": 186.0,
+    "actual_mm": 217.0,
+    "departure_pct": 17,
+    "class": "Normal"
+   },
+   "districts": [
+    {
+     "sl_no": 1,
+     "district": "Bagalkote",
+     "normal_mm": 141,
+     "actual_mm": 162,
+     "departure_pct": 15,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 2,
+     "district": "Belagavi",
+     "normal_mm": 133,
+     "actual_mm": 197,
+     "departure_pct": 48,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 3,
+     "district": "Bellary",
+     "normal_mm": 159,
+     "actual_mm": 174,
+     "departure_pct": 9,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 4,
+     "district": "Bengaluru",
+     "normal_mm": 219,
+     "actual_mm": 340,
+     "departure_pct": 55,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 5,
+     "district": "Bengaluru Rural",
+     "normal_mm": 213,
+     "actual_mm": 358,
+     "departure_pct": 68,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 6,
+     "district": "Bidar",
+     "normal_mm": 117,
+     "actual_mm": 131,
+     "departure_pct": 12,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 7,
+     "district": "Chamarajanagara",
+     "normal_mm": 263,
+     "actual_mm": 335,
+     "departure_pct": 27,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 8,
+     "district": "Chikkaballapura",
+     "normal_mm": 211,
+     "actual_mm": 303,
+     "departure_pct": 44,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 9,
+     "district": "Chikkamagaluru",
+     "normal_mm": 221,
+     "actual_mm": 238,
+     "departure_pct": 8,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 10,
+     "district": "Chitradurga",
+     "normal_mm": 155,
+     "actual_mm": 182,
+     "departure_pct": 17,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 11,
+     "district": "Dakshina Kannada",
+     "normal_mm": 376,
+     "actual_mm": 361,
+     "departure_pct": -4,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 12,
+     "district": "Davanagere",
+     "normal_mm": 161,
+     "actual_mm": 239,
+     "departure_pct": 48,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 13,
+     "district": "Dharwad",
+     "normal_mm": 148,
+     "actual_mm": 212,
+     "departure_pct": 43,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 14,
+     "district": "Gadag",
+     "normal_mm": 147,
+     "actual_mm": 180,
+     "departure_pct": 22,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 15,
+     "district": "Hassan",
+     "normal_mm": 220,
+     "actual_mm": 259,
+     "departure_pct": 18,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 16,
+     "district": "Haveri",
+     "normal_mm": 166,
+     "actual_mm": 153,
+     "departure_pct": -8,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 17,
+     "district": "Kalaburagi",
+     "normal_mm": 127,
+     "actual_mm": 126,
+     "departure_pct": -1,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 18,
+     "district": "Kodagu",
+     "normal_mm": 288,
+     "actual_mm": 244,
+     "departure_pct": -15,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 19,
+     "district": "Kolar",
+     "normal_mm": 219,
+     "actual_mm": 351,
+     "departure_pct": 60,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 20,
+     "district": "Koppala",
+     "normal_mm": 149,
+     "actual_mm": 154,
+     "departure_pct": 3,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 21,
+     "district": "Mandya",
+     "normal_mm": 217,
+     "actual_mm": 371,
+     "departure_pct": 71,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 22,
+     "district": "Mysuru",
+     "normal_mm": 214,
+     "actual_mm": 309,
+     "departure_pct": 44,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 23,
+     "district": "Raichur",
+     "normal_mm": 146,
+     "actual_mm": 142,
+     "departure_pct": -3,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 24,
+     "district": "Ramanagara",
+     "normal_mm": 226,
+     "actual_mm": 386,
+     "departure_pct": 71,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 25,
+     "district": "Shivamogga",
+     "normal_mm": 205,
+     "actual_mm": 171,
+     "departure_pct": -17,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 26,
+     "district": "Tumakuru",
+     "normal_mm": 186,
+     "actual_mm": 305,
+     "departure_pct": 64,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 27,
+     "district": "Udupi",
+     "normal_mm": 312,
+     "actual_mm": 241,
+     "departure_pct": -23,
+     "class": "Deficit"
+    },
+    {
+     "sl_no": 28,
+     "district": "Uttara Kannada",
+     "normal_mm": 187,
+     "actual_mm": 154,
+     "departure_pct": -18,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 29,
+     "district": "Vijayanagara",
+     "normal_mm": 155,
+     "actual_mm": 225,
+     "departure_pct": 45,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 30,
+     "district": "Vijayapura",
+     "normal_mm": 133,
+     "actual_mm": 123,
+     "departure_pct": -8,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 31,
+     "district": "Yadgir",
+     "normal_mm": 134,
+     "actual_mm": 142,
+     "departure_pct": 6,
+     "class": "Normal"
+    }
+   ],
+   "narrative": "State 217 mm vs normal 186 mm (+17%, Normal); table rows give 14 Excess, 16 Normal, 1 Deficit (Udupi); narrative text claims 15/16/1 (=32), inconsistent with 31-row table - table used"
+  },
+  "table6_annual_jan_dec": {
+   "source_ref": "PDF p17, Table-6",
+   "state": {
+    "sl_no": null,
+    "district": "State",
+    "normal_mm": 1153.0,
+    "actual_mm": 1474.0,
+    "departure_pct": 28,
+    "class": "Excess"
+   },
+   "districts": [
+    {
+     "sl_no": 1,
+     "district": "Bagalkote",
+     "normal_mm": 582,
+     "actual_mm": 807,
+     "departure_pct": 39,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 2,
+     "district": "Belagavi",
+     "normal_mm": 826,
+     "actual_mm": 1194,
+     "departure_pct": 45,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 3,
+     "district": "Bellary",
+     "normal_mm": 599,
+     "actual_mm": 795,
+     "departure_pct": 33,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 4,
+     "district": "Bengaluru",
+     "normal_mm": 846,
+     "actual_mm": 1456,
+     "departure_pct": 72,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 5,
+     "district": "Bengaluru Rural",
+     "normal_mm": 798,
+     "actual_mm": 1498,
+     "departure_pct": 88,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 6,
+     "district": "Bidar",
+     "normal_mm": 838,
+     "actual_mm": 952,
+     "departure_pct": 14,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 7,
+     "district": "Chamarajanagara",
+     "normal_mm": 787,
+     "actual_mm": 1159,
+     "departure_pct": 47,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 8,
+     "district": "Chikkaballapura",
+     "normal_mm": 736,
+     "actual_mm": 1134,
+     "departure_pct": 54,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 9,
+     "district": "Chikkamagaluru",
+     "normal_mm": 1833,
+     "actual_mm": 2278,
+     "departure_pct": 24,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 10,
+     "district": "Chitradurga",
+     "normal_mm": 540,
+     "actual_mm": 839,
+     "departure_pct": 55,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 11,
+     "district": "Dakshina Kannada",
+     "normal_mm": 4006,
+     "actual_mm": 4383,
+     "departure_pct": 9,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 12,
+     "district": "Davanagere",
+     "normal_mm": 659,
+     "actual_mm": 1162,
+     "departure_pct": 76,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 13,
+     "district": "Dharwad",
+     "normal_mm": 787,
+     "actual_mm": 1051,
+     "departure_pct": 34,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 14,
+     "district": "Gadag",
+     "normal_mm": 624,
+     "actual_mm": 995,
+     "departure_pct": 59,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 15,
+     "district": "Hassan",
+     "normal_mm": 1142,
+     "actual_mm": 1701,
+     "departure_pct": 49,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 16,
+     "district": "Haveri",
+     "normal_mm": 800,
+     "actual_mm": 1023,
+     "departure_pct": 28,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 17,
+     "district": "Kalaburagi",
+     "normal_mm": 770,
+     "actual_mm": 847,
+     "departure_pct": 10,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 18,
+     "district": "Kodagu",
+     "normal_mm": 2729,
+     "actual_mm": 3036,
+     "departure_pct": 11,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 19,
+     "district": "Kolar",
+     "normal_mm": 735,
+     "actual_mm": 1250,
+     "departure_pct": 70,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 20,
+     "district": "Koppala",
+     "normal_mm": 614,
+     "actual_mm": 744,
+     "departure_pct": 21,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 21,
+     "district": "Mandya",
+     "normal_mm": 699,
+     "actual_mm": 1484,
+     "departure_pct": 112,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 22,
+     "district": "Mysuru",
+     "normal_mm": 837,
+     "actual_mm": 1318,
+     "departure_pct": 57,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 23,
+     "district": "Raichur",
+     "normal_mm": 654,
+     "actual_mm": 805,
+     "departure_pct": 23,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 24,
+     "district": "Ramanagara",
+     "normal_mm": 840,
+     "actual_mm": 1512,
+     "departure_pct": 80,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 25,
+     "district": "Shivamogga",
+     "normal_mm": 2325,
+     "actual_mm": 2439,
+     "departure_pct": 5,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 26,
+     "district": "Tumakuru",
+     "normal_mm": 669,
+     "actual_mm": 1358,
+     "departure_pct": 103,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 27,
+     "district": "Udupi",
+     "normal_mm": 4535,
+     "actual_mm": 4672,
+     "departure_pct": 3,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 28,
+     "district": "Uttara Kannada",
+     "normal_mm": 2936,
+     "actual_mm": 2981,
+     "departure_pct": 2,
+     "class": "Normal"
+    },
+    {
+     "sl_no": 29,
+     "district": "Vijayanagara",
+     "normal_mm": 643,
+     "actual_mm": 927,
+     "departure_pct": 44,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 30,
+     "district": "Vijayapura",
+     "normal_mm": 591,
+     "actual_mm": 760,
+     "departure_pct": 29,
+     "class": "Excess"
+    },
+    {
+     "sl_no": 31,
+     "district": "Yadgir",
+     "normal_mm": 719,
+     "actual_mm": 933,
+     "departure_pct": 30,
+     "class": "Excess"
+    }
+   ],
+   "narrative": "State 1474 mm vs normal 1153 mm (+28%, Excess); 24 districts Excess, 7 Normal"
+  }
+ },
+ "validation": {
+  "row_counts": "31 districts + state row per table (4 tables)",
+  "boundary_rows": "first=Bagalkote, last=Yadgir+State verified all tables; Bengaluru scope rows present all tables",
+  "units": "mm and % departure, consistent across Tables 3-6; no merges",
+  "class_counts": {
+   "premonsoon": "30 Excess/1 Normal",
+   "sw": "21 Excess/10 Normal",
+   "ne": "14 Excess/16 Normal/1 Deficit per table rows (narrative text claims 15/16/1 = 32, inconsistent; table used)",
+   "annual": "24 Excess/7 Normal"
+  }
+ }
+}

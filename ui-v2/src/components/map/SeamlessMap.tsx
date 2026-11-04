@@ -1,3 +1,16 @@
+/**
+ * @file SeamlessMap.tsx
+ * @module ui-v2/components/map/SeamlessMap
+ * @description 2D Geospatial GIS engine powered by MapLibre GL.
+ *
+ * Capabilities:
+ * - High-resolution dark basemap with vector fallback layers.
+ * - Point observation markers with dynamic cluster and depth-fidelity color coding.
+ * - Multi-layer geometry rendering: polygon study boundaries, alignment corridors, raster overlays.
+ * - Synchronized viewport transitions (fly-to animations on feature/finding selection).
+ * - Canvas export capability for 3D terrain texture draping.
+ */
+
 import React, { useEffect, useRef, useImperativeHandle, forwardRef, useState } from 'react';
 import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -6,6 +19,8 @@ import {
   RenderablePointFeature,
   RenderableRegionalSlab,
   RenderableInterval,
+  RawFeature,
+  NativeAsset,
 } from '../../types/scientific';
 
 const escapeHtml = (value: unknown) =>
@@ -31,6 +46,13 @@ function pointInPolygon(point: [number, number], polygon: [number, number][]): b
   return inside;
 }
 
+function geometryPositions(value: unknown, output: [number, number][] = []): [number, number][] {
+  if (!Array.isArray(value)) return output;
+  if (value.length >= 2 && typeof value[0] === 'number' && typeof value[1] === 'number') output.push([value[0], value[1]]);
+  else value.forEach((entry) => geometryPositions(entry, output));
+  return output;
+}
+
 if (typeof window !== 'undefined' && (maplibregl as any).setWorkerUrl) {
   (maplibregl as any).setWorkerUrl('/maplibre-gl-worker.mjs');
 }
@@ -48,27 +70,34 @@ export interface SeamlessMapHandle {
 
 interface SeamlessMapProps {
   features: RenderablePointFeature[];
+  spatialFeatures: RawFeature[];
   regionalSlabs: RenderableRegionalSlab[];
   selectedFeatureId: string | null;
   highlightedFeatureIds?: string[];
   onSelectFeature: (feature: RenderablePointFeature) => void;
+  onSelectSpatialFeature?: (feature: RawFeature) => void;
   onSelectInterval?: (interval: RenderableInterval) => void;
   onZoomChange: (zoom: number, pitch: number) => void;
   onExitLocalView: () => void;
-  onEnterSubsurface: (feature?: RenderablePointFeature) => void;
+  onEnterSubsurface?: (feature?: RenderablePointFeature) => void;
   center: [number, number];
   bounds: { minLng: number; maxLng: number; minLat: number; maxLat: number };
   studyAreaPolygon: [number, number][];
   studyAreaName: string;
+  nativeAssets?: NativeAsset[];
+  sourceBaseUrl?: string;
+  activeLayerIds?: string[];
 }
 
 export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
   (
     {
       features,
+      spatialFeatures,
       selectedFeatureId,
       highlightedFeatureIds = [],
       onSelectFeature,
+      onSelectSpatialFeature,
       onZoomChange,
       onExitLocalView,
       onEnterSubsurface,
@@ -76,9 +105,18 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
       bounds,
       studyAreaPolygon,
       studyAreaName,
+      nativeAssets = [],
+      sourceBaseUrl,
+      activeLayerIds = [],
     },
     ref
   ) => {
+    const macroBounds = {
+      minLng: Math.min(67, bounds.minLng),
+      minLat: Math.min(6, bounds.minLat),
+      maxLng: Math.max(98, bounds.maxLng),
+      maxLat: Math.max(38, bounds.maxLat),
+    };
     const [instructionStage, setInstructionStage] = useState<'district' | 'coverage' | 'stations'>('district');
     const mapContainer = useRef<HTMLDivElement>(null);
     const mapRef = useRef<maplibregl.Map | null>(null);
@@ -94,6 +132,8 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
     selectedFeatureIdRef.current = selectedFeatureId;
     const highlightedFeatureIdsRef = useRef(highlightedFeatureIds);
     highlightedFeatureIdsRef.current = highlightedFeatureIds;
+    const onSelectSpatialFeatureRef = useRef(onSelectSpatialFeature);
+    onSelectSpatialFeatureRef.current = onSelectSpatialFeature;
     const currentZoomRef = useRef(10.2);
 
     useImperativeHandle(ref, () => ({
@@ -119,24 +159,23 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
       },
       fitToFeatures: (featureIds: string[]) => {
         const targets = featuresRef.current.filter((feature) => featureIds.includes(feature.id));
-        if (!mapRef.current || targets.length === 0) return;
+        const spatialTargets = spatialFeatures.filter((feature) => featureIds.includes(feature.id) && feature.geometry);
+        if (!mapRef.current || (targets.length === 0 && spatialTargets.length === 0)) return;
         if (targets.length === 1) {
           mapRef.current.flyTo({ center: targets[0].coordinates, zoom: 13.2, pitch: 35, duration: 1200, essential: true });
           return;
         }
-        const lngs = targets.map((feature) => feature.coordinates[0]);
-        const lats = targets.map((feature) => feature.coordinates[1]);
+        const positions = [...targets.map((feature) => feature.coordinates), ...spatialTargets.flatMap((feature) => geometryPositions(feature.geometry?.coordinates))];
+        const lngs = positions.map((position) => position[0]);
+        const lats = positions.map((position) => position[1]);
         mapRef.current.fitBounds([[Math.min(...lngs), Math.min(...lats)], [Math.max(...lngs), Math.max(...lats)]], { padding: 120, duration: 1400, maxZoom: 13 });
       },
       resetView: () => {
         if (!mapRef.current) return;
-        mapRef.current.flyTo({
-          center: center,
-          zoom: 5.5, // Return to macro view of India
-          pitch: 0,
-          bearing: 0,
-          duration: 1500,
-        });
+        mapRef.current.fitBounds(
+          [[macroBounds.minLng, macroBounds.minLat], [macroBounds.maxLng, macroBounds.maxLat]],
+          { padding: 36, duration: 1500, pitch: 0, bearing: 0 }
+        );
       },
       zoomIn: () => {
         mapRef.current?.zoomIn();
@@ -255,8 +294,8 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
             },
           ],
         },
-        center: center,
-        zoom: 5.5, // Start at Macro India overview
+        center: [82.5, 22],
+        zoom: 3.4,
         pitch: 0,
         bearing: 0,
         maxPitch: 85,
@@ -267,6 +306,16 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
 
       (window as any).mapInstance = map;
       mapRef.current = map;
+
+      // Begin with the complete validated spatial footprint in view. The
+      // conservative max zoom keeps regional packages in geographic context,
+      // while nationwide packages naturally frame the full country.
+      map.once('load', () => {
+        map.fitBounds(
+          [[macroBounds.minLng, macroBounds.minLat], [macroBounds.maxLng, macroBounds.maxLat]],
+          { padding: 36, duration: 0, pitch: 0, bearing: 0 }
+        );
+      });
 
       // Report Zoom & Pitch continuously on every frame
       const handleMove = () => {
@@ -288,7 +337,7 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
           onExitLocalViewRef.current();
         }
 
-        if (map.getZoom() >= 14.4 && event.deltaY < 0) {
+        if (onEnterSubsurfaceRef.current && map.getZoom() >= 14.4 && event.deltaY < 0) {
           const canvasRect = wheelSurface.getBoundingClientRect();
           const cursorLocation = map.unproject([
             event.clientX - canvasRect.left,
@@ -312,13 +361,78 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
           }, undefined);
 
           const target = selFeature || nearest;
-          onEnterSubsurfaceRef.current(target);
+          onEnterSubsurfaceRef.current?.(target);
         }
       };
 
       wheelSurface.addEventListener('wheel', enterFromMapZoom, { passive: false, capture: true });
 
       map.on('load', () => {
+        // Georeferenced source figures become bounded image layers only when
+        // the package supplies both browser-accessible imagery and bounds.
+        nativeAssets.filter((asset) => asset.bounds && asset.path).forEach((asset, index) => {
+          let url: string | null = null;
+          try {
+            if (/^https?:\/\/|^data:image\/|^blob:/.test(asset.path!)) url = asset.path!;
+            else if (asset.path!.startsWith('/') && !asset.path!.startsWith('/Users/')) url = asset.path!;
+            else if (sourceBaseUrl && !asset.path!.startsWith('/Users/')) url = new URL(asset.path!, sourceBaseUrl).href;
+          } catch { url = null; }
+          if (!url) return;
+          const [west, south, east, north] = asset.bounds!;
+          const sourceId = `package-image-${index}`;
+          map.addSource(sourceId, { type: 'image', url, coordinates: [[west, north], [east, north], [east, south], [west, south]] });
+          map.addLayer({ id: `${sourceId}-layer`, type: 'raster', source: sourceId, paint: { 'raster-opacity': 0.72, 'raster-fade-duration': 0 } });
+        });
+
+        // Preserve every supported geometry not already represented by an
+        // interactive single-point marker. This also keeps MultiPoint visible.
+        const nonPointFeatures = spatialFeatures
+          .filter((feature) => feature.geometry && feature.geometry.type !== 'Point' && (!feature.layerIds?.length || feature.layerIds.some((id) => activeLayerIds.includes(id))))
+          .map((feature) => ({
+            type: 'Feature',
+            id: feature.id,
+            properties: { id: feature.id, name: feature.name, featureType: feature.type, evidenceStatus: feature.evidenceStatus || 'unspecified', locationFidelity: feature.locationFidelity || feature.geometry?.fidelity || 'unspecified', confidence: feature.confidence || 'unspecified', selected: highlightedFeatureIdsRef.current.includes(feature.id) },
+            geometry: feature.geometry,
+          }));
+        if (nonPointFeatures.length > 0) {
+          map.addSource('package-spatial-source', {
+            type: 'geojson',
+            data: { type: 'FeatureCollection', features: nonPointFeatures } as any,
+          });
+          map.addLayer({
+            id: 'package-polygons-fill', type: 'fill', source: 'package-spatial-source',
+            filter: ['==', ['geometry-type'], 'Polygon'],
+            paint: { 'fill-color': ['match', ['get', 'evidenceStatus'], 'proposed', '#f59e0b', 'derived', '#a78bfa', 'figure-derived', '#38bdf8', '#22d3ee'], 'fill-opacity': ['case', ['get', 'selected'], 0.42, 0.18] },
+          });
+          map.addLayer({
+            id: 'package-polygons-outline', type: 'line', source: 'package-spatial-source',
+            filter: ['==', ['geometry-type'], 'Polygon'],
+            paint: { 'line-color': ['case', ['get', 'selected'], '#f8fafc', '#a78bfa'], 'line-width': ['case', ['get', 'selected'], 4, 2], 'line-opacity': 0.85 },
+          });
+          map.addLayer({
+            id: 'package-lines', type: 'line', source: 'package-spatial-source',
+            filter: ['==', ['geometry-type'], 'LineString'],
+            paint: { 'line-color': ['case', ['get', 'selected'], '#f8fafc', ['match', ['get', 'evidenceStatus'], 'proposed', '#f59e0b', 'derived', '#a78bfa', 'figure-derived', '#38bdf8', '#f59e0b']], 'line-width': ['case', ['get', 'selected'], 5, 3], 'line-opacity': 0.9 },
+          });
+          map.addLayer({
+            id: 'package-multipoints', type: 'circle', source: 'package-spatial-source',
+            filter: ['==', ['geometry-type'], 'Point'],
+            paint: {
+              'circle-radius': 6,
+              'circle-color': '#22d3ee',
+              'circle-stroke-color': '#082f49',
+              'circle-stroke-width': 2,
+              'circle-opacity': 0.9,
+            },
+          });
+          const selectSpatial = (event: maplibregl.MapLayerMouseEvent) => {
+            const id = String(event.features?.[0]?.properties?.id || '');
+            const feature = spatialFeatures.find((item) => item.id === id);
+            if (feature) onSelectSpatialFeatureRef.current?.(feature);
+          };
+          ['package-polygons-fill', 'package-lines', 'package-multipoints'].forEach((layerId) => map.on('click', layerId, selectSpatial));
+        }
+
         // 1. Add Study Area Polygon GeoJSON Source
         const polygonGeoJSON: any = {
           type: 'FeatureCollection',
@@ -386,12 +500,13 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
         // Interactive hover & click on the study area polygon
         // When in area view, clicking directly on the highlighted area initiates the 3D Subsurface dive
         map.on('click', 'study-area-fill', (e) => {
+          if (!onEnterSubsurfaceRef.current) return;
           e.originalEvent.stopPropagation();
-          onEnterSubsurfaceRef.current();
+          onEnterSubsurfaceRef.current?.();
         });
 
         map.on('mouseenter', 'study-area-fill', () => {
-          map.getCanvas().style.cursor = 'pointer';
+          if (onEnterSubsurfaceRef.current) map.getCanvas().style.cursor = 'pointer';
         });
 
         map.on('mouseleave', 'study-area-fill', () => {
@@ -427,6 +542,14 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
     // Build Macro Beacon Marker (Visible at Zoom < 8.5)
     useEffect(() => {
       const map = mapRef.current;
+      const source = map?.getSource('package-spatial-source') as maplibregl.GeoJSONSource | undefined;
+      if (!source) return;
+      const nonPointFeatures = spatialFeatures.filter((feature) => feature.geometry && feature.geometry.type !== 'Point' && (!feature.layerIds?.length || feature.layerIds.some((id) => activeLayerIds.includes(id)))).map((feature) => ({ type: 'Feature', id: feature.id, properties: { id: feature.id, name: feature.name, featureType: feature.type, evidenceStatus: feature.evidenceStatus || 'unspecified', locationFidelity: feature.locationFidelity || feature.geometry?.fidelity || 'unspecified', confidence: feature.confidence || 'unspecified', selected: highlightedFeatureIds.includes(feature.id) }, geometry: feature.geometry }));
+      source.setData({ type: 'FeatureCollection', features: nonPointFeatures } as any);
+    }, [activeLayerIds, spatialFeatures, highlightedFeatureIds]);
+
+    useEffect(() => {
+      const map = mapRef.current;
       if (!map) return;
 
       if (macroMarkerRef.current) {
@@ -443,7 +566,7 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
             <div class="w-3.5 h-3.5 rounded-full bg-slate-950"></div>
           </div>
           <div class="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap px-3 py-1 rounded-full bg-slate-900/95 border border-cyan-500/60 text-xs font-mono font-bold text-cyan-300 shadow-2xl">
-            Study Area • ${features.length} Stations
+            ${escapeHtml(studyAreaName)} • ${spatialFeatures.filter((feature) => feature.geometry).length} Mapped objects
           </div>
         </div>
       `;
@@ -467,7 +590,7 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
       updateMarkerVisibility(map.getZoom());
     }, [center, bounds, features.length, studyAreaName]);
 
-    // Build Individual Station Markers (Visible at Zoom >= 8.5)
+    // Build individual point-object markers (visible at Zoom >= 8.5)
     useEffect(() => {
       const map = mapRef.current;
       if (!map) return;
@@ -475,7 +598,7 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
       markersRef.current.forEach((m) => m.remove());
       markersRef.current = [];
 
-      features.forEach((feature) => {
+      features.filter((feature) => !feature.layerIds?.length || feature.layerIds.some((id) => activeLayerIds.includes(id))).forEach((feature) => {
         const isSelected = feature.id === selectedFeatureId;
         const isHighlighted = highlightedFeatureIdsRef.current.includes(feature.id);
         const hasDeepData = (feature.totalDepthMeters || 0) > 50 || feature.intervals.length > 0;
@@ -528,7 +651,7 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
       });
 
       updateMarkerVisibility(map.getZoom());
-    }, [features, selectedFeatureId, highlightedFeatureIds, onSelectFeature]);
+    }, [features, selectedFeatureId, highlightedFeatureIds, onSelectFeature, activeLayerIds]);
 
     return (
       <div className="absolute inset-0 w-full h-full">
@@ -538,13 +661,13 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
             <div className="flex items-center gap-2 rounded-full border border-slate-600/70 bg-slate-950/88 px-3.5 py-2 text-[11px] font-mono text-slate-200 shadow-[0_8px_30px_rgba(0,0,0,0.45)] backdrop-blur-md animate-in fade-in duration-300">
               <MousePointerClick className="h-3.5 w-3.5 flex-none text-cyan-400" />
               {instructionStage === 'district' && (
-                <span>Select the pulsing district marker to explore the study area</span>
+                <span>Select the pulsing study marker to explore the evidence footprint</span>
               )}
               {instructionStage === 'coverage' && (
-                <span>Explore the highlighted coverage area · Continue zooming to reveal stations</span>
+                <span>Explore the highlighted coverage area · Continue zooming to reveal objects</span>
               )}
               {instructionStage === 'stations' && (
-                <span>Select a station for details · Select the highlighted area to open the 3D subsurface</span>
+                <span>Select an object for details</span>
               )}
             </div>
           </div>

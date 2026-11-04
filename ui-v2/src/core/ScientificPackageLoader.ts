@@ -1,3 +1,18 @@
+/**
+ * @file ScientificPackageLoader.ts
+ * @module ui-v2/core/ScientificPackageLoader
+ * @description Translates standardized scientific package contracts (`ScientificPackage`)
+ * into the complete interactive `ScientificUIModel` consumed by 2D MapLibre maps,
+ * 3D Subsurface Explorers, and Executive Dossier Drawers.
+ *
+ * Responsibilities:
+ * - Normalizes DMS and decimal spatial coordinates.
+ * - Extracts borehole intervals, lithological stratigraphy, and regional hydrogeological slabs.
+ * - Indexes point, line, and polygon feature geometry.
+ * - Derives referential integrity sets for report synthesis.
+ * - Executes capability negotiation to configure adaptive viewports.
+ */
+
 import {
   ScientificPackage,
   ScientificUIModel,
@@ -10,12 +25,27 @@ import {
   RawInterval,
 } from '../types/scientific';
 import { buildReportAnalysis } from './ReportAnalysis';
+import { negotiateCapabilities } from './CapabilityNegotiation';
 
 /**
  * Universal Scientific Ingestion Pipeline (v1.0)
  * Translates the clean synthesizer-to-UI contract into a high-performance 3D & 2D digital twin.
  */
 export class ScientificPackageLoader {
+  private static collectPositions(coordinates: unknown): [number, number][] {
+    if (!Array.isArray(coordinates)) return [];
+    if (
+      coordinates.length >= 2 &&
+      typeof coordinates[0] === 'number' &&
+      typeof coordinates[1] === 'number' &&
+      Number.isFinite(coordinates[0]) &&
+      Number.isFinite(coordinates[1])
+    ) {
+      return [[coordinates[0], coordinates[1]]];
+    }
+    return coordinates.flatMap((child) => this.collectPositions(child));
+  }
+
   /**
    * Safely parses degrees-minutes-seconds strings into decimal degrees
    */
@@ -80,6 +110,7 @@ export class ScientificPackageLoader {
     const featuresWithCoords: RenderablePointFeature[] = [];
     const featuresWithoutCoords: RawFeature[] = [];
     const allFeatures: (RenderablePointFeature | RawFeature)[] = [];
+    let hiddenPointCount = 0;
 
     let minLng = Infinity,
       maxLng = -Infinity,
@@ -96,6 +127,19 @@ export class ScientificPackageLoader {
         Object.assign(propMap, f.properties);
       }
 
+      // All supported GeoJSON geometries contribute to spatial framing. Lines
+      // and polygons are not demoted to an arbitrary default location.
+      if (f.geometry) {
+        for (const [geoLng, geoLat] of this.collectPositions(f.geometry.coordinates)) {
+          if (geoLng >= -180 && geoLng <= 180 && geoLat >= -90 && geoLat <= 90) {
+            minLng = Math.min(minLng, geoLng);
+            maxLng = Math.max(maxLng, geoLng);
+            minLat = Math.min(minLat, geoLat);
+            maxLat = Math.max(maxLat, geoLat);
+          }
+        }
+      }
+
       // Check for coordinate variations:
       // Prefer canonical GeoJSON geometry [longitude, latitude]
       let lng: number | undefined;
@@ -108,7 +152,7 @@ export class ScientificPackageLoader {
         Array.isArray(f.geometry.coordinates) &&
         f.geometry.coordinates.length >= 2
       ) {
-        const [gLng, gLat] = f.geometry.coordinates;
+        const [gLng, gLat] = f.geometry.coordinates as [unknown, unknown];
         if (typeof gLng === 'number' && typeof gLat === 'number' && !isNaN(gLng) && !isNaN(gLat)) {
           lng = gLng;
           lat = gLat;
@@ -153,6 +197,13 @@ export class ScientificPackageLoader {
         lng !== 0;
 
       if (hasValidCoords) {
+        // Geometry still contributes to bounds and aggregate coverage, but a
+        // point without useful analysis is not clickable and never enters 3D.
+        if (!f.narrative?.analysis?.trim()) {
+          hiddenPointCount += 1;
+          allFeatures.push(f);
+          continue;
+        }
         // Generic outlier detection: respect synthesizer-authored coordinate verification flags
         // instead of hardcoded numbers
         const isFlaggedOutlier =
@@ -233,36 +284,8 @@ export class ScientificPackageLoader {
           })
           .sort((a, b) => a.start - b.start);
 
-        // If no intervals exist on this borehole, compute synthetic default strata up to drilled depth
-        const hasSyntheticIntervals = normalizedIntervals.length === 0 && Boolean(totalDepth);
-        if (hasSyntheticIntervals && totalDepth) {
-          normalizedIntervals.push({
-              id: `${f.id}_unc`,
-              name: 'Phreatic Upper Zone',
-              type: 'aquifer',
-              start: 0,
-              end: Math.min(55, totalDepth),
-              thickness: Math.min(55, totalDepth),
-              unit: 'm',
-              material: 'alluvium',
-              colorHex: '#38bdf8',
-              transparency: 0.5,
-              fidelity: 'estimated',
-            });
-          if (totalDepth > 55) normalizedIntervals.push({
-              id: `${f.id}_conf`,
-              name: 'Confined Aquifer Interval',
-              type: 'aquifer',
-              start: Math.min(55, totalDepth),
-              end: totalDepth,
-              thickness: totalDepth - Math.min(55, totalDepth),
-              unit: 'm',
-              material: 'sand_gravel',
-              colorHex: '#0284c7',
-              transparency: 0.7,
-              fidelity: 'estimated',
-            });
-        }
+        // Missing intervals remain missing. The UI never manufactures scientific strata.
+        const hasSyntheticIntervals = false;
 
         // Gather unique source page numbers
         const pageSet = new Set<number | string>();
@@ -296,12 +319,15 @@ export class ScientificPackageLoader {
             : 'illustrative_default',
           hasSyntheticIntervals,
           isSpatialOutlier: isFlaggedOutlier,
+          layerIds: f.layerIds,
         };
 
         featuresWithCoords.push(renderableFeat);
         allFeatures.push(renderableFeat);
       } else {
-        featuresWithoutCoords.push(f);
+        // Lines, polygons and multiparts are spatial evidence rendered through
+        // spatialFeatures; only genuinely geometry-free objects are unlocated.
+        if (!f.geometry) featuresWithoutCoords.push(f);
         allFeatures.push(f);
       }
     }
@@ -313,16 +339,16 @@ export class ScientificPackageLoader {
       minLat = primaryStudyArea.bounds.south;
       maxLat = primaryStudyArea.bounds.north;
     } else if (minLng === Infinity) {
-      minLng = 72.38;
-      maxLng = 73.08;
-      minLat = 22.93;
-      maxLat = 23.6;
+      minLng = -180;
+      maxLng = 180;
+      minLat = -70;
+      maxLat = 70;
     }
 
     // 5b. Compute robust Study Area Polygon (Convex Hull of geocoded features or district extent)
-    const validPointCoords = featuresWithCoords
-      .filter((feature) => !feature.isSpatialOutlier)
-      .map((feature) => feature.coordinates);
+    const validPointCoords = (pkg.features || []).flatMap((feature) =>
+      feature.geometry ? this.collectPositions(feature.geometry.coordinates) : []
+    ).filter(([lng, lat]) => lng >= -180 && lng <= 180 && lat >= -90 && lat <= 90);
 
     let studyAreaPolygon: [number, number][] = [];
     let studyAreaBoundary: ScientificUIModel['renderingNotes']['studyAreaBoundary'];
@@ -383,10 +409,7 @@ export class ScientificPackageLoader {
     }
 
     // 6. Regional Strata Slabs (Deduplicated District Ranges)
-    const districtIntervals = regionalIntervals.filter(
-      (iv) => iv.study_area_id === 'sa_district_gandhinagar' || iv.id.includes('district')
-    );
-    const intervalsToUse = districtIntervals.length > 0 ? districtIntervals : regionalIntervals.slice(0, 4);
+    const intervalsToUse = regionalIntervals.slice(0, 12);
 
     const regionalSlabs: RenderableRegionalSlab[] = intervalsToUse
       .filter((iv) => iv.start !== null && iv.end !== null && iv.end > iv.start)
@@ -398,7 +421,7 @@ export class ScientificPackageLoader {
         return {
           id: iv.id || `reg_slab_${idx}`,
           name: iv.name || `Formation ${iv.start}-${iv.end}m`,
-          type: iv.type || 'aquifer',
+          type: iv.type || 'interval',
           start: iv.start!,
           end: iv.end!,
           thickness: iv.thickness || iv.end! - iv.start!,
@@ -411,8 +434,8 @@ export class ScientificPackageLoader {
       .sort((a, b) => a.start - b.start);
 
     const uiModel: ScientificUIModel = {
-      reportTitle: pkg.report?.title || 'Scientific Hydrogeological Investigation',
-      shortTitle: pkg.report?.short_title || 'District Aquifer Explorer',
+      reportTitle: pkg.report?.title || 'Scientific study',
+      shortTitle: pkg.report?.short_title || 'Evidence explorer',
       studyAreaName,
       bounds: {
         minLng,
@@ -427,11 +450,19 @@ export class ScientificPackageLoader {
       allFeatures,
       regionalSlabs,
       preservedDatasets: pkg.extensions?.datasets || [],
+      spatialFeatures: pkg.features || [],
+      nativeAssets: pkg.extensions?.nativeAssets || [],
+      quantitativeSeries: pkg.extensions?.quantitativeSeries || [],
+      timelineEvents: pkg.extensions?.timelineEvents || [],
+      allIntervals: pkg.intervals || [],
+      genericExtensions: pkg.extensions?.genericExtensions || [],
+      capabilities: [],
+      primaryLayout: 'report-first',
       allObservations: pkg.observations || [],
       sourcesCount: pkg.sources?.length || 0,
       renderingNotes: {
         studyAreaBoundary,
-        hiddenFeatureCount: featuresWithoutCoords.length,
+        hiddenFeatureCount: featuresWithoutCoords.length + hiddenPointCount,
       },
       packageFamily: pkg.extensions?.agentic ? 'agentic-flow' : 'research-engine',
       agentic: pkg.extensions?.agentic,
@@ -443,7 +474,7 @@ export class ScientificPackageLoader {
       pkg.report_synthesis.report_id === pkg.report?.id
     ) {
       uiModel.reportAnalysis = buildReportAnalysis(pkg.report_synthesis, {
-        featureIds: new Set(featuresWithCoords.map((feature) => feature.id)),
+        featureIds: new Set((pkg.features || []).map((feature) => feature.id)),
         studyAreaIds: new Set((pkg.study_areas || []).map((area) => area.id)),
         observationIds: new Set((pkg.observations || []).map((observation) => observation.id)),
         intervalIds: new Set((pkg.intervals || []).map((interval) => interval.id)),
@@ -455,6 +486,33 @@ export class ScientificPackageLoader {
         ),
       });
     }
+
+    if (
+      pkg.analysis_schema_version === 'document-analysis.v1' &&
+      pkg.document_analysis?.schema_version === 'document-analysis.v1'
+    ) {
+      uiModel.documentAnalysis = {
+        raw: pkg.document_analysis,
+        blocks: pkg.document_analysis.blocks,
+        diagnostics: [],
+      };
+    }
+
+    const negotiated = negotiateCapabilities({
+      spatialFeatures: uiModel.spatialFeatures,
+      pointFeatures: uiModel.featuresWithCoords,
+      datasets: uiModel.preservedDatasets,
+      assets: uiModel.nativeAssets,
+      series: uiModel.quantitativeSeries,
+      timeline: uiModel.timelineEvents,
+      report: uiModel.documentAnalysis || uiModel.reportAnalysis,
+      preferredMode: uiModel.agentic?.primaryRenderingMode,
+      extensions: uiModel.genericExtensions,
+      verticalProfileCount: uiModel.agentic?.verticalProfiles.length,
+      crossSectionCount: uiModel.agentic?.layers.filter((layer) => /section|transect|longitudinal|fence/i.test(`${layer.kind} ${layer.representation} ${layer.name}`)).length,
+    });
+    uiModel.capabilities = negotiated.capabilities;
+    uiModel.primaryLayout = negotiated.primaryLayout;
 
     return uiModel;
   }

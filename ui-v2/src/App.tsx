@@ -9,12 +9,15 @@ import {
 import { SeamlessMap, SeamlessMapHandle } from './components/map/SeamlessMap';
 import { FloatingHUD } from './components/hud/FloatingHUD';
 import { ExecutiveDossierDrawer } from './components/report/ExecutiveDossierDrawer';
+import { DocumentAnalysisDrawer } from './components/report/DocumentAnalysisDrawer';
+import { StudySwitcher } from './components/hud/StudySwitcher';
 import {
   Box,
   RotateCcw,
   Sparkles,
   Map as MapIcon,
   Compass,
+  BookOpen,
 } from 'lucide-react';
 
 const SubsurfaceExplorer = lazy(() =>
@@ -22,11 +25,17 @@ const SubsurfaceExplorer = lazy(() =>
     default: module.SubsurfaceExplorer,
   }))
 );
+const EvidenceWorkspace = lazy(() =>
+  import('./components/evidence/EvidenceWorkspace').then((module) => ({
+    default: module.EvidenceWorkspace,
+  }))
+);
 
 export function App() {
   const [model, setModel] = useState<ScientificUIModel | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activePackage, setActivePackage] = useState('');
 
   // Selection state
   const [selectedFeature, setSelectedFeature] = useState<RenderablePointFeature | null>(null);
@@ -35,7 +44,8 @@ export function App() {
   const [subsurfaceFocusFinding, setSubsurfaceFocusFinding] = useState<{ title: string; intervalIds: string[]; featureIds: string[] } | null>(null);
 
   // Primary view modes: Map vs 3D Subsurface
-  const [mode, setMode] = useState<'map' | 'subsurface'>('map');
+  const [mode, setMode] = useState<'map' | 'subsurface' | 'analysis'>('map');
+  const [activeLayerIds, setActiveLayerIds] = useState<string[]>([]);
   const explorerOpen = mode === 'subsurface';
 
   // Map zoom level tracking to drive macro vs regional analysis visibility
@@ -53,7 +63,7 @@ export function App() {
     mapZoom >= 7.5 &&
     !selectedFeature &&
     !userDismissedDossier &&
-    model?.reportAnalysis
+    (model?.documentAnalysis || model?.reportAnalysis)
   );
 
   const mapRef = useRef<SeamlessMapHandle>(null);
@@ -66,9 +76,7 @@ export function App() {
         const requestedPackage = new URLSearchParams(window.location.search).get('package');
         const candidates = uniquePackageCandidates([
           requestedPackage,
-          '/study_package.json',
-          '/ui_consolidated_package.json',
-          '/scientific_package.json',
+          '/studies/naquim-bangalore-north-v1/study_package.json',
         ]);
         let json: unknown;
         let loadedFrom = '';
@@ -80,9 +88,15 @@ export function App() {
           break;
         }
         if (!json) throw new Error(`Failed to load a supported package from: ${candidates.join(', ')}`);
-        const parsed = PackageIngestion.parse(json);
+        const sourceBaseUrl = new URL('.', new URL(loadedFrom, window.location.href)).href;
+        const parsed = PackageIngestion.parse(json, { sourceBaseUrl });
         console.info(`Loaded ${parsed.packageFamily} package from ${loadedFrom}`);
         setModel(parsed);
+        setActivePackage(loadedFrom);
+        setActiveLayerIds((parsed.agentic?.layers || []).filter((layer) => layer.default_visible !== false).map((layer) => layer.id));
+        const hasSpatial = parsed.capabilities.some((item) => ['point-map', 'line-map', 'polygon-map', 'raster-overlay'].includes(item.id) && item.available);
+        if (hasSpatial) setMode('map');
+        else setMode('analysis');
       } catch (err: any) {
         console.error('Failed to parse scientific package:', err);
         setError(err.message || 'Unknown error');
@@ -121,12 +135,12 @@ export function App() {
     setMode('map');
   };
 
-  const handleModeChange = (nextMode: 'map' | 'subsurface') => {
+  const handleModeChange = (nextMode: 'map' | 'subsurface' | 'analysis') => {
     if (nextMode === 'subsurface') {
       void handleOpenExplorer(selectedFeature || undefined);
       return;
     }
-    setMode('map');
+    setMode(nextMode);
   };
 
   const handleReportMap = (finding: ReportFindingView) => {
@@ -178,8 +192,8 @@ export function App() {
     return (
       <div className="w-screen h-screen flex flex-col items-center justify-center bg-slate-950 text-slate-200">
         <div className="w-10 h-10 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin mb-4" />
-        <h2 className="text-base font-semibold tracking-wide font-mono">INITIALIZING SUBSURFACE DIGITAL TWIN</h2>
-        <p className="text-xs text-slate-500 font-mono mt-1">Loading report data...</p>
+        <h2 className="text-base font-semibold tracking-wide font-mono">INITIALIZING EVIDENCE WORKSPACE</h2>
+        <p className="text-xs text-slate-500 font-mono mt-1">Negotiating package capabilities...</p>
       </div>
     );
   }
@@ -193,6 +207,10 @@ export function App() {
     );
   }
 
+  const hasSpatial = model.capabilities.some((item) => ['point-map', 'line-map', 'polygon-map', 'raster-overlay'].includes(item.id) && item.available);
+  const has3D = model.capabilities.some((item) => ['surface-markers', 'vertical-profiles', 'cross-sections'].includes(item.id) && item.available);
+  const hasAnalysis = Boolean(model.documentAnalysis || model.reportAnalysis);
+
   return (
     <div className="w-screen h-screen flex flex-col bg-slate-950 overflow-hidden select-none relative">
       {/* Clean & Minimal Top Bar */}
@@ -204,9 +222,9 @@ export function App() {
           </div>
           <div>
             <h1 className="text-sm font-bold tracking-tight text-slate-100 flex items-center gap-1.5">
-              SUBSURFACE <span className="text-cyan-400">v2</span>
+              SUBSURFACE
             </h1>
-            <div className="text-[11px] text-slate-400 font-mono">Universal Spatial-Temporal Digital Twin</div>
+            <div className="text-[11px] text-slate-400 font-mono">Powered by Muse</div>
           </div>
         </div>
 
@@ -214,18 +232,20 @@ export function App() {
         <div className="flex items-center gap-3">
           <div className="flex items-center bg-slate-950/90 p-1 rounded-xl border border-slate-800 shadow-inner">
             <button
+              disabled={!hasSpatial}
+              title={!hasSpatial ? 'No validated spatial evidence is available in this package.' : undefined}
               onClick={() => handleModeChange('map')}
               className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-mono font-bold transition ${
                 mode === 'map'
                   ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
-                  : 'text-slate-400 hover:text-slate-200'
+                  : hasSpatial ? 'text-slate-400 hover:text-slate-200' : 'text-slate-700 cursor-not-allowed'
               }`}
             >
               <MapIcon className="w-3.5 h-3.5" />
               <span>Map View</span>
             </button>
 
-            <button
+            {has3D && <button
               onClick={() => handleModeChange('subsurface')}
               className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-mono font-bold transition ${
                 mode === 'subsurface'
@@ -234,13 +254,29 @@ export function App() {
               }`}
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>3D Subsurface</span>
+              <span>{model.capabilities.some((item) => item.id === 'vertical-profiles' && item.available) ? '3D Profiles' : 'Spatial 3D'}</span>
+            </button>}
+
+            <button
+              disabled={!hasAnalysis}
+              title={!hasAnalysis ? 'No report-level analysis is available in this package.' : undefined}
+              onClick={() => handleModeChange('analysis')}
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-mono font-bold transition ${
+                mode === 'analysis'
+                  ? 'bg-violet-400 text-slate-950 shadow-md shadow-violet-400/20'
+                  : hasAnalysis ? 'text-slate-400 hover:text-slate-200' : 'text-slate-700 cursor-not-allowed'
+              }`}
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              <span>Analysis</span>
             </button>
+
           </div>
         </div>
 
         {/* Right: Quick actions & Reset */}
         <div className="flex items-center gap-2.5">
+          <StudySwitcher activePackage={activePackage} />
           {mode === 'map' && (
             <button
               onClick={() => {
@@ -266,6 +302,7 @@ export function App() {
         <SeamlessMap
           ref={mapRef}
           features={model.featuresWithCoords}
+          spatialFeatures={model.spatialFeatures}
           regionalSlabs={model.regionalSlabs}
           selectedFeatureId={selectedFeature?.id || null}
           highlightedFeatureIds={reportHighlightedFeatureIds}
@@ -273,6 +310,10 @@ export function App() {
             setSelectedFeature(feat);
             setSelectedInterval(null);
             mapRef.current?.flyToFeature(feat);
+          }}
+          onSelectSpatialFeature={(feature) => {
+            setReportHighlightedFeatureIds([feature.id]);
+            mapRef.current?.fitToFeatures([feature.id]);
           }}
           onSelectInterval={setSelectedInterval}
           onZoomChange={(z) => {
@@ -285,11 +326,14 @@ export function App() {
             setSelectedFeature(null);
             setSelectedInterval(null);
           }}
-          onEnterSubsurface={handleOpenExplorer}
+          onEnterSubsurface={has3D ? handleOpenExplorer : undefined}
           center={model.bounds.center}
           bounds={model.bounds}
           studyAreaPolygon={model.studyAreaPolygon}
           studyAreaName={model.studyAreaName}
+          nativeAssets={model.nativeAssets}
+          sourceBaseUrl={model.sourceBaseUrl}
+          activeLayerIds={activeLayerIds}
         />
 
         {/* Floating HUD Tray (When on Map View with selected station) */}
@@ -328,7 +372,38 @@ export function App() {
           </Suspense>
         )}
 
+        {mode === 'analysis' && (
+          <Suspense fallback={<div className="absolute inset-0 z-40 grid place-items-center bg-slate-950 text-cyan-300 font-mono text-xs">Preparing evidence workspace…</div>}>
+            <EvidenceWorkspace
+              model={model}
+              initialTab={(model.documentAnalysis || model.reportAnalysis) ? 'report' : model.quantitativeSeries.length ? 'quantitative' : model.preservedDatasets.length ? 'resources' : model.nativeAssets.length ? 'assets' : 'extensions'}
+              activeFeatureId={selectedFeature?.id || null}
+              onSelectFeature={(id) => {
+                setReportHighlightedFeatureIds([id]);
+                const feature = model.featuresWithCoords.find((item) => item.id === id);
+                if (feature) {
+                  setSelectedFeature(feature);
+                  setMode('map');
+                  window.setTimeout(() => mapRef.current?.flyToFeature(feature), 0);
+                } else {
+                  setMode('map');
+                  window.setTimeout(() => mapRef.current?.fitToFeatures([id]), 0);
+                }
+              }}
+              onClose={() => setMode('map')}
+            />
+          </Suspense>
+        )}
+
         {/* Floating Executive Dossier Drawer (Grounded on Map View during regional inspection) */}
+        {model.documentAnalysis && mode === 'map' && (
+          <DocumentAnalysisDrawer
+            analysis={model.documentAnalysis}
+            isOpen={isDossierOpen}
+            onClose={() => setUserDismissedDossier(true)}
+            onReadMore={() => setMode('analysis')}
+          />
+        )}
         {model.reportAnalysis && mode === 'map' && (
           <ExecutiveDossierDrawer
             model={model}

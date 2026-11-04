@@ -1,0 +1,82 @@
+{
+  "schema_version": "document-study.v2",
+  "document_id": "fixture:capability-envelope",
+  "study_id": "fixture:generic-science",
+  "status": "validated-fixture",
+  "primary_rendering_mode": "map-first",
+  "capabilities": { "map": true, "vertical_profiles": true, "structured_resources": true, "report": true },
+  "source": { "publication_date": "2026-01-01" },
+  "native_assets": [
+    {
+      "asset_id": "asset:concept",
+      "title": "Direct source conceptual figure",
+      "kind": "source_figure",
+      "page": 4,
+      "source_kind": "direct-source",
+      "caption": "Deterministic fixture image used to exercise the generic asset viewer.",
+      "mime_type": "image/svg+xml",
+      "path": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='500'%3E%3Crect width='900' height='500' fill='%230f172a'/%3E%3Cpath d='M0 270 Q180 180 360 270 T720 270 T1080 270 V500 H0Z' fill='%230e7490'/%3E%3Cpath d='M0 335 Q220 250 440 335 T880 335 V500 H0Z' fill='%237c3aed' opacity='.72'/%3E%3Ctext x='40' y='70' fill='%23e2e8f0' font-size='30'%3EGeneric source figure%3C/text%3E%3C/svg%3E",
+      "hotspots": [{ "id": "hotspot:1", "label": "Linked observation", "x": 42, "y": 55, "feature_id": "feature:point-a" }],
+      "legend": [{ "label": "Upper unit", "color": "#0e7490" }, { "label": "Lower unit", "color": "#7c3aed" }]
+    },
+    {
+      "asset_id": "asset:overlay",
+      "title": "Bounded raster overlay",
+      "kind": "raster_overlay",
+      "bounds": [77.55, 12.90, 77.68, 13.02],
+      "path": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Crect width='400' height='400' fill='%23f59e0b' opacity='.45'/%3E%3Ccircle cx='200' cy='200' r='120' fill='%23ef4444' opacity='.45'/%3E%3C/svg%3E"
+    }
+  ],
+  "extensions": [{ "id": "extension:novel", "kind": "novel-scientific-object", "title": "Future package extension", "description": "Safe fallback for a renderer not yet registered.", "renderer_hint": "custom-volume", "payload": { "measurements": [1, 2, 3], "unit": "index" } }],
+  "rendering_package": {
+    "schema_version": "study-rendering.v2",
+    "primary_rendering_mode": "map-first",
+    "study": { "id": "fixture:generic-science", "title": "Generic Capability Envelope", "short_title": "Capability Envelope", "summary": "Synthetic regression fixture for reusable scientific renderers.", "domain": "generic science" },
+    "features": [
+      { "id": "feature:point-a", "name": "Observed point A", "type": "monitoring_object", "evidence_status": "observed", "confidence": "high", "geometry": { "type": "Point", "coordinates": [77.59, 12.95], "fidelity": "exact" }, "properties": [{ "name": "total depth", "value": 80, "unit": "m" }], "source_refs": ["evidence:1"] },
+      { "id": "feature:point-b", "name": "Reported point B", "type": "monitoring_object", "evidence_status": "reported", "confidence": "medium", "geometry": { "type": "Point", "coordinates": [77.64, 12.98], "fidelity": "approximate" }, "properties": [{ "name": "total depth", "value": 45, "unit": "m" }], "source_refs": ["evidence:2"] },
+      { "id": "feature:multipoint", "name": "Reported sample cluster", "type": "sample_cluster", "evidence_status": "reported", "confidence": "medium", "geometry": { "type": "MultiPoint", "coordinates": [[77.58,12.93],[77.60,12.94],[77.62,12.93]], "fidelity": "approximate" }, "source_refs": ["evidence:2"] },
+      { "id": "feature:corridor", "name": "Engineering corridor", "type": "alignment", "geometry": { "type": "LineString", "coordinates": [[77.56,12.92],[77.61,12.96],[77.67,13.00]] }, "source_refs": ["evidence:3"] },
+      { "id": "feature:multiline", "name": "Reported line network", "type": "line_network", "geometry": { "type": "MultiLineString", "coordinates": [[[77.55,12.91],[77.58,12.95]],[[77.63,12.96],[77.67,13.01]]] }, "source_refs": ["evidence:3"] },
+      { "id": "feature:area", "name": "Reported study area", "type": "coverage", "geometry": { "type": "Polygon", "coordinates": [[[77.55,12.90],[77.68,12.90],[77.68,13.02],[77.55,13.02],[77.55,12.90]]] }, "source_refs": ["evidence:4"] },
+      { "id": "feature:multiarea", "name": "Reported management zones", "type": "management_zones", "geometry": { "type": "MultiPolygon", "coordinates": [[[[77.56,12.91],[77.58,12.91],[77.58,12.93],[77.56,12.93],[77.56,12.91]]],[[[77.64,12.98],[77.66,12.98],[77.66,13.00],[77.64,13.00],[77.64,12.98]]]] }, "source_refs": ["evidence:4"] },
+      { "id": "feature:unlocated", "name": "Representative unlocated profile", "type": "representative_profile", "location_fidelity": "unlocated", "source_refs": ["evidence:5"] }
+    ],
+    "observations": [
+      { "id": "observation:1", "feature_id": "feature:point-a", "type": "level", "value": 22, "unit": "m", "date": "2023-01-01", "source_refs": ["evidence:1"] },
+      { "id": "observation:2", "feature_id": "feature:point-a", "type": "level", "value": 27, "unit": "m", "date": "2024-01-01", "source_refs": ["evidence:1"] }
+    ],
+    "intervals": [
+      { "id": "interval:1", "feature_id": "feature:point-a", "name": "Upper material", "type": "material", "start": 0, "end": 22, "unit": "m", "fidelity": "reported" },
+      { "id": "interval:2", "feature_id": "feature:point-a", "name": "Fractured interval", "type": "fracture", "start": 22, "end": 58, "unit": "m", "fidelity": "reported" }
+    ],
+    "vertical_profiles": [{ "id": "profile:1", "name": "Observed vertical profile", "axis": "depth", "reference": "ground surface", "feature_id": "feature:point-a", "interval_ids": ["interval:1", "interval:2"], "semantic_category": "generic profile" }],
+    "layers": [
+      { "id": "layer:observations", "name": "Located observations", "kind": "generated_features", "representation": "map", "feature_ids": ["feature:point-a", "feature:point-b", "feature:multipoint"] },
+      { "id": "layer:corridor", "name": "Corridor", "kind": "generated_features", "representation": "line", "feature_ids": ["feature:corridor", "feature:multiline"] },
+      { "id": "layer:area", "name": "Coverage", "kind": "generated_features", "representation": "polygon", "feature_ids": ["feature:area", "feature:multiarea"] }
+    ],
+    "structured_resources": [{ "id": "resource:table", "name": "Monitoring records", "kind": "table", "ui_role": "data_table", "row_count": 3, "columns": ["feature_id", "year", "value", "status"], "rows": [{ "feature_id": "feature:point-a", "year": 2023, "value": 22, "status": "historical" }, { "feature_id": "feature:point-a", "year": 2024, "value": 27, "status": "current" }, { "feature_id": "feature:point-b", "year": 2025, "value": 31, "status": "forecast" }] }],
+    "chart_series": [
+      { "id": "series:time", "title": "Observed trend", "kind": "time-series", "unit": "m", "points": [{ "date": "2023", "value": 22, "feature_id": "feature:point-a" }, { "date": "2024", "value": 27, "feature_id": "feature:point-a" }] },
+      { "id": "series:range", "title": "Reported range", "kind": "range-band", "unit": "m", "points": [{ "x": "A", "y": 20, "low": 15, "high": 26 }, { "x": "B", "y": 29, "low": 23, "high": 34 }] },
+      { "id": "series:bar", "title": "Scenario comparison", "kind": "scenario-bar", "points": [{ "x": "Current", "y": 80 }, { "x": "Scenario", "y": 62 }] },
+      { "id": "series:share", "title": "Category share", "kind": "share", "points": [{ "category": "Class A", "value": 55 }, { "category": "Class B", "value": 45 }] },
+      { "id": "series:hist", "title": "Measured distribution", "kind": "histogram", "points": [{ "x": "0–10", "y": 3 }, { "x": "10–20", "y": 7 }, { "x": "20–30", "y": 4 }] },
+      { "id": "series:scatter", "title": "Relationship", "kind": "scatter", "points": [{ "x": 1, "y": 3 }, { "x": 2, "y": 5 }, { "x": 3, "y": 8 }] },
+      { "id": "series:threshold", "title": "Threshold exceedance", "kind": "threshold", "threshold": 5, "threshold_label": "reference", "points": [{ "x": "A", "y": 3 }, { "x": "B", "y": 8 }] },
+      { "id": "series:budget", "title": "Component budget", "kind": "waterfall-budget", "points": [{ "x": "Input", "y": 100 }, { "x": "Loss", "y": -35 }, { "x": "Balance", "y": 65 }] },
+      { "id": "series:kpi", "title": "Current status", "kind": "kpi", "unit": "%", "points": [{ "x": "status", "y": 73 }] }
+    ],
+    "timelines": [{ "id": "timeline:1", "kind": "revision", "events": [{ "id": "event:1", "title": "Historical baseline", "date": "2023-01-01", "kind": "observation", "feature_ids": ["feature:point-a"] }, { "id": "event:2", "title": "Current edition", "date": "2025-01-01", "kind": "publication" }, { "id": "event:3", "title": "Projected scenario", "period": "2030", "kind": "forecast" }] }],
+    "extensions": [{ "id": "extension:rendering", "kind": "novel-matrix", "title": "Unknown rendering extension", "payload": { "matrix": [[1,2],[3,4]] } }]
+  },
+  "report": {
+    "themes": [{ "id": "theme:1", "title": "Evidence", "summary": "Generic theme", "chapter_ids": ["chapter:1"], "finding_ids": ["finding:1"] }],
+    "chapters": [{ "id": "chapter:1", "theme_id": "theme:1", "title": "Capability chapter", "summary": "Summary", "narrative": "Narrative", "finding_ids": ["finding:1"] }],
+    "findings": [{ "id": "finding:1", "title": "Grounded finding", "statement": "A grounded fixture finding.", "why_it_matters": "It verifies linked rendering.", "scope": "study", "pattern_type": "comparative", "basis": "direct", "confidence": "high", "feature_ids": ["feature:point-a"], "stat_callout_ids": ["stat:1"] }],
+    "stat_callouts": [{ "id": "stat:1", "label": "Fixture statistic", "value": 73, "unit": "%" }],
+    "uncertainties": [{ "id": "uncertainty:1", "statement": "Synthetic fixture only." }],
+    "executive_overview": { "headline": "Generic renderer verification", "abstract": "A deterministic package exercising the reusable renderer envelope.", "key_finding_ids": ["finding:1"], "key_stat_callout_ids": ["stat:1"] }
+  }
+}

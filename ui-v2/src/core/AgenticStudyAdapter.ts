@@ -1,3 +1,16 @@
+/**
+ * @file AgenticStudyAdapter.ts
+ * @module ui-v2/core/AgenticStudyAdapter
+ * @description Bridges the agentic extraction pipeline output (`document-study.v2` and
+ * `study-rendering.v2` contracts) to the UI's canonical `ScientificPackage` representation.
+ *
+ * Capabilities:
+ * - Detects agentic package structure via `isAgenticPackage()`.
+ * - Normalizes features, layers, structured resources, vertical profiles, and transects.
+ * - Ingests native figures, charts, and report synthesis chapters while preserving
+ *   exact source grounding references and confidence tiers.
+ */
+
 import {
   AgenticLayer,
   AgenticPackageMetadata,
@@ -16,6 +29,13 @@ import {
   ScientificPackage,
   SourceReference,
   StudyArea,
+  FeatureGeometry,
+  NativeAsset,
+  QuantitativeSeries,
+  TimelineEvent,
+  GenericExtension,
+  DocumentAnalysisPackage,
+  AgenticNarrativeTarget,
 } from '../types/scientific';
 
 type JsonRecord = Record<string, any>;
@@ -48,13 +68,33 @@ function normalizeProperties(properties: unknown): FeatureProperty[] {
   return result;
 }
 
-function normalizeNarrative(raw: JsonRecord | undefined, fallbackId: string): FeatureNarrative | null {
-  if (!raw) return null;
+function normalizeGeometry(value: unknown): FeatureGeometry | null {
+  const geometry = value as JsonRecord | null;
+  const supported = new Set(['Point', 'MultiPoint', 'LineString', 'MultiLineString', 'Polygon', 'MultiPolygon']);
+  if (!geometry || !supported.has(geometry.type) || !Array.isArray(geometry.coordinates)) return null;
   return {
+    type: geometry.type,
+    coordinates: geometry.coordinates,
+    crs: geometry.crs,
+    fidelity: geometry.fidelity,
+  } as FeatureGeometry;
+}
+
+function normalizeNarrative(raw: JsonRecord | undefined, fallbackId: string, allowLegacyV2 = false): FeatureNarrative | null {
+  if (!raw) return null;
+  // ui-narrative.v3 deliberately has one user-facing field. Never promote
+  // legacy summaries or other metadata into authored analysis. The explicit
+  // v2 branch keeps already-materialized demo packages readable during migration.
+  const analysis = typeof raw.analysis === 'string'
+    ? raw.analysis.trim()
+    : allowLegacyV2 ? String(raw.summary || '').trim() : '';
+  if (!analysis) return null;
+  return {
+    analysis,
     status: raw.status || 'complete',
-    headline: raw.headline || 'Scientific feature narrative',
-    summary: raw.summary || '',
-    why_it_matters: raw.why_it_matters || '',
+    headline: raw.headline,
+    summary: raw.summary,
+    why_it_matters: raw.why_it_matters,
     visual_takeaway: raw.visual_takeaway,
     secondary_context: raw.secondary_context ?? null,
     evidence_refs: unique(asArray<string>(raw.evidence_refs)),
@@ -179,6 +219,56 @@ function adaptReport(
   };
 }
 
+function adaptDocumentAnalysis(
+  rawReport: JsonRecord | undefined,
+  studyId: string,
+  featureAliases: Map<string, string>,
+  diagnostics: string[],
+): DocumentAnalysisPackage | undefined {
+  if (rawReport?.schema_version !== 'document-analysis.v1' || !Array.isArray(rawReport.blocks)) return undefined;
+
+  const blocks = asArray<JsonRecord>(rawReport.blocks).flatMap((block, index) => {
+    const metrics = asArray<JsonRecord>(block.metrics).flatMap((metric) => {
+      const label = String(metric.label || '').trim();
+      const displayValue = String(metric.display_value || '').trim();
+      if (!label || !displayValue) return [];
+      return [{
+        label,
+        display_value: displayValue,
+        ...(String(metric.explanation || '').trim() ? { explanation: String(metric.explanation).trim() } : {}),
+        evidence_refs: unique(asArray<string>(metric.evidence_refs)),
+      }];
+    });
+    const content = String(block.content || '').trim();
+    const headline = String(block.headline || '').trim();
+    const relatedObjectIds = unique(asArray<string>(block.related_object_ids).flatMap((id) => {
+      const resolved = featureAliases.get(id);
+      if (!resolved) diagnostics.push(`Unresolved document analysis object reference: ${id}`);
+      return resolved ? [resolved] : [];
+    }));
+    const blockEvidenceRefs = unique(asArray<string>(block.evidence_refs));
+    if (!headline && !content && metrics.length === 0 && relatedObjectIds.length === 0 && blockEvidenceRefs.length === 0) return [];
+    return [{
+      id: String(block.id || `block-${index + 1}`),
+      ...(headline ? { headline } : {}),
+      ...(content ? { content } : {}),
+      ...(metrics.length ? { metrics } : {}),
+      ...(blockEvidenceRefs.length ? { evidence_refs: blockEvidenceRefs } : {}),
+      ...(relatedObjectIds.length ? { related_object_ids: relatedObjectIds } : {}),
+    }];
+  });
+
+  return {
+    schema_version: 'document-analysis.v1',
+    report_id: rawReport.report_id || studyId,
+    source_title: String(rawReport.source_title || '').trim(),
+    display_title: String(rawReport.display_title || rawReport.source_title || '').trim(),
+    short_title: String(rawReport.short_title || rawReport.display_title || rawReport.source_title || '').trim(),
+    brief_description: String(rawReport.brief_description || '').trim(),
+    blocks,
+  };
+}
+
 export class AgenticStudyAdapter {
   static isAgenticPackage(value: unknown): boolean {
     const raw = value as JsonRecord | null;
@@ -194,17 +284,39 @@ export class AgenticStudyAdapter {
     const studyAreaId = `${studyId}:area`;
     const diagnostics: string[] = [];
     const rawFeatures = asArray<JsonRecord>(rendering.features);
+    const rawLayers = asArray<JsonRecord>(rendering.layers);
+    const layerIdsByFeature = new Map<string, string[]>();
+    rawLayers.forEach((layer) => asArray<string>(layer.feature_ids).forEach((featureId) => {
+      const current = layerIdsByFeature.get(featureId) || []; current.push(layer.id); layerIdsByFeature.set(featureId, current);
+    }));
     const featureAliases = buildAliasIndex(rawFeatures);
     const resources = asArray<JsonRecord>(rendering.structured_resources);
+    const narrativeSchemaVersion = String(raw.narrative_package?.schema_version || '');
+    const allowLegacyNarrativeV2 = narrativeSchemaVersion === 'ui-narrative.v2';
     const resourceAliases = new Map<string, string>();
     resources.forEach((resource) => {
       if (resource.id) resourceAliases.set(resource.id, resource.id);
       if (resource.source_asset_id) resourceAliases.set(resource.source_asset_id, resource.id);
     });
 
-    const narrativeByObjectId = new Map<string, JsonRecord>();
+    const narrativeTargets: AgenticNarrativeTarget[] = asArray<JsonRecord>(raw.narrative_package?.target_insights).flatMap((target, index) => {
+      const targetKind = target.target_kind;
+      const objectId = String(target.object_id || '').trim();
+      const analysis = typeof target.analysis === 'string'
+        ? target.analysis.trim()
+        : allowLegacyNarrativeV2 ? String(target.summary || '').trim() : '';
+      if (!['feature', 'layer', 'vertical_profile', 'study'].includes(targetKind) || !objectId || !analysis) return [];
+      return [{
+        targetId: String(target.target_id || `narrative-target:${index + 1}`),
+        targetKind,
+        objectId,
+        analysis,
+        evidenceRefs: unique(asArray<string>(target.evidence_refs)),
+      } as AgenticNarrativeTarget];
+    });
+    const featureNarrativeByObjectId = new Map<string, JsonRecord>();
     asArray<JsonRecord>(raw.narrative_package?.target_insights).forEach((target) => {
-      if (target.object_id) narrativeByObjectId.set(target.object_id, target);
+      if (target.target_kind === 'feature' && target.object_id) featureNarrativeByObjectId.set(target.object_id, target);
     });
 
     const features: RawFeature[] = rawFeatures.map((feature) => ({
@@ -217,10 +329,14 @@ export class AgenticStudyAdapter {
       source_refs: unique([...asArray<string>(feature.source_refs), ...asArray<string>(feature.evidence_refs)]),
       dataset_ids: asArray<string>(feature.dataset_ids).map((id) => resourceAliases.get(id) || id),
       aliases: unique(asArray<string>(feature.source_object_ids)),
-      geometry: feature.geometry?.type === 'Point' && Array.isArray(feature.geometry.coordinates)
-        ? { type: 'Point', coordinates: feature.geometry.coordinates }
-        : null,
-      narrative: normalizeNarrative(feature.narrative || narrativeByObjectId.get(feature.id), feature.id),
+      geometry: normalizeGeometry(feature.geometry),
+      narrative: normalizeNarrative(featureNarrativeByObjectId.get(feature.id), feature.id, allowLegacyNarrativeV2),
+      evidenceStatus: feature.evidence_status || feature.status || feature.provenance?.basis,
+      locationFidelity: feature.location_fidelity || feature.geometry?.fidelity || (feature.geometry ? 'exact' : 'unlocated'),
+      confidence: feature.confidence,
+      observedAt: feature.observed_at || feature.observation_time,
+      publishedAt: feature.published_at || raw.source?.publication_date,
+      layerIds: unique(layerIdsByFeature.get(feature.id) || []),
     }));
 
     const observations: RawObservation[] = asArray<JsonRecord>(rendering.observations).map((observation) => {
@@ -264,6 +380,21 @@ export class AgenticStudyAdapter {
       item.source_refs?.forEach((id) => evidenceRefs.add(id));
     }
     asArray<JsonRecord>(raw.report?.findings).forEach((finding) => asArray<string>(finding.evidence_refs).forEach((id) => evidenceRefs.add(id)));
+    asArray<JsonRecord>(raw.report?.blocks).forEach((block) => {
+      asArray<string>(block.evidence_refs).forEach((id) => evidenceRefs.add(id));
+      asArray<JsonRecord>(block.metrics).forEach((metric) => asArray<string>(metric.evidence_refs).forEach((id) => evidenceRefs.add(id)));
+    });
+    narrativeTargets.forEach((target) => target.evidenceRefs.forEach((id) => evidenceRefs.add(id)));
+    rawLayers.forEach((layer) => asArray<string>(layer.evidence_refs).forEach((id) => evidenceRefs.add(id)));
+    asArray<JsonRecord>(rendering.vertical_profiles).forEach((profile) => asArray<string>(profile.evidence_refs).forEach((id) => evidenceRefs.add(id)));
+    resources.forEach((resource) => {
+      asArray<string>(resource.source_refs).forEach((id) => evidenceRefs.add(id));
+      asArray<string>(resource.evidence_refs).forEach((id) => evidenceRefs.add(id));
+    });
+    asArray<JsonRecord>(rendering.chart_series).forEach((series) => {
+      asArray<string>(series.evidence_refs).forEach((id) => evidenceRefs.add(id));
+      asArray<JsonRecord>(series.points).forEach((point) => asArray<string>(point.evidence_refs).forEach((id) => evidenceRefs.add(id)));
+    });
     const pageByAssetId = new Map<string, number | string>();
     asArray<JsonRecord>(raw.native_assets).forEach((asset) => {
       if (asset.asset_id && asset.page != null) pageByAssetId.set(asset.asset_id, asset.page);
@@ -287,7 +418,123 @@ export class AgenticStudyAdapter {
       name: resource.name,
       columns: resource.columns,
       source_refs: resource.evidence_refs,
+      path: resource.path,
+      kind: resource.kind,
+      ui_role: resource.ui_role,
+      row_count: resource.row_count,
+      rows: asArray<JsonRecord>(resources.find((candidate) => candidate.id === resource.id)?.rows),
     }));
+
+    const nativeAssets: NativeAsset[] = asArray<JsonRecord>(raw.native_assets).map((asset, index) => ({
+      id: asset.id || asset.asset_id || `asset:${index + 1}`,
+      title: asset.title || asset.name || asset.caption || `Source asset ${index + 1}`,
+      kind: asset.kind || asset.asset_type || asset.type || 'source_asset',
+      path: asset.path || asset.uri,
+      page: asset.page,
+      caption: asset.caption || asset.description,
+      mimeType: asset.mime_type,
+      bounds: Array.isArray(asset.bounds) && asset.bounds.length === 4
+        ? asset.bounds as [number, number, number, number]
+        : undefined,
+      fidelity: asset.fidelity,
+      evidenceRefs: unique([...asArray<string>(asset.source_refs), ...asArray<string>(asset.evidence_refs)]),
+      controlPoints: asArray(asset.control_points),
+      legend: asArray(asset.legend),
+      extractionQuality: asset.extraction_quality || asset.quality,
+      sourceKind: asset.source_kind || (asset.model_generated ? 'model-generated' : 'direct-source'),
+      hotspots: asArray(asset.hotspots),
+    }));
+    const quantitativeSeries: QuantitativeSeries[] = asArray<JsonRecord>(rendering.chart_series || raw.chart_series).flatMap((series, index) => {
+      const rawPoints = asArray<JsonRecord>(series.points);
+      if (!series.id || !series.title || !series.kind || !Array.isArray(series.points)) {
+        diagnostics.push(`Invalid chart series contract at index ${index}: id, title, kind, and points are required`);
+        return [];
+      }
+      const points = rawPoints.flatMap((point, pointIndex) => {
+        const x = point.x ?? point.date ?? point.category ?? point.label;
+        const y = Number(point.y ?? point.value);
+        const optionalNumber = (value: unknown) => value == null || !Number.isFinite(Number(value)) ? undefined : Number(value);
+        if (x == null || !Number.isFinite(y)) {
+          diagnostics.push(`Rejected chart point ${series.id}[${pointIndex}]: x and numeric y are required`);
+          return [];
+        }
+        const sourceFeatureId = point.feature_id;
+        const resolvedFeatureId = sourceFeatureId ? featureAliases.get(sourceFeatureId) : undefined;
+        if (sourceFeatureId && !resolvedFeatureId) diagnostics.push(`Unresolved chart feature reference: ${sourceFeatureId}`);
+        return [{
+          x, y,
+          yLow: optionalNumber(point.y_low ?? point.minimum ?? point.low),
+          yHigh: optionalNumber(point.y_high ?? point.maximum ?? point.high),
+          group: point.group ?? point.series,
+          category: point.category,
+          threshold: optionalNumber(point.threshold),
+          uncertainty: optionalNumber(point.uncertainty),
+          featureId: resolvedFeatureId,
+          observationId: point.observation_id,
+          datasetId: point.dataset_id,
+          evidenceRefs: unique([...asArray<string>(point.source_refs), ...asArray<string>(point.evidence_refs)]),
+        }];
+      });
+      if (!points.length) {
+        diagnostics.push(`Rejected chart series ${series.id}: no valid points survived adaptation`);
+        return [];
+      }
+      return [{
+        id: series.id,
+        title: series.title,
+        kind: series.kind,
+        xLabel: series.x_label,
+        yLabel: series.y_label,
+        unit: series.unit,
+        points,
+        evidenceRefs: unique(asArray<string>(series.evidence_refs)),
+        xUnit: series.x_unit,
+        threshold: series.threshold,
+        thresholdLabel: series.threshold_label,
+        stackMode: series.stack_mode,
+        status: series.status,
+        description: series.description,
+      }];
+    });
+    const timelineEvents: TimelineEvent[] = asArray<JsonRecord>(rendering.timelines || raw.timelines).flatMap((timeline, timelineIndex) =>
+      asArray<JsonRecord>(timeline.events || timeline.items || [timeline]).map((event, eventIndex) => ({
+        id: event.id || `timeline:${timelineIndex + 1}:${eventIndex + 1}`,
+        title: event.title || event.label || 'Timeline event',
+        timelineId: timeline.id || `timeline:${timelineIndex + 1}`,
+        timelineTitle: timeline.title,
+        timelineDescription: timeline.description,
+        timelineUnit: timeline.unit,
+        date: event.date,
+        period: event.period,
+        status: event.status,
+        description: event.description || event.summary,
+        featureIds: asArray<string>(event.feature_ids).map((id) => featureAliases.get(id) || id),
+        evidenceRefs: unique([...asArray<string>(event.source_refs), ...asArray<string>(event.evidence_refs)]),
+        kind: event.kind || timeline.kind,
+        datasetIds: asArray<string>(event.dataset_ids),
+        assetIds: asArray<string>(event.asset_ids),
+      }))
+    );
+
+    const knownExtensionKeys = new Set(['datasets', 'relationships', 'agentic', 'nativeAssets', 'quantitativeSeries', 'timelineEvents']);
+    const genericExtensions: GenericExtension[] = [
+      ...asArray<JsonRecord>(rendering.extensions),
+      ...asArray<JsonRecord>(raw.extensions),
+    ].map((extension, index) => ({
+      id: extension.id || `extension:${index + 1}`,
+      kind: extension.kind || extension.type || 'package-extension',
+      title: extension.title || extension.name || `Package extension ${index + 1}`,
+      description: extension.description || extension.summary,
+      rendererHint: extension.renderer_hint || extension.renderer,
+      payload: extension.payload ?? extension.data ?? extension,
+      evidenceRefs: unique([...asArray<string>(extension.source_refs), ...asArray<string>(extension.evidence_refs)]),
+    }));
+    if (raw.extensions && !Array.isArray(raw.extensions)) {
+      Object.entries(raw.extensions as JsonRecord).forEach(([key, payload]) => {
+        if (knownExtensionKeys.has(key)) return;
+        genericExtensions.push({ id: `extension:${key}`, kind: key, title: key.replace(/[_-]+/g, ' '), payload, evidenceRefs: [] });
+      });
+    }
 
     const agentic: AgenticPackageMetadata = {
       sourceSchemaVersion: raw.schema_version,
@@ -297,9 +544,10 @@ export class AgenticStudyAdapter {
       status: raw.status,
       primaryRenderingMode: raw.primary_rendering_mode || rendering.primary_rendering_mode,
       capabilities: { ...(raw.capabilities || rendering.capabilities || {}) },
-      layers: asArray<AgenticLayer>(rendering.layers),
+      layers: rawLayers as AgenticLayer[],
       verticalProfiles: asArray<AgenticVerticalProfile>(rendering.vertical_profiles),
       structuredResources,
+      narrativeTargets,
       nativeAssets: asArray<Record<string, unknown>>(raw.native_assets),
       evidenceDispositions: asArray<Record<string, unknown>>(rendering.evidence_sidecar?.dispositions),
       coverage: { rendering: rendering.coverage || {}, narrative: raw.narrative_package?.coverage || {}, report: raw.report?.coverage || {} },
@@ -307,9 +555,12 @@ export class AgenticStudyAdapter {
       unresolvedItems: unique(asArray<string>(raw.unresolved_items)),
       validation: raw.validation,
       adapterDiagnostics: diagnostics,
+      quantitativeSeries,
+      timelineEvents,
     };
 
-    const reportSynthesis = adaptReport(raw.report, studyId, featureAliases, studyAreaId, resourceAliases, diagnostics);
+    const documentAnalysis = adaptDocumentAnalysis(raw.report, studyId, featureAliases, diagnostics);
+    const reportSynthesis = documentAnalysis ? undefined : adaptReport(raw.report, studyId, featureAliases, studyAreaId, resourceAliases, diagnostics);
     const studyArea: StudyArea = {
       id: studyAreaId,
       name: study.short_title || study.title || 'Study region',
@@ -321,9 +572,9 @@ export class AgenticStudyAdapter {
       schema_version: 'scientific-ui-adapter.v1',
       report: {
         id: studyId,
-        title: study.title,
-        short_title: study.short_title,
-        summary: study.summary,
+        title: documentAnalysis?.display_title || study.title,
+        short_title: documentAnalysis?.short_title || study.short_title,
+        summary: documentAnalysis?.brief_description || study.summary,
         domain: study.domain,
       },
       study_areas: [studyArea],
@@ -331,9 +582,10 @@ export class AgenticStudyAdapter {
       observations,
       intervals,
       sources,
-      extensions: { datasets, agentic },
-      analysis_schema_version: reportSynthesis ? 'report-synthesis.v1' : undefined,
+      extensions: { datasets, nativeAssets, quantitativeSeries, timelineEvents, genericExtensions, agentic },
+      analysis_schema_version: documentAnalysis ? 'document-analysis.v1' : reportSynthesis ? 'report-synthesis.v1' : undefined,
       report_synthesis: reportSynthesis,
+      document_analysis: documentAnalysis,
     };
   }
 }

@@ -1,0 +1,1544 @@
+s_no,district,taluk,location,aquifer,level_m_bgl,level_status,season,annexure,file_page
+,Bangalore Rural,CHANNAPATNA,Kengel,Unconfined,1.3,measured,2022-05,Annexure-I,91
+,Bangalore Rural,CHANNAPATNA,Malagalu,Unconfined,0.82,measured,2022-05,Annexure-I,91
+,Bangalore Rural,CHANNAPATNA,Nunnuru,Unconfined,1.45,measured,2022-05,Annexure-I,91
+,Bangalore Rural,DEVANHALLI,Avathi,Unconfined,8.03,measured,2022-05,Annexure-I,91
+,Bangalore Rural,DEVANHALLI,Bairasandra,Unconfined,7.05,measured,2022-05,Annexure-I,91
+,Bangalore Rural,DEVANHALLI,Devanahalli A,Unconfined,12.48,measured,2022-05,Annexure-I,91
+,Bangalore Rural,DEVANHALLI,Devanhalli,Semi Confined,22.57,measured,2022-05,Annexure-I,91
+,Bangalore Rural,DEVANHALLI,Kodagurki A,Unconfined,3.47,measured,2022-05,Annexure-I,91
+,Bangalore Rural,DEVANHALLI,Vishwanathapura,Unconfined,3.21,measured,2022-05,Annexure-I,91
+,Bangalore Rural,DODBALLAPUR,Dodballapur,Unconfined,2.4,measured,2022-05,Annexure-I,91
+,Bangalore Rural,DODBALLAPUR,Dodballapur1,Semi Confined,15.93,measured,2022-05,Annexure-I,92
+,Bangalore Rural,DODBALLAPUR,Kanasvadi,Semi Confined,30.2,measured,2022-05,Annexure-I,92
+,Bangalore Rural,DODBALLAPUR,Siddanayakanahalli A,Unconfined,8.45,measured,2022-05,Annexure-I,92
+,Bangalore Rural,HOSKOTE,Hosakote,Semi Confined,28.19,measured,2022-05,Annexure-I,92
+,Bangalore Rural,KANAKAPURA,Aralalu,Unconfined,1.02,measured,2022-05,Annexure-I,92
+,Bangalore Rural,KANAKAPURA,Ganaldoddi,Unconfined,1.46,measured,2022-05,Annexure-I,92
+,Bangalore Rural,KANAKAPURA,Harohalli,Semi Confined,8.78,measured,2022-05,Annexure-I,92
+,Bangalore Rural,KANAKAPURA,Harohalli A,Unconfined,0.9,measured,2022-05,Annexure-I,92
+,Bangalore Rural,KANAKAPURA,Hegganur,Unconfined,2.25,measured,2022-05,Annexure-I,92
+,Bangalore Rural,KANAKAPURA,Helagalli,Unconfined,1.04,measured,2022-05,Annexure-I,92
+,Bangalore Rural,KANAKAPURA,Kanakapura,Semi Confined,3.5,measured,2022-05,Annexure-I,92
+,Bangalore Rural,KANAKAPURA,Kanakapura1,Unconfined,2.67,measured,2022-05,Annexure-I,92
+,Bangalore Rural,KANAKAPURA,Kottahalli,Unconfined,1.65,measured,2022-05,Annexure-I,92
+,Bangalore Rural,KANAKAPURA,Kylancha,Unconfined,1.53,measured,2022-05,Annexure-I,92
+,Bangalore Rural,KANAKAPURA,Nayakanahalli,Unconfined,8.62,measured,2022-05,Annexure-I,92
+,Bangalore Rural,KANAKAPURA,Uyyamballi,Unconfined,9.85,measured,2022-05,Annexure-I,92
+,Bangalore Rural,MAGADI,Bairanahalli Cross,Unconfined,6.0,measured,2022-05,Annexure-I,92
+,Bangalore Rural,MAGADI,Banavadi,Unconfined,1.7,measured,2022-05,Annexure-I,92
+,Bangalore Rural,MAGADI,Kuduru pz,Semi Confined,22.61,measured,2022-05,Annexure-I,92
+,Bangalore Rural,MAGADI,Magadi1,Semi Confined,6.7,measured,2022-05,Annexure-I,92
+,Bangalore Rural,MAGADI,Magadi2,Unconfined,1.62,measured,2022-05,Annexure-I,92
+,Bangalore Rural,MAGADI,Panayan Palya,Unconfined,3.7,measured,2022-05,Annexure-I,92
+,Bangalore Rural,MAGADI,Solur,Semi Confined,12.7,measured,2022-05,Annexure-I,92
+,Bangalore Rural,MAGADI,Talacha Kuppe,Unconfined,3.71,measured,2022-05,Annexure-I,92
+,Bangalore Rural,MAGADI,Veerasagara,Unconfined,10.0,measured,2022-05,Annexure-I,92
+,Bangalore Rural,Nayakanahalli,Naikanahalli,Unconfined,8.57,measured,2022-05,Annexure-I,92
+,Bangalore Rural,NELAMANGALA,Gangenapura,Unconfined,2.82,measured,2022-05,Annexure-I,92
+,Bangalore Rural,NELAMANGALA,Mahadevapura,Unconfined,4.78,measured,2022-05,Annexure-I,92
+,Bangalore Rural,NELAMANGALA,Shivagange,Semi Confined,4.28,measured,2022-05,Annexure-I,92
+,Bangalore Rural,NELAMANGALA,Shivagange1,Unconfined,1.67,measured,2022-05,Annexure-I,92
+,Bangalore Rural,NELAMANGALA,Yentiganahalli,Semi Confined,13.21,measured,2022-05,Annexure-I,92
+,Bangalore Rural,RAMANAGARAM,Bidadi,Semi Confined,10.58,measured,2022-05,Annexure-I,92
+,Bangalore Rural,RAMANAGARAM,Jalamangala A,Unconfined,1.43,measured,2022-05,Annexure-I,92
+,Bangalore Rural,RAMANAGARAM,Kailancha,Unconfined,1.53,measured,2022-05,Annexure-I,92
+,Bangalore Rural,RAMANAGARAM,Kalegowdanadoddi,Unconfined,4.62,measured,2022-05,Annexure-I,92
+,Bangalore Rural,RAMANAGARAM,Ramanagara,Unconfined,8.13,measured,2022-05,Annexure-I,92
+,Bangalore Rural,RAMANAGARAM,S.B.Doddi,Unconfined,3.99,measured,2022-05,Annexure-I,92
+,Bangalore Urban,ANEKAL,Haragadde-A,Unconfined,5.45,measured,2022-05,Annexure-I,92
+,Bangalore Urban,ANEKAL,Jigani,Unconfined,2.07,measured,2022-05,Annexure-I,92
+,Bangalore Urban,BANGALORE NORTH,Bangalore-iv,Unconfined,1.54,measured,2022-05,Annexure-I,92
+,Bangalore Urban,BANGALORE NORTH,Basavanagudi,Unconfined,2.63,measured,2022-05,Annexure-I,92
+,Bangalore Urban,BANGALORE NORTH,Chennamankere Achkattu,Unconfined,0.4,measured,2022-05,Annexure-I,92
+,Bangalore Urban,BANGALORE NORTH,Dasanapura,Semi Confined,22.28,measured,2022-05,Annexure-I,93
+,Bangalore Urban,BANGALORE NORTH,Gollahalli,Unconfined,0.35,measured,2022-05,Annexure-I,93
+,Bangalore Urban,BANGALORE NORTH,Hebbal2,Semi Confined,24.7,measured,2022-05,Annexure-I,93
+,Bangalore Urban,BANGALORE NORTH,Hebbal2,Unconfined,13.25,measured,2022-05,Annexure-I,93
+,Bangalore Urban,BANGALORE NORTH,Hesaraghatta Pz,Semi Confined,10.94,measured,2022-05,Annexure-I,93
+,Bangalore Urban,BANGALORE NORTH,Indian Institute Of Science,Semi Confined,20.67,measured,2022-05,Annexure-I,93
+,Bangalore Urban,BANGALORE NORTH,Indiranagar,Semi Confined,8.95,measured,2022-05,Annexure-I,93
+,Bangalore Urban,BANGALORE NORTH,Kodigehalli,Unconfined,1.69,measured,2022-05,Annexure-I,93
+,Bangalore Urban,BANGALORE NORTH,Lalbagh garden,Semi Confined,2.52,measured,2022-05,Annexure-I,93
+,Bangalore Urban,BANGALORE NORTH,Nimhans,Semi Confined,4.96,measured,2022-05,Annexure-I,93
+,Bangalore Urban,BANGALORE NORTH,Rajajinagara,Unconfined,1.4,measured,2022-05,Annexure-I,93
+,Bangalore Urban,BANGALORE NORTH,Vasanthnagara,Unconfined,2.64,measured,2022-05,Annexure-I,93
+,Bangalore Urban,BANGALORE NORTH,Wilson Garden,Unconfined,3.38,measured,2022-05,Annexure-I,93
+,Bangalore Urban,BANGALORE NORTH,Yelahanka,Unconfined,14.86,measured,2022-05,Annexure-I,93
+,Bangalore Urban,BANGALORE SOUTH,Adugodi,Semi Confined,1.42,measured,2022-05,Annexure-I,93
+,Bangalore Urban,BANGALORE SOUTH,Bang Uni Ars Ls,Semi Confined,16.12,measured,2022-05,Annexure-I,93
+,Bangalore Urban,BANGALORE SOUTH,Bangalore i,Unconfined,1.9,measured,2022-05,Annexure-I,93
+,Bangalore Urban,BANGALORE SOUTH,Bangalore ii,Unconfined,2.27,measured,2022-05,Annexure-I,93
+,Bangalore Urban,BANGALORE SOUTH,Begur,Unconfined,5.66,measured,2022-05,Annexure-I,93
+,Bangalore Urban,BANGALORE SOUTH,Chandasipalya,Unconfined,3.61,measured,2022-05,Annexure-I,93
+,Bangalore Urban,BANGALORE SOUTH,Gottigere A,Unconfined,0.05,measured,2022-05,Annexure-I,93
+,Bangalore Urban,BANGALORE SOUTH,Gsi Pz,Semi Confined,13.5,measured,2022-05,Annexure-I,93
+,Bangalore Urban,BANGALORE SOUTH,Hsr Layout,Unconfined,1.98,measured,2022-05,Annexure-I,93
+,Bangalore Urban,BANGALORE SOUTH,IIM Bannerughatta,Semi Confined,10.88,measured,2022-05,Annexure-I,93
+,Bangalore Urban,BANGALORE SOUTH,Jayanagar,Semi Confined,6.55,measured,2022-05,Annexure-I,93
+,Bangalore Urban,BANGALORE SOUTH,Seva Kshetra Hospital Banshankari Ii,Unconfined,2.39,measured,2022-05,Annexure-I,93
+,Bangalore Urban,BANGALORE SOUTH,Singasandra,Semi Confined,17.08,measured,2022-05,Annexure-I,93
+,Bangalore Urban,BANGALORE SOUTH,Thalaghattapurapz,Semi Confined,5.56,measured,2022-05,Annexure-I,93
+,Bangalore Urban,BANGALORE SOUTH,Vasanthpura,Unconfined,4.38,measured,2022-05,Annexure-I,93
+,Bagalkot,BADAMI,Badami1,Unconfined,7.24,measured,2022-05,Annexure-I,91
+,Bagalkot,BADAMI,Guledagudda,Unconfined,8.88,measured,2022-05,Annexure-I,91
+,Bagalkot,BADAMI,Guledagudda Sumetty,Unconfined,5.53,measured,2022-05,Annexure-I,91
+,Bagalkot,BADAMI,Kerur A,Unconfined,2.26,measured,2022-05,Annexure-I,91
+,Bagalkot,BADAMI,Kulageri1,Semi Confined,26.85,measured,2022-05,Annexure-I,91
+,Bagalkot,BADAMI,Lakhmapur,Unconfined,29.5,measured,2022-05,Annexure-I,91
+,Bagalkot,BADAMI,Pattadakal,Unconfined,6.41,measured,2022-05,Annexure-I,91
+,Bagalkot,BAGALKOT,Yedahalli,Unconfined,15.0,measured,2022-05,Annexure-I,91
+,Bagalkot,BILGI,Badagandi,Unconfined,4.24,measured,2022-05,Annexure-I,91
+,Bagalkot,BILGI,Bilgi Pz,Semi Confined,12.76,measured,2022-05,Annexure-I,91
+,Bagalkot,HUNGUND,Amingad,Unconfined,1.05,measured,2022-05,Annexure-I,91
+,Bagalkot,HUNGUND,Binjawadgi,Unconfined,3.9,measured,2022-05,Annexure-I,91
+,Bagalkot,HUNGUND,Gorbal,Unconfined,5.42,measured,2022-05,Annexure-I,91
+,Bagalkot,HUNGUND,Ilhal,Semi Confined,1.81,measured,2022-05,Annexure-I,91
+,Bagalkot,HUNGUND,Ilkal,Unconfined,4.0,measured,2022-05,Annexure-I,91
+,Bagalkot,HUNGUND,Karadi,Unconfined,3.65,measured,2022-05,Annexure-I,91
+,Bagalkot,HUNGUND,Kodihal,Unconfined,2.7,measured,2022-05,Annexure-I,91
+,Bagalkot,HUNGUND,Nagur,Unconfined,3.77,measured,2022-05,Annexure-I,91
+,Bagalkot,HUNGUND,Tumba,Unconfined,4.98,measured,2022-05,Annexure-I,91
+,Bagalkot,HUNGUND,Wadageri,Unconfined,5.75,measured,2022-05,Annexure-I,91
+,Bagalkot,JAMKHANDI,Alagur,Unconfined,2.02,measured,2022-05,Annexure-I,91
+,Bagalkot,JAMKHANDI,Banhatti,Unconfined,4.38,measured,2022-05,Annexure-I,91
+,Bagalkot,JAMKHANDI,Kumbarhal,Unconfined,2.4,measured,2022-05,Annexure-I,91
+,Bagalkot,JAMKHANDI,Rabakavi,Unconfined,4.65,measured,2022-05,Annexure-I,91
+,Bagalkot,JAMKHANDI,Savalgi,Semi Confined,5.51,measured,2022-05,Annexure-I,91
+,Bagalkot,JAMKHANDI,Savalgi2,Unconfined,4.94,measured,2022-05,Annexure-I,91
+,Bagalkot,MUDHOL,Belagalli,Unconfined,3.91,measured,2022-05,Annexure-I,91
+,Bagalkot,MUDHOL,Lokapur Pz,Semi Confined,1.85,measured,2022-05,Annexure-I,91
+,Bagalkot,MUDHOL,Malapur,Unconfined,3.94,measured,2022-05,Annexure-I,91
+,Bagalkot,MUDHOL,Mudhol A,Unconfined,4.02,measured,2022-05,Annexure-I,91
+,Belgaum,ATHNI,Athni,Unconfined,4.25,measured,2022-05,Annexure-I,93
+,Belgaum,ATHNI,Badchi,Unconfined,0.97,measured,2022-05,Annexure-I,93
+,Belgaum,ATHNI,Halyal1,Unconfined,1.48,measured,2022-05,Annexure-I,93
+,Belgaum,ATHNI,Kakmari,Unconfined,2.48,measured,2022-05,Annexure-I,93
+,Belgaum,ATHNI,Khotanatti,Unconfined,9.42,measured,2022-05,Annexure-I,93
+,Belgaum,ATHNI,Koligud,Unconfined,3.31,measured,2022-05,Annexure-I,93
+,Belgaum,ATHNI,Mallabad1,Unconfined,7.65,measured,2022-05,Annexure-I,93
+,Belgaum,ATHNI,Mangsuli,Unconfined,1.75,measured,2022-05,Annexure-I,93
+,Belgaum,ATHNI,Mole,Unconfined,2.55,measured,2022-05,Annexure-I,93
+,Belgaum,ATHNI,Nandagaon1,Unconfined,3.99,measured,2022-05,Annexure-I,93
+,Belgaum,ATHNI,Radderhatti,Unconfined,6.37,measured,2022-05,Annexure-I,93
+,Belgaum,BELGAUM,Belgaum,Semi Confined,17.95,measured,2022-05,Annexure-I,93
+,Belgaum,BELGAUM,Belgaum1,Unconfined,6.0,measured,2022-05,Annexure-I,94
+,Belgaum,BELGAUM,Changad,Unconfined,3.64,measured,2022-05,Annexure-I,94
+,Belgaum,BELGAUM,Halaga,Unconfined,4.34,measured,2022-05,Annexure-I,94
+,Belgaum,BELGAUM,Kudichi,Unconfined,2.58,measured,2022-05,Annexure-I,94
+,Belgaum,BELGAUM,Piranwadi,Unconfined,7.6,measured,2022-05,Annexure-I,94
+,Belgaum,BELGAUM,Sulebhavi,Unconfined,2.25,measured,2022-05,Annexure-I,94
+,Belgaum,BELGAUM,Sutagatti,Unconfined,8.87,measured,2022-05,Annexure-I,94
+,Belgaum,BELGAUM,Uchagaon,Unconfined,10.43,measured,2022-05,Annexure-I,94
+,Belgaum,BELGAUM,Vantamuri,Unconfined,0.5,measured,2022-05,Annexure-I,94
+,Belgaum,CHIKODI,Belakud,Unconfined,5.03,measured,2022-05,Annexure-I,94
+,Belgaum,CHIKODI,Examba,Unconfined,6.73,measured,2022-05,Annexure-I,94
+,Belgaum,CHIKODI,Galatga,Unconfined,10.81,measured,2022-05,Annexure-I,94
+,Belgaum,CHIKODI,Kabbur,Unconfined,5.34,measured,2022-05,Annexure-I,94
+,Belgaum,CHIKODI,Nippani1,Unconfined,4.71,measured,2022-05,Annexure-I,94
+,Belgaum,CHIKODI,Rupnal,Unconfined,2.47,measured,2022-05,Annexure-I,94
+,Belgaum,CHIKODI,Soundalga1,Unconfined,5.81,measured,2022-05,Annexure-I,94
+,Belgaum,GOKAK,Ankalgi,Semi Confined,8.13,measured,2022-05,Annexure-I,94
+,Belgaum,GOKAK,Arabhavi,Unconfined,2.87,measured,2022-05,Annexure-I,94
+,Belgaum,GOKAK,Chikkanandi,Semi Confined,2.87,measured,2022-05,Annexure-I,94
+,Belgaum,GOKAK,CHIKKANANDI,Unconfined,4.12,measured,2022-05,Annexure-I,94
+,Belgaum,GOKAK,Ghodageri,Unconfined,1.05,measured,2022-05,Annexure-I,94
+,Belgaum,GOKAK,Gokak,Semi Confined,5.68,measured,2022-05,Annexure-I,94
+,Belgaum,GOKAK,Khanagaon,Unconfined,4.19,measured,2022-05,Annexure-I,94
+,Belgaum,GOKAK,Koujalgi,Semi Confined,4.27,measured,2022-05,Annexure-I,94
+,Belgaum,GOKAK,Kundargi,Unconfined,5.41,measured,2022-05,Annexure-I,94
+,Belgaum,GOKAK,Mamadapur,Unconfined,3.27,measured,2022-05,Annexure-I,94
+,Belgaum,GOKAK,Naganur,Unconfined,1.71,measured,2022-05,Annexure-I,94
+,Belgaum,GOKAK,Parthanhalli,Unconfined,3.3,measured,2022-05,Annexure-I,94
+,Belgaum,GOKAK,Sangankeri,Unconfined,0.38,measured,2022-05,Annexure-I,94
+,Belgaum,GOKAK,Sindhikurbet,Unconfined,5.24,measured,2022-05,Annexure-I,94
+,Belgaum,HUKERI,Ankala Gudiketra,Unconfined,2.76,measured,2022-05,Annexure-I,94
+,Belgaum,HUKERI,Badkundri,Semi Confined,4.76,measured,2022-05,Annexure-I,94
+,Belgaum,HUKERI,Basapura,Unconfined,14.35,measured,2022-05,Annexure-I,94
+,Belgaum,HUKERI,Bastwad,Unconfined,3.31,measured,2022-05,Annexure-I,94
+,Belgaum,HUKERI,Bellad Bagewadi,Unconfined,0.68,measured,2022-05,Annexure-I,94
+,Belgaum,HUKERI,Gondwad,Unconfined,1.49,measured,2022-05,Annexure-I,94
+,Belgaum,HUKERI,Gotur,Unconfined,4.88,measured,2022-05,Annexure-I,94
+,Belgaum,HUKERI,Gumachinamardi,Unconfined,2.18,measured,2022-05,Annexure-I,94
+,Belgaum,HUKERI,Hanjamhatti,Unconfined,1.03,measured,2022-05,Annexure-I,94
+,Belgaum,HUKERI,Hattargi,Unconfined,3.96,measured,2022-05,Annexure-I,94
+,Belgaum,HUKERI,Hidkal Dam,Semi Confined,3.27,measured,2022-05,Annexure-I,94
+,Belgaum,HUKERI,Hukeri1,Unconfined,3.87,measured,2022-05,Annexure-I,94
+,Belgaum,HUKERI,Hukkeri,Semi Confined,3.45,measured,2022-05,Annexure-I,95
+,Belgaum,HUKERI,Hulloli,Unconfined,0.78,measured,2022-05,Annexure-I,95
+,Belgaum,HUKERI,Hunuru,Unconfined,4.13,measured,2022-05,Annexure-I,95
+,Belgaum,HUKERI,Islampura,Unconfined,9.48,measured,2022-05,Annexure-I,95
+,Belgaum,HUKERI,Madihalli,Unconfined,0.73,measured,2022-05,Annexure-I,95
+,Belgaum,HUKERI,Sankeshwar,Unconfined,1.76,measured,2022-05,Annexure-I,95
+,Belgaum,HUKERI,Yadgud,Unconfined,13.42,measured,2022-05,Annexure-I,95
+,Belgaum,HUKERI,Yeli Munoli,Unconfined,2.58,measured,2022-05,Annexure-I,95
+,Belgaum,KHANAPUR,Bidi,Unconfined,9.11,measured,2022-05,Annexure-I,95
+,Belgaum,KHANAPUR,Gunji,Unconfined,1.61,measured,2022-05,Annexure-I,95
+,Belgaum,KHANAPUR,Khanapur,Semi Confined,10.22,measured,2022-05,Annexure-I,95
+,Belgaum,KHANAPUR,Khanapur1,Unconfined,9.09,measured,2022-05,Annexure-I,95
+,Belgaum,KHANAPUR,Londa1,Unconfined,12.55,measured,2022-05,Annexure-I,95
+,Belgaum,KHANAPUR,Nagarahalli,Semi Confined,8.2,measured,2022-05,Annexure-I,95
+,Belgaum,KHANAPUR,Nandgad,Unconfined,9.13,measured,2022-05,Annexure-I,95
+,Belgaum,KHANAPUR,Watre,Unconfined,10.92,measured,2022-05,Annexure-I,95
+,Belgaum,PARASGAD,Bailhongal,Unconfined,8.32,measured,2022-05,Annexure-I,95
+,Belgaum,PARASGAD,Bailhongal pz,Semi Confined,8.15,measured,2022-05,Annexure-I,95
+,Belgaum,PARASGAD,Hallakki,Unconfined,2.18,measured,2022-05,Annexure-I,95
+,Belgaum,PARASGAD,Munavalli,Unconfined,10.17,measured,2022-05,Annexure-I,95
+,Belgaum,PARASGAD,Murgod,Unconfined,2.95,measured,2022-05,Annexure-I,95
+,Belgaum,PARASGAD,Saundatti,Unconfined,3.25,measured,2022-05,Annexure-I,95
+,Belgaum,PARASGAD,Sopadla,Unconfined,3.49,measured,2022-05,Annexure-I,95
+,Belgaum,PARASGAD,Yaraganeri,Unconfined,4.65,measured,2022-05,Annexure-I,95
+,Belgaum,RAMDURG,Godachi,Unconfined,4.85,measured,2022-05,Annexure-I,95
+,Belgaum,RAMDURG,Ramdurg,Semi Confined,9.7,measured,2022-05,Annexure-I,95
+,Belgaum,RAMDURG,Ramdurg1,Unconfined,11.85,measured,2022-05,Annexure-I,95
+,Belgaum,RAMDURG,Salahalli,Unconfined,8.39,measured,2022-05,Annexure-I,95
+,Belgaum,RAYBAG,Ainapur,Unconfined,2.43,measured,2022-05,Annexure-I,95
+,Belgaum,RAYBAG,Bekud,Unconfined,2.1,measured,2022-05,Annexure-I,95
+,Belgaum,RAYBAG,Chincholi,Unconfined,11.79,measured,2022-05,Annexure-I,95
+,Belgaum,RAYBAG,Gurlapur,Unconfined,7.29,measured,2022-05,Annexure-I,95
+,Belgaum,RAYBAG,Hubravadi,Unconfined,2.78,measured,2022-05,Annexure-I,95
+,Belgaum,RAYBAG,Kudichi pz,Semi Confined,2.2,measured,2022-05,Annexure-I,95
+,Belgaum,RAYBAG,Kuduchi,Unconfined,4.03,measured,2022-05,Annexure-I,95
+,Belgaum,RAYBAG,Nasalapur,Unconfined,4.72,measured,2022-05,Annexure-I,95
+,Belgaum,RAYBAG,Rayabag1,Unconfined,6.43,measured,2022-05,Annexure-I,95
+,Belgaum,RAYBAG,Yebaratti,Unconfined,4.78,measured,2022-05,Annexure-I,95
+,Belgaum,RAYBAG,Yedrav,Unconfined,6.35,measured,2022-05,Annexure-I,95
+,Belgaum,SAMPGAON,Hire bagewadi,Unconfined,5.27,measured,2022-05,Annexure-I,95
+,Belgaum,SAMPGAON,Kittur1,Unconfined,1.01,measured,2022-05,Annexure-I,95
+,Belgaum,SAMPGAON,Nesaragi1,Unconfined,5.93,measured,2022-05,Annexure-I,95
+,Belgaum,SAMPGAON,Sutagatti1,Unconfined,7.67,measured,2022-05,Annexure-I,96
+,Bellary,Bellary,Allipuram1,Unconfined,1.57,measured,2022-05,Annexure-I,96
+,Bellary,Bellary,Bailuru,Unconfined,3.35,measured,2022-05,Annexure-I,96
+,Bellary,Bellary,Emmiganur,Unconfined,4.82,measured,2022-05,Annexure-I,96
+,Bellary,Bellary,Gudekote,Unconfined,2.79,measured,2022-05,Annexure-I,96
+,Bellary,Bellary,Kurugodu,Unconfined,8.05,measured,2022-05,Annexure-I,96
+,Bellary,Bellary,Siddaragadda (PZ),Unconfined,3.8,measured,2022-05,Annexure-I,96
+,Bellary,Bellary,Sindgeri,Unconfined,3.93,measured,2022-05,Annexure-I,96
+,Bellary,Chikjohalli,Chikjohalli,Semi Confined,37.68,measured,2022-05,Annexure-I,96
+,Bellary,Gadiganur,Gadiganur,Semi Confined,8.35,measured,2022-05,Annexure-I,96
+,Bellary,Hadagalli,Dasarahally Tanda,Unconfined,1.15,measured,2022-05,Annexure-I,96
+,Bellary,Hadagalli,Hagaranur,Unconfined,3.7,measured,2022-05,Annexure-I,96
+,Bellary,HADAGALLI,Ittigi,Semi Confined,32.26,measured,2022-05,Annexure-I,96
+,Bellary,Hadagalli,Magala,Unconfined,1.23,measured,2022-05,Annexure-I,96
+,Bellary,Hadagalli,Uthangi,Unconfined,32.26,measured,2022-05,Annexure-I,96
+,Bellary,Hampasagara,Hampasagara,Semi Confined,15.35,measured,2022-05,Annexure-I,96
+,Bellary,Hirehadagalli,Hirehadagalli,Semi Confined,10.3,measured,2022-05,Annexure-I,96
+,Bellary,Hospet,Danapura,Unconfined,2.45,measured,2022-05,Annexure-I,96
+,Bellary,Hospet,Hampi-A,Unconfined,1.92,measured,2022-05,Annexure-I,96
+,Bellary,Hospet,Hospet-A,Unconfined,1.72,measured,2022-05,Annexure-I,96
+,Bellary,Hospet,Kamlapuram(A),Unconfined,2.15,measured,2022-05,Annexure-I,96
+,Bellary,Hospet,Mariyammanahalli1,Unconfined,6.3,measured,2022-05,Annexure-I,96
+,Bellary,Hospet,Muddapura,Unconfined,2.42,measured,2022-05,Annexure-I,96
+,Bellary,Hospet,Ramasagara,Unconfined,2.42,measured,2022-05,Annexure-I,96
+,Bellary,Hospet,Venkatapura,Unconfined,4.7,measured,2022-05,Annexure-I,96
+,Bellary,Ittigi,Ittigi,Semi Confined,32.96,measured,2022-05,Annexure-I,96
+,Bellary,Kamalapur,Kamalapur,Semi Confined,3.65,measured,2022-05,Annexure-I,96
+,Bellary,Kudligi,Gandabommanahally- tank camp,Unconfined,10.3,measured,2022-05,Annexure-I,96
+,Bellary,Kudligi,Jogikallu,Unconfined,4.9,measured,2022-05,Annexure-I,96
+,Bellary,Kudligi,Kakkuppi,Unconfined,7.4,measured,2022-05,Annexure-I,96
+,Bellary,Kudligi,NagarhunseA),Unconfined,6.4,measured,2022-05,Annexure-I,96
+,Bellary,Sandur,Sandur (Alternate well),Unconfined,4.3,measured,2022-05,Annexure-I,96
+,Bellary,Sandur,Shro.Gangalapur,Unconfined,9.3,measured,2022-05,Annexure-I,96
+,Bellary,Sandur,Thorangal,Unconfined,6.23,measured,2022-05,Annexure-I,96
+,Bellary,Sandur,Yeswanthanagar,Unconfined,6.92,measured,2022-05,Annexure-I,96
+,Bellary,Sirigere,Sirigere,Semi Confined,1.7,measured,2022-05,Annexure-I,96
+,Bellary,Siruguppa,Ganikallu,Unconfined,2.75,measured,2022-05,Annexure-I,96
+,Bellary,Siruguppa,Sirigeri,Unconfined,1.25,measured,2022-05,Annexure-I,96
+,Bellary,Siruguppa,Tekkalakote A,Unconfined,1.75,measured,2022-05,Annexure-I,96
+,Bellary,Ujjini,Ujjini,Semi Confined,38.3,measured,2022-05,Annexure-I,96
+,Bidar,AURAD,Aurad1,Unconfined,4.4,measured,2022-05,Annexure-I,96
+,Bidar,AURAD,Borala,Unconfined,3.5,measured,2022-05,Annexure-I,96
+,Bidar,AURAD,Borgi,Unconfined,5.34,measured,2022-05,Annexure-I,97
+,Bidar,AURAD,Dongargaon,Unconfined,4.6,measured,2022-05,Annexure-I,97
+,Bidar,AURAD,Ekamba,Unconfined,1.8,measured,2022-05,Annexure-I,97
+,Bidar,AURAD,Kamalnagar,Unconfined,2.15,measured,2022-05,Annexure-I,97
+,Bidar,AURAD,Kandikheri,Unconfined,4.28,measured,2022-05,Annexure-I,97
+,Bidar,AURAD,Nagur,Unconfined,5.75,measured,2022-05,Annexure-I,97
+,Bidar,AURAD,Santepur,Unconfined,5.88,measured,2022-05,Annexure-I,97
+,Bidar,AURAD,Wadegaon,Unconfined,6.5,measured,2022-05,Annexure-I,97
+,Bidar,BASAVAKALYAN,Basavakalyan,Semi Confined,17.74,measured,2022-05,Annexure-I,97
+,Bidar,BASAVAKALYAN,Hulsoor,Semi Confined,2.64,measured,2022-05,Annexure-I,97
+,Bidar,BASAVAKALYAN,Islampur,Unconfined,15.3,measured,2022-05,Annexure-I,97
+,Bidar,BASAVAKALYAN,Matala,Unconfined,12.52,measured,2022-05,Annexure-I,97
+,Bidar,BASAVAKALYAN,Mudbi1,Unconfined,2.04,measured,2022-05,Annexure-I,97
+,Bidar,BASAVAKALYAN,Rajeshwar,Unconfined,5.2,measured,2022-05,Annexure-I,97
+,Bidar,BASAVAKALYAN,Soldapka,Unconfined,6.1,measured,2022-05,Annexure-I,97
+,Bidar,BASAVAKALYAN,Yarandagi,Unconfined,9.2,measured,2022-05,Annexure-I,97
+,Bidar,BHALKI,Bhalki,Semi Confined,18.73,measured,2022-05,Annexure-I,97
+,Bidar,BHALKI,Bhalki1,Unconfined,9.22,measured,2022-05,Annexure-I,97
+,Bidar,BHALKI,Bhatambra,Unconfined,13.24,measured,2022-05,Annexure-I,97
+,Bidar,BHALKI,Halburga1,Unconfined,8.79,measured,2022-05,Annexure-I,97
+,Bidar,BHALKI,Helsi,Unconfined,3.2,measured,2022-05,Annexure-I,97
+,Bidar,BHALKI,Saigaon,Unconfined,1.52,measured,2022-05,Annexure-I,97
+,Bidar,BIDAR,Andur,Unconfined,10.5,measured,2022-05,Annexure-I,97
+,Bidar,BIDAR,Bagdel1,Unconfined,11.74,measured,2022-05,Annexure-I,97
+,Bidar,BIDAR,Balehalli,Unconfined,12.55,measured,2022-05,Annexure-I,97
+,Bidar,BIDAR,Bidar1,Unconfined,1.56,measured,2022-05,Annexure-I,97
+,Bidar,BIDAR,Chickpet A,Unconfined,1.42,measured,2022-05,Annexure-I,97
+,Bidar,BIDAR,Janawada A,Unconfined,12.65,measured,2022-05,Annexure-I,97
+,Bidar,BIDAR,Kamthana,Unconfined,10.45,measured,2022-05,Annexure-I,97
+,Bidar,BIDAR,Khanapur2,Unconfined,17.86,measured,2022-05,Annexure-I,97
+,Bidar,HOMNABAD,Ghatboral,Unconfined,4.92,measured,2022-05,Annexure-I,97
+,Bidar,HOMNABAD,Hallikhed,Unconfined,12.5,measured,2022-05,Annexure-I,97
+,Bidar,HOMNABAD,Hallikhed A,Unconfined,12.45,measured,2022-05,Annexure-I,97
+,Bidar,HOMNABAD,Handikera Wadi,Unconfined,16.64,measured,2022-05,Annexure-I,97
+,Bidar,HOMNABAD,Homnabad,Semi Confined,17.78,measured,2022-05,Annexure-I,97
+,Bidar,HOMNABAD,Menekhalli,Unconfined,11.11,measured,2022-05,Annexure-I,97
+,Bidar,HOMNABAD,Nirna,Unconfined,10.47,measured,2022-05,Annexure-I,97
+,Bidar,HOMNABAD,Rajola,Unconfined,11.44,measured,2022-05,Annexure-I,97
+,Bidar,HOMNABAD,Rampur,Unconfined,5.03,measured,2022-05,Annexure-I,97
+,Bijapur,BASAVANA BAGEVADI,Agasabala Cross,Unconfined,3.08,measured,2022-05,Annexure-I,97
+,Bijapur,BASAVANA BAGEVADI,Basavanabagewadi,Unconfined,7.3,measured,2022-05,Annexure-I,97
+,Bijapur,BASAVANA BAGEVADI,Dindawar,Unconfined,5.6,measured,2022-05,Annexure-I,97
+,Bijapur,BASAVANA BAGEVADI,Huvinahipparagi,Unconfined,2.82,measured,2022-05,Annexure-I,98
+,Bijapur,BASAVANA BAGEVADI,Ingaleshwar,Unconfined,3.31,measured,2022-05,Annexure-I,98
+,Bijapur,BASAVANA BAGEVADI,Kolhar,Unconfined,3.55,measured,2022-05,Annexure-I,98
+,Bijapur,BASAVANA BAGEVADI,Mulawad,Semi Confined,10.07,measured,2022-05,Annexure-I,98
+,Bijapur,BASAVANA BAGEVADI,Multagi,Unconfined,2.05,measured,2022-05,Annexure-I,98
+,Bijapur,BASAVANA BAGEVADI,Nidagundi,Unconfined,2.99,measured,2022-05,Annexure-I,98
+,Bijapur,BASAVANA BAGEVADI,Satihal,Unconfined,4.54,measured,2022-05,Annexure-I,98
+,Bijapur,BASAVANA BAGEVADI,Teligi,Unconfined,2.37,measured,2022-05,Annexure-I,98
+,Bijapur,BIJAPUR,Aliyabad,Unconfined,4.27,measured,2022-05,Annexure-I,98
+,Bijapur,BIJAPUR,Bijapur A,Unconfined,4.71,measured,2022-05,Annexure-I,98
+,Bijapur,BIJAPUR,Honaganahalli,Unconfined,8.8,measured,2022-05,Annexure-I,98
+,Bijapur,BIJAPUR,Honnutagi,Unconfined,5.65,measured,2022-05,Annexure-I,98
+,Bijapur,BIJAPUR,Jumnal,Unconfined,26.0,measured,2022-05,Annexure-I,98
+,Bijapur,BIJAPUR,Kallolli,Unconfined,2.2,measured,2022-05,Annexure-I,98
+,Bijapur,BIJAPUR,Khatijapur,Unconfined,17.4,measured,2022-05,Annexure-I,98
+,Bijapur,BIJAPUR,Kumatagi,Semi Confined,9.82,measured,2022-05,Annexure-I,98
+,Bijapur,BIJAPUR,Kumatagi A,Unconfined,2.95,measured,2022-05,Annexure-I,98
+,Bijapur,BIJAPUR,Mangoli,Unconfined,6.22,measured,2022-05,Annexure-I,98
+,Bijapur,BIJAPUR,Nagadhana,Unconfined,4.55,measured,2022-05,Annexure-I,98
+,Bijapur,BIJAPUR,Sarawad,Unconfined,4.48,measured,2022-05,Annexure-I,98
+,Bijapur,BIJAPUR,Shivangi,Unconfined,6.17,measured,2022-05,Annexure-I,98
+,Bijapur,BIJAPUR,Tikota,Unconfined,12.7,measured,2022-05,Annexure-I,98
+,Bijapur,BIJAPUR,Tikota pz,Semi Confined,26.99,measured,2022-05,Annexure-I,98
+,Bijapur,INDI,Bardol,Unconfined,5.99,measured,2022-05,Annexure-I,98
+,Bijapur,INDI,Bhudihala,Unconfined,3.84,measured,2022-05,Annexure-I,98
+,Bijapur,INDI,Chadchan,Unconfined,5.16,measured,2022-05,Annexure-I,98
+,Bijapur,INDI,Chadchan pz,Semi Confined,4.07,measured,2022-05,Annexure-I,98
+,Bijapur,INDI,Dhulkhed,Semi Confined,2.6,measured,2022-05,Annexure-I,98
+,Bijapur,INDI,Halsangi,Unconfined,6.43,measured,2022-05,Annexure-I,98
+,Bijapur,INDI,Horti pz,Semi Confined,16.37,measured,2022-05,Annexure-I,98
+,Bijapur,INDI,Inchageri,Unconfined,4.25,measured,2022-05,Annexure-I,98
+,Bijapur,INDI,Jagjiwani,Unconfined,8.98,measured,2022-05,Annexure-I,98
+,Bijapur,INDI,Nadkurd,Unconfined,7.0,measured,2022-05,Annexure-I,98
+,Bijapur,INDI,Newdhulikhed,Unconfined,3.46,measured,2022-05,Annexure-I,98
+,Bijapur,INDI,Nimbal,Unconfined,6.0,measured,2022-05,Annexure-I,98
+,Bijapur,INDI,Rugi,Unconfined,9.5,measured,2022-05,Annexure-I,98
+,Bijapur,INDI,Salotgi,Unconfined,13.8,measured,2022-05,Annexure-I,98
+,Bijapur,INDI,Satalagaon,Unconfined,7.58,measured,2022-05,Annexure-I,98
+,Bijapur,INDI,Sawalanga,Unconfined,6.63,measured,2022-05,Annexure-I,98
+,Bijapur,INDI,Tadavalaga,Unconfined,9.3,measured,2022-05,Annexure-I,98
+,Bijapur,INDI,Yelagi,Unconfined,6.2,measured,2022-05,Annexure-I,98
+,Bijapur,INDI,Zalki Pz,Semi Confined,7.91,measured,2022-05,Annexure-I,98
+,Bijapur,MUDDEBIHAL,Bavur,Unconfined,3.47,measured,2022-05,Annexure-I,99
+,Bijapur,MUDDEBIHAL,Devarhulagabal,Unconfined,3.15,measured,2022-05,Annexure-I,99
+,Bijapur,MUDDEBIHAL,Dhavalagi,Unconfined,3.2,measured,2022-05,Annexure-I,99
+,Bijapur,MUDDEBIHAL,Hiremural,Unconfined,1.33,measured,2022-05,Annexure-I,99
+,Bijapur,MUDDEBIHAL,Hullur,Unconfined,1.78,measured,2022-05,Annexure-I,99
+,Bijapur,MUDDEBIHAL,Maileswar A,Unconfined,6.7,measured,2022-05,Annexure-I,99
+,Bijapur,MUDDEBIHAL,Minajigi,Unconfined,7.57,measured,2022-05,Annexure-I,99
+,Bijapur,MUDDEBIHAL,Muddebihal A,Unconfined,4.4,measured,2022-05,Annexure-I,99
+,Bijapur,MUDDEBIHAL,Muddebihal Pz,Semi Confined,16.3,measured,2022-05,Annexure-I,99
+,Bijapur,MUDDEBIHAL,Nagarbetta,Unconfined,3.28,measured,2022-05,Annexure-I,99
+,Bijapur,MUDDEBIHAL,Nebageri,Unconfined,3.47,measured,2022-05,Annexure-I,99
+,Bijapur,MUDDEBIHAL,Tangadgi,Unconfined,1.55,measured,2022-05,Annexure-I,99
+,Bijapur,SINDGI,Ambalanur,Unconfined,10.05,measured,2022-05,Annexure-I,99
+,Bijapur,SINDGI,Ayeri,Unconfined,3.88,measured,2022-05,Annexure-I,99
+,Bijapur,SINDGI,Bhudihaldon,Unconfined,4.5,measured,2022-05,Annexure-I,99
+,Bijapur,SINDGI,Deur tanda,Unconfined,4.92,measured,2022-05,Annexure-I,99
+,Bijapur,SINDGI,Devanagao,Unconfined,8.95,measured,2022-05,Annexure-I,99
+,Bijapur,SINDGI,Hanchali,Unconfined,8.5,measured,2022-05,Annexure-I,99
+,Bijapur,SINDGI,Kannolli,Unconfined,10.3,measured,2022-05,Annexure-I,99
+,Bijapur,SINDGI,Korhalli,Unconfined,5.99,measured,2022-05,Annexure-I,99
+,Bijapur,SINDGI,Mortgi,Unconfined,5.86,measured,2022-05,Annexure-I,99
+,Bijapur,SINDGI,Pettepur,Unconfined,5.35,measured,2022-05,Annexure-I,99
+,Bijapur,SINDGI,Rampura,Unconfined,8.83,measured,2022-05,Annexure-I,99
+,Bijapur,SINDGI,Sindgi 1,Unconfined,4.81,measured,2022-05,Annexure-I,99
+,Bijapur,SINDGI,Vibhutihalli,Unconfined,4.17,measured,2022-05,Annexure-I,99
+,Bijapur,SINDGI,Yankanchi,Unconfined,4.61,measured,2022-05,Annexure-I,99
+,Chamarajanagar,CHAMARAJANAGAR,Chamarajanagar,Semi Confined,12.25,measured,2022-05,Annexure-I,99
+,Chamarajanagar,CHAMARAJANAGAR,Santemarenahalli,Semi Confined,9.6,measured,2022-05,Annexure-I,99
+,Chamarajanagar,Gundlupet,Begur,Unconfined,1.99,measured,2022-05,Annexure-I,99
+,Chamarajanagar,Gundlupet,Devalapur,Unconfined,1.75,measured,2022-05,Annexure-I,99
+,Chamarajanagar,GUNDLUPET,Gundlupet,Semi Confined,40.1,measured,2022-05,Annexure-I,99
+,Chamarajanagar,Gundlupet,Honnegowdanahalli,Unconfined,4.1,measured,2022-05,Annexure-I,99
+,Chamarajanagar,Gundlupet,Kekan Halla,Unconfined,2.5,measured,2022-05,Annexure-I,99
+,Chamarajanagar,Gundlupet,Kurubarahundi,Unconfined,2.05,measured,2022-05,Annexure-I,99
+,Chamarajanagar,Gundlupet,Maddur1,Unconfined,1.35,measured,2022-05,Annexure-I,99
+,Chamarajanagar,Kollegal,Hanur,Unconfined,8.0,measured,2022-05,Annexure-I,99
+,Chamarajanagar,KOLLEGAL,Kollegal,Semi Confined,5.9,measured,2022-05,Annexure-I,99
+,Chamarajanagar,Kollegal,Kombutuki,Unconfined,1.69,measured,2022-05,Annexure-I,99
+,Chamarajanagar,Kollegal,Kunthur,Unconfined,2.78,measured,2022-05,Annexure-I,99
+,Chamarajanagar,Kollegal,Kurubaradoddi,Unconfined,0.6,measured,2022-05,Annexure-I,99
+,Chamarajanagar,Kollegal,Mahadeshwarabetta,Unconfined,3.18,measured,2022-05,Annexure-I,99
+,Chamarajanagar,Kollegal,Metitiruvu,Unconfined,5.23,measured,2022-05,Annexure-I,99
+,Chamarajanagar,KOLLEGAL,Mudhuvanahalli,Unconfined,0.94,measured,2022-05,Annexure-I,100
+,Chamarajanagar,Kollegal,Ramapura,Unconfined,0.9,measured,2022-05,Annexure-I,100
+,Chamarajanagar,Kollegal,Thagarapura,Unconfined,0.73,measured,2022-05,Annexure-I,100
+,Chamarajanagar,Kollegal,Uttaballi,Unconfined,5.7,measured,2022-05,Annexure-I,100
+,Chamarajanagar,YELANDUR,Agara,Unconfined,3.18,measured,2022-05,Annexure-I,100
+,Chamarajanagar,Yelandur,Maddur,Unconfined,4.8,measured,2022-05,Annexure-I,100
+,Chamarajanagar,YELANDUR,Yelandur,Semi Confined,3.53,measured,2022-05,Annexure-I,100
+,Chamarajanagar,Yelandur,Yeriyuru,Unconfined,3.15,measured,2022-05,Annexure-I,100
+,CHIKBALLAPUR,BAGEPALLI,Gortipalli Naquim Ow,Semi Confined,7.5,measured,2022-05,Annexure-I,100
+,CHIKBALLAPUR,CHIKBALLAPUR,Gudibandeii,Unconfined,1.55,measured,2022-05,Annexure-I,100
+,CHIKBALLAPUR,CHIKBALLAPUR,Nandi,Semi Confined,28.8,measured,2022-05,Annexure-I,100
+,CHIKBALLAPUR,CHINTAMANI,Chintamani,Semi Confined,1.85,measured,2022-05,Annexure-I,100
+,CHIKBALLAPUR,CHINTAMANI,Chintamani A,Unconfined,1.14,measured,2022-05,Annexure-I,100
+,CHIKBALLAPUR,CHINTAMANI,Doddaganjur NAQUIM,Semi Confined,30.1,measured,2022-05,Annexure-I,100
+,CHIKBALLAPUR,CHINTAMANI,Gajahalli,Unconfined,0.85,measured,2022-05,Annexure-I,100
+,CHIKBALLAPUR,CHINTAMANI,Kuruburu,Semi Confined,15.87,measured,2022-05,Annexure-I,100
+,CHIKBALLAPUR,CHINTAMANI,Murugamalla,Unconfined,1.2,measured,2022-05,Annexure-I,100
+,CHIKBALLAPUR,CHINTAMANI,Upparpet,Unconfined,3.37,measured,2022-05,Annexure-I,100
+,CHIKBALLAPUR,GAURIBIDANUR,Bevinahalli,Unconfined,8.5,measured,2022-05,Annexure-I,100
+,CHIKBALLAPUR,GAURIBIDANUR,Gauribidanur,Semi Confined,19.64,measured,2022-05,Annexure-I,100
+,CHIKBALLAPUR,GAURIBIDANUR,Hampasandra,Semi Confined,26.94,measured,2022-05,Annexure-I,100
+,CHIKBALLAPUR,GAURIBIDANUR,Hampasandra,Unconfined,2.07,measured,2022-05,Annexure-I,100
+,CHIKBALLAPUR,GAURIBIDANUR,Kondavalahalli,Semi Confined,20.65,measured,2022-05,Annexure-I,100
+,CHIKBALLAPUR,GAURIBIDANUR,Manchenahalli,Semi Confined,9.04,measured,2022-05,Annexure-I,100
+,CHIKBALLAPUR,GAURIBIDANUR,Namagondlu,Unconfined,1.96,measured,2022-05,Annexure-I,100
+,CHIKBALLAPUR,GAURIBIDANUR,Pura,Unconfined,1.68,measured,2022-05,Annexure-I,100
+,CHIKBALLAPUR,GAURIBIDANUR,Vidhuraswath,Semi Confined,5.53,measured,2022-05,Annexure-I,100
+,Chikmagalur,Chikkamagalur,Aladagudde,Unconfined,4.55,measured,2022-05,Annexure-I,100
+,Chikmagalur,Chikkamagalur,Aldur,Unconfined,16.2,measured,2022-05,Annexure-I,100
+,Chikmagalur,Chikkamagalur,Bannur_CKM,Unconfined,2.16,measured,2022-05,Annexure-I,100
+,Chikmagalur,Chikkamagalur,Chikkamagalur Town,Unconfined,2.05,measured,2022-05,Annexure-I,100
+,Chikmagalur,Chikkamagalur,Gori Gundi,Unconfined,5.73,measured,2022-05,Annexure-I,100
+,Chikmagalur,Chikkamagalur,Handi,Unconfined,6.1,measured,2022-05,Annexure-I,100
+,Chikmagalur,Chikkamagalur,Hukkunda,Unconfined,3.25,measured,2022-05,Annexure-I,100
+,Chikmagalur,Chikkamagalur,Hunsehalli,Unconfined,4.7,measured,2022-05,Annexure-I,100
+,Chikmagalur,Chikkamagalur,Kanati,Unconfined,1.58,measured,2022-05,Annexure-I,100
+,Chikmagalur,Chikkamagalur,Karthikere,Unconfined,1.55,measured,2022-05,Annexure-I,100
+,Chikmagalur,Chikkamagalur,Kooduvalli,Unconfined,8.9,measured,2022-05,Annexure-I,100
+,Chikmagalur,Chikkamagalur,Muthinakoppa,Unconfined,2.96,measured,2022-05,Annexure-I,100
+,Chikmagalur,Chikkamagalur,Thali Halla,Unconfined,6.4,measured,2022-05,Annexure-I,100
+,Chikmagalur,Chikkamagalur,Uppalli,Unconfined,12.25,measured,2022-05,Annexure-I,100
+,Chikmagalur,Chikkamagalur,Vasthare,Unconfined,5.75,measured,2022-05,Annexure-I,100
+,Chikmagalur,CHIKMAGALUR,Chikmagalur,Semi Confined,1.48,measured,2022-05,Annexure-I,101
+,Chikmagalur,CHIKMAGALUR,Chikmagalur Town,Unconfined,2.05,measured,2022-05,Annexure-I,101
+,Chikmagalur,CHIKMAGALUR,Kadubugere,Unconfined,7.33,measured,2022-05,Annexure-I,101
+,Chikmagalur,Kadur,Antharagatta,Unconfined,4.54,measured,2022-05,Annexure-I,101
+,Chikmagalur,Kadur,Hirenallur,Unconfined,1.5,measured,2022-05,Annexure-I,101
+,Chikmagalur,Kadur,Machcheri,Unconfined,2.2,measured,2022-05,Annexure-I,101
+,Chikmagalur,Kadur,Mallidevihalli,Unconfined,2.15,measured,2022-05,Annexure-I,101
+,Chikmagalur,Koppa,Agalegundi,Unconfined,9.3,measured,2022-05,Annexure-I,101
+,Chikmagalur,Koppa,Hariharapura,Unconfined,8.1,measured,2022-05,Annexure-I,101
+,Chikmagalur,Koppa,Herur,Unconfined,7.3,measured,2022-05,Annexure-I,101
+,Chikmagalur,Koppa,Jayapura,Unconfined,8.2,measured,2022-05,Annexure-I,101
+,Chikmagalur,Koppa,Kalanaikana Katte,Unconfined,9.9,measured,2022-05,Annexure-I,101
+,Chikmagalur,KOPPA,Koppa A,Unconfined,6.6,measured,2022-05,Annexure-I,101
+,Chikmagalur,Koppa,Kudregudi,Unconfined,7.79,measured,2022-05,Annexure-I,101
+,Chikmagalur,Koppa,Menase,Unconfined,11.17,measured,2022-05,Annexure-I,101
+,Chikmagalur,Koppa,Nalluru,Unconfined,4.4,measured,2022-05,Annexure-I,101
+,Chikmagalur,Koppa,Narve,Unconfined,5.77,measured,2022-05,Annexure-I,101
+,Chikmagalur,Koppa,Samse,Unconfined,5.72,measured,2022-05,Annexure-I,101
+,Chikmagalur,Koppa,Shanuvalli,Unconfined,3.45,measured,2022-05,Annexure-I,101
+,Chikmagalur,Mudigere,Balehole,Unconfined,8.23,measured,2022-05,Annexure-I,101
+,Chikmagalur,Mudigere,Bankal,Unconfined,5.1,measured,2022-05,Annexure-I,101
+,Chikmagalur,Mudigere,Bidaralli,Unconfined,10.75,measured,2022-05,Annexure-I,101
+,Chikmagalur,MUDIGERE,Bijuvalli,Semi Confined,3.37,measured,2022-05,Annexure-I,101
+,Chikmagalur,Mudigere,Bilagula,Unconfined,5.5,measured,2022-05,Annexure-I,101
+,Chikmagalur,Mudigere,Chackmakki,Unconfined,3.9,measured,2022-05,Annexure-I,101
+,Chikmagalur,Mudigere,Halemudigere,Unconfined,2.26,measured,2022-05,Annexure-I,101
+,Chikmagalur,Mudigere,Hire Bile,Unconfined,5.1,measured,2022-05,Annexure-I,101
+,Chikmagalur,Mudigere,Horatti,Unconfined,3.95,measured,2022-05,Annexure-I,101
+,Chikmagalur,Mudigere,Hornad,Unconfined,4.4,measured,2022-05,Annexure-I,101
+,Chikmagalur,Mudigere,Jannapura,Unconfined,11.18,measured,2022-05,Annexure-I,101
+,Chikmagalur,Mudigere,Jn Bylu,Unconfined,7.4,measured,2022-05,Annexure-I,101
+,Chikmagalur,Mudigere,Kalasa,Unconfined,2.76,measured,2022-05,Annexure-I,101
+,Chikmagalur,Mudigere,Kottigehara,Unconfined,2.01,measured,2022-05,Annexure-I,101
+,Chikmagalur,Mudigere,Mudigere Hand Post,Unconfined,11.65,measured,2022-05,Annexure-I,101
+,Chikmagalur,Mudigere,Thodlu Karegadde,Unconfined,3.71,measured,2022-05,Annexure-I,101
+,Chikmagalur,Narasimharajapura,Alehalli,Unconfined,8.3,measured,2022-05,Annexure-I,101
+,Chikmagalur,Narasimharajapura,Balehonnur,Unconfined,8.46,measured,2022-05,Annexure-I,101
+,Chikmagalur,Narasimharajapura,Bannur_NR PURA,Unconfined,2.08,measured,2022-05,Annexure-I,101
+,Chikmagalur,Narasimharajapura,Jakkanakki,Unconfined,6.4,measured,2022-05,Annexure-I,101
+,Chikmagalur,Narasimharajapura,Magundi,Unconfined,3.95,measured,2022-05,Annexure-I,101
+,Chikmagalur,Narasimharajapura,Mahalgodu,Unconfined,1.42,measured,2022-05,Annexure-I,101
+,Chikmagalur,Narasimharajapura,Moodvagilu,Unconfined,3.7,measured,2022-05,Annexure-I,101
+,Chikmagalur,NARASIMHARAJAPURA,Muthinakoppa,Unconfined,2.96,measured,2022-05,Annexure-I,102
+,Chikmagalur,Narasimharajapura,Narasimharajapura,Unconfined,3.7,measured,2022-05,Annexure-I,102
+,Chikmagalur,Narasimharajapura,Seegodu,Unconfined,11.05,measured,2022-05,Annexure-I,102
+,Chikmagalur,Narasimharajapura,Shanakarapura,Unconfined,7.56,measured,2022-05,Annexure-I,102
+,Chikmagalur,Narasimharajapura,Shettikoppa,Unconfined,7.6,measured,2022-05,Annexure-I,102
+,Chikmagalur,Narasimharajapura,Sutha Echeker,Unconfined,11.0,measured,2022-05,Annexure-I,102
+,Chikmagalur,Sringeri,Begaru,Unconfined,12.13,measured,2022-05,Annexure-I,102
+,Chikmagalur,Sringeri,Holekoppa,Unconfined,9.9,measured,2022-05,Annexure-I,102
+,Chikmagalur,Sringeri,Sringeri1,Unconfined,6.18,measured,2022-05,Annexure-I,102
+,Chikmagalur,Tarikere,Ajjampur (A),Unconfined,8.11,measured,2022-05,Annexure-I,102
+,Chikmagalur,TARIKERE,Ajjampura,Semi Confined,9.61,measured,2022-05,Annexure-I,102
+,Chikmagalur,Tarikere,Bhavikere,Unconfined,8.4,measured,2022-05,Annexure-I,102
+,Chikmagalur,Tarikere,Chennapura,Unconfined,3.34,measured,2022-05,Annexure-I,102
+,Chikmagalur,Tarikere,Lakkavalli,Unconfined,1.75,measured,2022-05,Annexure-I,102
+,Chikmagalur,Tarikere,Rangenahalli,Unconfined,0.6,measured,2022-05,Annexure-I,102
+,Chikmagalur,Tarikere,Seethupura,Unconfined,0.65,measured,2022-05,Annexure-I,102
+,Chikmagalur,Tarikere,Shivane R.S,Unconfined,7.35,measured,2022-05,Annexure-I,102
+,Chikmagalur,Tarikere,Sokke,Unconfined,8.4,measured,2022-05,Annexure-I,102
+,Chikmagalur,Tarikere,Tarikere,Unconfined,5.1,measured,2022-05,Annexure-I,102
+,Chitradurga,CHALLAKERE,Dodda chelur,Semi Confined,6.95,measured,2022-05,Annexure-I,102
+,Chitradurga,CHALLAKERE,Nayakanahatti,Semi Confined,21.2,measured,2022-05,Annexure-I,102
+,Chitradurga,CHALLAKERE,Sanikere,Semi Confined,11.4,measured,2022-05,Annexure-I,102
+,Chitradurga,CHITRADURGA,Biruvara,Unconfined,10.71,measured,2022-05,Annexure-I,102
+,Chitradurga,CHITRADURGA,Bommenanahalli,Unconfined,1.01,measured,2022-05,Annexure-I,102
+,Chitradurga,Chitradurga,Chitradurga1,Unconfined,0.77,measured,2022-05,Annexure-I,102
+,Chitradurga,CHITRADURGA,Hampanur,Unconfined,4.01,measured,2022-05,Annexure-I,102
+,Chitradurga,CHITRADURGA,Kallavvana Nagatihalli,Unconfined,3.65,measured,2022-05,Annexure-I,102
+,Chitradurga,CHITRADURGA,Pandarahalli pz,Semi Confined,17.7,measured,2022-05,Annexure-I,102
+,Chitradurga,CHITRADURGA,Siddapura,Unconfined,17.64,measured,2022-05,Annexure-I,102
+,Chitradurga,Chitradurga,Siddavvanadurga,Unconfined,1.0,measured,2022-05,Annexure-I,102
+,Chitradurga,Chitradurga,Vijapura,Unconfined,15.45,measured,2022-05,Annexure-I,102
+,Chitradurga,Hiriyur,Hartikote,Unconfined,3.41,measured,2022-05,Annexure-I,102
+,Chitradurga,Hiriyur,Maskal,Unconfined,4.2,measured,2022-05,Annexure-I,102
+,Chitradurga,Hiriyur,Vaddikere,Unconfined,4.5,measured,2022-05,Annexure-I,102
+,Chitradurga,HIRIYUR,Vanivilaspura,Semi Confined,18.7,measured,2022-05,Annexure-I,102
+,Chitradurga,HOLALKERE,Arehalli,Unconfined,2.02,measured,2022-05,Annexure-I,102
+,Chitradurga,HOLALKERE,Dogganal,Unconfined,1.27,measured,2022-05,Annexure-I,102
+,Chitradurga,HOLALKERE,Dummi,Unconfined,0.78,measured,2022-05,Annexure-I,102
+,Chitradurga,HOLALKERE,Gangasamudra,Unconfined,2.45,measured,2022-05,Annexure-I,102
+,Chitradurga,HOLALKERE,Hanumali,Unconfined,3.31,measured,2022-05,Annexure-I,102
+,Chitradurga,HOLALKERE,Holalkere PZ,Semi Confined,6.59,measured,2022-05,Annexure-I,102
+,Chitradurga,HOLALKERE,Muttuguduru,Unconfined,11.37,measured,2022-05,Annexure-I,102
+,Chitradurga,HOLALKERE,Muttuguduru,Unconfined,10.48,measured,2022-05,Annexure-I,103
+,Chitradurga,HOLALKERE,R.Nulenur,Unconfined,2.38,measured,2022-05,Annexure-I,103
+,Chitradurga,HOLALKERE,Ramgiri,Unconfined,2.02,measured,2022-05,Annexure-I,103
+,Chitradurga,HOLALKERE,Talikatte,Unconfined,11.2,measured,2022-05,Annexure-I,103
+,Chitradurga,Holalkere,Talya,Unconfined,0.68,measured,2022-05,Annexure-I,103
+,Chitradurga,Hosadurga,Belagur,Unconfined,2.23,measured,2022-05,Annexure-I,103
+,Chitradurga,Hosadurga,Garaga,Unconfined,2.82,measured,2022-05,Annexure-I,103
+,Chitradurga,Hosadurga,Gutikatte,Unconfined,4.63,measured,2022-05,Annexure-I,103
+,Chitradurga,Hosadurga,Hosadurga Rs,Unconfined,5.85,measured,2022-05,Annexure-I,103
+,Chitradurga,HOSDURGA,Kumminghatta,Unconfined,4.3,measured,2022-05,Annexure-I,103
+,Chitradurga,MOLAKALMURU,Asoka Siddapura,Semi Confined,7.75,measured,2022-05,Annexure-I,103
+,Chitradurga,Molakalmuru,Molakalmuru,Unconfined,2.03,measured,2022-05,Annexure-I,103
+,Chitradurga,MOLAKALMURU,Rayapura,Semi Confined,10.94,measured,2022-05,Annexure-I,103
+,Dakshin Kannada,BANTVAL,Bantwal,Semi Confined,13.28,measured,2022-05,Annexure-I,103
+,Dakshin Kannada,BANTVAL,Bantwal1,Unconfined,3.5,measured,2022-05,Annexure-I,103
+,Dakshin Kannada,BANTVAL,Bollangadi,Unconfined,6.45,measured,2022-05,Annexure-I,103
+,Dakshin Kannada,BANTVAL,Kabaka,Unconfined,7.45,measured,2022-05,Annexure-I,103
+,Dakshin Kannada,BANTVAL,Kaval Maduru,Unconfined,8.05,measured,2022-05,Annexure-I,103
+,Dakshin Kannada,BANTVAL,Kelagina Ogga,Unconfined,5.17,measured,2022-05,Annexure-I,103
+,Dakshin Kannada,BANTVAL,Kudupadaru,Unconfined,8.25,measured,2022-05,Annexure-I,103
+,Dakshin Kannada,BANTVAL,Mani,Unconfined,9.21,measured,2022-05,Annexure-I,103
+,Dakshin Kannada,BANTVAL,Mittur,Unconfined,4.72,measured,2022-05,Annexure-I,103
+,Dakshin Kannada,BANTVAL,Nayanaadu,Unconfined,7.3,measured,2022-05,Annexure-I,103
+,Dakshin Kannada,BANTVAL,Punjalkatte,Unconfined,13.7,measured,2022-05,Annexure-I,103
+,Dakshin Kannada,BANTVAL,St.Perne,Unconfined,5.16,measured,2022-05,Annexure-I,103
+,Dakshin Kannada,BANTVAL,Subashnagar,Unconfined,5.85,measured,2022-05,Annexure-I,103
+,Dakshin Kannada,BANTVAL,Ukkuda,Unconfined,5.52,measured,2022-05,Annexure-I,103
+,Dakshin Kannada,BANTVAL,Veerkambha,Unconfined,6.75,measured,2022-05,Annexure-I,103
+,Dakshin Kannada,BANTVAL,Vittal,Semi Confined,26.3,measured,2022-05,Annexure-I,103
+,Dakshin Kannada,BANTVAL,Vittala,Unconfined,8.07,measured,2022-05,Annexure-I,103
+,Dakshin Kannada,BELTANGADI,Adantadka,Unconfined,7.4,measured,2022-05,Annexure-I,103
+,Dakshin Kannada,BELTANGADI,Alandangadi,Unconfined,7.4,measured,2022-05,Annexure-I,103
+,Dakshin Kannada,BELTANGADI,Arasa Katte,Unconfined,5.05,measured,2022-05,Annexure-I,103
+,Dakshin Kannada,BELTANGADI,Badanaje Macharu,Unconfined,10.85,measured,2022-05,Annexure-I,103
+,Dakshin Kannada,BELTANGADI,Ballalu,Unconfined,7.12,measured,2022-05,Annexure-I,103
+,Dakshin Kannada,BELTANGADI,Belthangadi,Semi Confined,6.86,measured,2022-05,Annexure-I,103
+,Dakshin Kannada,BELTANGADI,Belthangadi1,Unconfined,6.76,measured,2022-05,Annexure-I,103
+,Dakshin Kannada,BELTANGADI,Kokkada,Unconfined,7.01,measured,2022-05,Annexure-I,103
+,Dakshin Kannada,BELTANGADI,Kukeadi,Unconfined,6.95,measured,2022-05,Annexure-I,103
+,Dakshin Kannada,BELTANGADI,Nidigal,Unconfined,4.93,measured,2022-05,Annexure-I,103
+,Dakshin Kannada,BELTANGADI,Nidle,Unconfined,10.71,measured,2022-05,Annexure-I,103
+,Dakshin Kannada,BELTANGADI,Padangadi,Unconfined,9.57,measured,2022-05,Annexure-I,103
+,Dakshin Kannada,BELTANGADI,Surya,Unconfined,3.82,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,BELTANGADI,Ujire,Unconfined,3.25,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,BELTANGADI,Venur,Unconfined,9.46,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,MANGALORE,Adyar,Unconfined,1.95,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,MANGALORE,Bajpe,Unconfined,5.95,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,MANGALORE,Bala,Unconfined,10.55,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,MANGALORE,Bore Gudde,Unconfined,10.65,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,MANGALORE,Elathur,Unconfined,7.7,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,MANGALORE,Garadi,Unconfined,10.44,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,MANGALORE,Haleangady,Unconfined,6.42,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,MANGALORE,Kateel,Unconfined,2.36,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,MANGALORE,Kenchanekere,Unconfined,6.1,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,MANGALORE,Kenjaru,Unconfined,6.08,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,MANGALORE,Kesargadde,Unconfined,1.93,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,MANGALORE,Kinni Kambala,Unconfined,11.2,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,MANGALORE,Kinnigoli,Unconfined,14.77,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,MANGALORE,Kotekar Dw,Unconfined,13.4,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,MANGALORE,Mangalore Attawara,Unconfined,7.26,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,MANGALORE,Mangalore Bandaru,Unconfined,1.42,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,MANGALORE,Mangalore Jappu,Unconfined,9.15,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,MANGALORE,Mangalore Kankanadi,Unconfined,2.55,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,MANGALORE,Mangalore Lalbhag,Unconfined,11.99,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,MANGALORE,Mukka,Unconfined,7.3,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,MANGALORE,MUlki,Semi Confined,12.73,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,MANGALORE,Mulki,Unconfined,11.33,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,MANGALORE,Padil,Unconfined,11.15,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,MANGALORE,Pakshikere,Unconfined,7.89,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,MANGALORE,Panambur Beach,Unconfined,2.0,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,MANGALORE,Perar,Unconfined,12.69,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,MANGALORE,Permude,Unconfined,12.75,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,MANGALORE,Shirtadi,Unconfined,10.8,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,MANGALORE,Surathkal,Unconfined,9.11,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,MANGALORE,Talapady,Unconfined,10.21,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,MANGALORE,Ullal Beach,Unconfined,3.9,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,PUTTUR,Addhole,Unconfined,4.27,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,PUTTUR,Alankar,Unconfined,4.35,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,PUTTUR,Athoor Koyla,Unconfined,7.82,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,PUTTUR,Balya,Unconfined,4.89,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,PUTTUR,Bantra(Mardala),Unconfined,3.79,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,PUTTUR,Bilinele,Unconfined,4.77,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,PUTTUR,Gerukatte,Unconfined,8.82,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,PUTTUR,Kadaba,Unconfined,5.58,measured,2022-05,Annexure-I,104
+,Dakshin Kannada,PUTTUR,Kalleri,Unconfined,10.3,measured,2022-05,Annexure-I,105
+,Dakshin Kannada,PUTTUR,Kanayana,Unconfined,10.06,measured,2022-05,Annexure-I,105
+,Dakshin Kannada,PUTTUR,Kavu,Unconfined,3.74,measured,2022-05,Annexure-I,105
+,Dakshin Kannada,PUTTUR,Kudtha Muger,Unconfined,4.88,measured,2022-05,Annexure-I,105
+,Dakshin Kannada,PUTTUR,Madavu,Unconfined,8.08,measured,2022-05,Annexure-I,105
+,Dakshin Kannada,PUTTUR,Mannikara,Unconfined,5.39,measured,2022-05,Annexure-I,105
+,Dakshin Kannada,PUTTUR,Nellyadi,Unconfined,2.99,measured,2022-05,Annexure-I,105
+,Dakshin Kannada,PUTTUR,Puttur,Semi Confined,18.22,measured,2022-05,Annexure-I,105
+,Dakshin Kannada,PUTTUR,Puttur1,Unconfined,11.93,measured,2022-05,Annexure-I,105
+,Dakshin Kannada,PUTTUR,Shiradi,Semi Confined,7.04,measured,2022-05,Annexure-I,105
+,Dakshin Kannada,PUTTUR,Shiradi A,Unconfined,8.55,measured,2022-05,Annexure-I,105
+,Dakshin Kannada,PUTTUR,Sunkadakatte Ithoor,Unconfined,6.5,measured,2022-05,Annexure-I,105
+,Dakshin Kannada,PUTTUR,Thingaldi,Unconfined,7.6,measured,2022-05,Annexure-I,105
+,Dakshin Kannada,SULYA,Ajjavra,Unconfined,6.3,measured,2022-05,Annexure-I,105
+,Dakshin Kannada,SULYA,Allety Mevinadka,Unconfined,6.65,measured,2022-05,Annexure-I,105
+,Dakshin Kannada,SULYA,Aranthodu,Unconfined,12.26,measured,2022-05,Annexure-I,105
+,Dakshin Kannada,SULYA,Balpa,Unconfined,6.85,measured,2022-05,Annexure-I,105
+,Dakshin Kannada,SULYA,Bellare,Unconfined,14.85,measured,2022-05,Annexure-I,105
+,Dakshin Kannada,SULYA,Chowdichar-A,Unconfined,8.14,measured,2022-05,Annexure-I,105
+,Dakshin Kannada,SULYA,Goonadka,Unconfined,4.43,measured,2022-05,Annexure-I,105
+,Dakshin Kannada,SULYA,Jalsur,Unconfined,6.34,measured,2022-05,Annexure-I,105
+,Dakshin Kannada,SULYA,Kallugundi,Unconfined,1.98,measured,2022-05,Annexure-I,105
+,Dakshin Kannada,SULYA,Sampaje,Unconfined,4.72,measured,2022-05,Annexure-I,105
+,Dakshin Kannada,SULYA,Sonnagiri,Unconfined,7.15,measured,2022-05,Annexure-I,105
+,Dakshin Kannada,SULYA,Subramanya,Semi Confined,6.9,measured,2022-05,Annexure-I,105
+,Dakshin Kannada,SULYA,Subramanya1,Unconfined,4.9,measured,2022-05,Annexure-I,105
+,Dakshin Kannada,SULYA,Sullia,Unconfined,3.41,measured,2022-05,Annexure-I,105
+,Dakshin Kannada,SULYA,Sulya,Semi Confined,12.62,measured,2022-05,Annexure-I,105
+,Dakshin Kannada,SULYA,Yenekal,Unconfined,5.95,measured,2022-05,Annexure-I,105
+,Davanagere,Channagiri,Arasinaghatta,Unconfined,0.75,measured,2022-05,Annexure-I,105
+,Davanagere,Channagiri,Basavapatna,Unconfined,0.15,measured,2022-05,Annexure-I,105
+,Davanagere,Channagiri,Belliganudu,Unconfined,1.35,measured,2022-05,Annexure-I,105
+,Davanagere,Channagiri,Daginakatte,Unconfined,1.33,measured,2022-05,Annexure-I,105
+,Davanagere,Channagiri,Hire Kogalur,Unconfined,0.71,measured,2022-05,Annexure-I,105
+,Davanagere,Channagiri,Kanavabelichi,Unconfined,1.35,measured,2022-05,Annexure-I,105
+,Davanagere,Channagiri,Mathi,Unconfined,4.26,measured,2022-05,Annexure-I,105
+,Davanagere,Channagiri,Nallur,Unconfined,1.67,measured,2022-05,Annexure-I,105
+,Davanagere,Channagiri,Santhebennur,Unconfined,1.65,measured,2022-05,Annexure-I,105
+,Davanagere,Channagiri,Thyavanige,Unconfined,1.12,measured,2022-05,Annexure-I,105
+,Davanagere,Channagiri,Venkateshwara Camp,Unconfined,1.1,measured,2022-05,Annexure-I,105
+,Davanagere,Davanagere,Attigere,Unconfined,2.37,measured,2022-05,Annexure-I,105
+,Davanagere,Davanagere,Avaragere,Unconfined,3.26,measured,2022-05,Annexure-I,105
+,Davanagere,Davanagere,B.Kalpanahalli,Unconfined,2.2,measured,2022-05,Annexure-I,106
+,Davanagere,Davanagere,Bada,Unconfined,0.9,measured,2022-05,Annexure-I,106
+,Davanagere,Davanagere,Belavanoor,Unconfined,1.93,measured,2022-05,Annexure-I,106
+,Davanagere,Davanagere,Chikka togalgere,Unconfined,0.9,measured,2022-05,Annexure-I,106
+,Davanagere,Davanagere,Davangere A,Unconfined,13.1,measured,2022-05,Annexure-I,106
+,Davanagere,Davanagere,Doddabathi,Unconfined,3.32,measured,2022-05,Annexure-I,106
+,Davanagere,Davanagere,Gopanal,Unconfined,2.99,measured,2022-05,Annexure-I,106
+,Davanagere,Davanagere,Hadadi,Unconfined,0.65,measured,2022-05,Annexure-I,106
+,Davanagere,DAVANAGERE,Hebbalu,Semi Confined,2.0,measured,2022-05,Annexure-I,106
+,Davanagere,Davanagere,Kabbala,Unconfined,1.95,measured,2022-05,Annexure-I,106
+,Davanagere,Davanagere,Kukuvada,Unconfined,1.8,measured,2022-05,Annexure-I,106
+,Davanagere,Davanagere,Kuntapalanahalli,Unconfined,1.15,measured,2022-05,Annexure-I,106
+,Davanagere,Davanagere,Kurki,Unconfined,0.7,measured,2022-05,Annexure-I,106
+,Davanagere,Davanagere,Lingadahalli,Unconfined,5.75,measured,2022-05,Annexure-I,106
+,Davanagere,Davanagere,Lokikere,Unconfined,7.5,measured,2022-05,Annexure-I,106
+,Davanagere,Davanagere,Mangammanahalli,Unconfined,2.46,measured,2022-05,Annexure-I,106
+,Davanagere,Davanagere,Ramagondnahalli,Unconfined,1.51,measured,2022-05,Annexure-I,106
+,Davanagere,Davanagere,Shiramagondahalli,Unconfined,1.23,measured,2022-05,Annexure-I,106
+,Davanagere,Davanagere,Tanegere,Unconfined,0.8,measured,2022-05,Annexure-I,106
+,Davanagere,Davanagere,Tolehunse,Unconfined,0.79,measured,2022-05,Annexure-I,106
+,Davanagere,Harapanahalli,Anantanahalli,Unconfined,2.64,measured,2022-05,Annexure-I,106
+,Davanagere,Harapanahalli,Arsikeri,Unconfined,2.0,measured,2022-05,Annexure-I,106
+,Davanagere,Harapanahalli,Chikkahalli,Unconfined,4.97,measured,2022-05,Annexure-I,106
+,Davanagere,Harapanahalli,Devarathimmalapura,Unconfined,7.78,measured,2022-05,Annexure-I,106
+,Davanagere,HARAPANAHALLI,Halavagal,Semi Confined,2.9,measured,2022-05,Annexure-I,106
+,Davanagere,HARAPANAHALLI,Harakanalu,Semi Confined,0.88,measured,2022-05,Annexure-I,106
+,Davanagere,Harapanahalli,Harakanalu-Dw,Unconfined,0.88,measured,2022-05,Annexure-I,106
+,Davanagere,HARAPANAHALLI,Harapanahalli,Semi Confined,6.1,measured,2022-05,Annexure-I,106
+,Davanagere,Harapanahalli,Harapanahalli1,Unconfined,1.0,measured,2022-05,Annexure-I,106
+,Davanagere,Harapanahalli,Ittigudi,Unconfined,10.85,measured,2022-05,Annexure-I,106
+,Davanagere,Harapanahalli,Neelagunda,Unconfined,5.22,measured,2022-05,Annexure-I,106
+,Davanagere,Harapanahalli,Nichapura,Unconfined,14.5,measured,2022-05,Annexure-I,106
+,Davanagere,Harihar,Bhanuvalli,Unconfined,1.47,measured,2022-05,Annexure-I,106
+,Davanagere,Harihar,Byaladahalli,Unconfined,0.57,measured,2022-05,Annexure-I,106
+,Davanagere,HARIHAR,Harihara Pz,Semi Confined,3.24,measured,2022-05,Annexure-I,106
+,Davanagere,Harihar,Kadaranayakanahalli,Unconfined,0.35,measured,2022-05,Annexure-I,106
+,Davanagere,Harihar,Malebennur,Unconfined,2.42,measured,2022-05,Annexure-I,106
+,Davanagere,Harihar,Nandi Tavare,Unconfined,0.9,measured,2022-05,Annexure-I,106
+,Davanagere,HARIHAR,Nandigudi,Semi Confined,2.68,measured,2022-05,Annexure-I,106
+,Davanagere,Harihar,Vasana,Unconfined,1.33,measured,2022-05,Annexure-I,106
+,Davanagere,Honnali,G.Bevinahalli,Unconfined,5.8,measured,2022-05,Annexure-I,106
+,Davanagere,Honnali,Haliyal,Unconfined,1.06,measured,2022-05,Annexure-I,106
+,Davanagere,Honnali,Hindasaghatta,Unconfined,3.55,measured,2022-05,Annexure-I,107
+,Davanagere,HONNALI,Honnali,Semi Confined,4.55,measured,2022-05,Annexure-I,107
+,Davanagere,Honnali,Honnali,Unconfined,4.55,measured,2022-05,Annexure-I,107
+,Davanagere,Honnali,Kammaraghatta,Unconfined,3.26,measured,2022-05,Annexure-I,107
+,Dharwad,DHARWAD,Amminabhavi,Unconfined,2.2,measured,2022-05,Annexure-I,107
+,Dharwad,DHARWAD,Dharwad A,Unconfined,3.17,measured,2022-05,Annexure-I,107
+,Dharwad,DHARWAD,Gummagola,Unconfined,6.45,measured,2022-05,Annexure-I,107
+,Dharwad,DHARWAD,Harobelavadi,Unconfined,4.13,measured,2022-05,Annexure-I,107
+,Dharwad,DHARWAD,Kadabaghatti,Unconfined,12.06,measured,2022-05,Annexure-I,107
+,Dharwad,DHARWAD,Kalgere,Unconfined,12.5,measured,2022-05,Annexure-I,107
+,Dharwad,DHARWAD,Mugad,Unconfined,1.88,measured,2022-05,Annexure-I,107
+,Dharwad,DHARWAD,Navalgund,Semi Confined,12.31,measured,2022-05,Annexure-I,107
+,Dharwad,DHARWAD,Prabhunagar,Unconfined,8.73,measured,2022-05,Annexure-I,107
+,Dharwad,DHARWAD,Tale Morab,Unconfined,2.51,measured,2022-05,Annexure-I,107
+,Dharwad,HUBLI,Adaragunj,Unconfined,9.19,measured,2022-05,Annexure-I,107
+,Dharwad,HUBLI,Bidnal,Unconfined,6.0,measured,2022-05,Annexure-I,107
+,Dharwad,HUBLI,Hebsur1,Unconfined,1.25,measured,2022-05,Annexure-I,107
+,Dharwad,HUBLI,Kunnur,Unconfined,1.26,measured,2022-05,Annexure-I,107
+,Dharwad,HUBLI,Sherewad A,Unconfined,1.78,measured,2022-05,Annexure-I,107
+,Dharwad,HUBLI,Sulla,Unconfined,10.76,measured,2022-05,Annexure-I,107
+,Dharwad,KALGHATGI,Devikop,Unconfined,4.47,measured,2022-05,Annexure-I,107
+,Dharwad,KALGHATGI,Kalaghatgi A,Unconfined,1.48,measured,2022-05,Annexure-I,107
+,Dharwad,KALGHATGI,Kalkurdi,Unconfined,0.95,measured,2022-05,Annexure-I,107
+,Dharwad,KALGHATGI,Saidur,Unconfined,3.65,measured,2022-05,Annexure-I,107
+,Dharwad,KUNDGOL,Gudgeri,Unconfined,6.5,measured,2022-05,Annexure-I,107
+,Dharwad,KUNDGOL,Kundgol,Unconfined,4.02,measured,2022-05,Annexure-I,107
+,Dharwad,NAVALGUND,Annigeri (A),Unconfined,1.2,measured,2022-05,Annexure-I,107
+,Dharwad,NAVALGUND,Basapur,Unconfined,13.81,measured,2022-05,Annexure-I,107
+,Dharwad,NAVALGUND,Morab,Unconfined,6.0,measured,2022-05,Annexure-I,107
+,Gadag,GADAG,Gadag,Unconfined,0.15,measured,2022-05,Annexure-I,107
+,Gadag,GADAG,Hirekoppa,Unconfined,8.09,measured,2022-05,Annexure-I,107
+,Gadag,GADAG,Hulkoti,Unconfined,1.53,measured,2022-05,Annexure-I,107
+,Gadag,GADAG,Lakkundi,Semi Confined,11.37,measured,2022-05,Annexure-I,107
+,Gadag,GADAG,Mudnagudi,Unconfined,1.77,measured,2022-05,Annexure-I,107
+,Gadag,MUNDARGI,Basavapur,Unconfined,6.4,measured,2022-05,Annexure-I,107
+,Gadag,MUNDARGI,Kalkeri A,Unconfined,2.17,measured,2022-05,Annexure-I,107
+,Gadag,MUNDARGI,Mundargi1,Unconfined,1.12,measured,2022-05,Annexure-I,107
+,Gadag,MUNDARGI,Viruppapur,Unconfined,3.14,measured,2022-05,Annexure-I,107
+,Gadag,NARGUND,Nargund1,Unconfined,9.84,measured,2022-05,Annexure-I,107
+,Gadag,RON,Belavaniki,Unconfined,4.8,measured,2022-05,Annexure-I,107
+,Gadag,RON,Belavanki,Semi Confined,16.85,measured,2022-05,Annexure-I,107
+,Gadag,RON,Dass Hadagali,Unconfined,9.97,measured,2022-05,Annexure-I,107
+,Gadag,RON,Hunagundi,Unconfined,7.52,measured,2022-05,Annexure-I,108
+,Gadag,RON,Naregal,Unconfined,17.06,measured,2022-05,Annexure-I,108
+,Gadag,SHIRHATTI,BElhatti,Unconfined,1.12,measured,2022-05,Annexure-I,108
+,Gadag,SHIRHATTI,Chabbi,Unconfined,4.07,measured,2022-05,Annexure-I,108
+,Gadag,SHIRHATTI,Gojanur,Unconfined,4.33,measured,2022-05,Annexure-I,108
+,Gadag,SHIRHATTI,Laxmeshwar A,Unconfined,3.61,measured,2022-05,Annexure-I,108
+,Gadag,SHIRHATTI,Magdi,Unconfined,3.92,measured,2022-05,Annexure-I,108
+,Gadag,SHIRHATTI,Ramgeri,Unconfined,3.67,measured,2022-05,Annexure-I,108
+,Gadag,SHIRHATTI,Shirhatti1,Unconfined,3.41,measured,2022-05,Annexure-I,108
+,Gulbarga,AFZALPUR,Afzalpur1,Unconfined,8.3,measured,2022-05,Annexure-I,108
+,Gulbarga,AFZALPUR,Bankalaga,Unconfined,8.0,measured,2022-05,Annexure-I,108
+,Gulbarga,AFZALPUR,Chinamgeri,Unconfined,5.7,measured,2022-05,Annexure-I,108
+,Gulbarga,AFZALPUR,Choudepur,Unconfined,6.75,measured,2022-05,Annexure-I,108
+,Gulbarga,AFZALPUR,Ghattarga,Unconfined,1.7,measured,2022-05,Annexure-I,108
+,Gulbarga,AFZALPUR,Gulbarga,Semi Confined,17.45,measured,2022-05,Annexure-I,108
+,Gulbarga,AFZALPUR,Hasdaugundi,Unconfined,6.35,measured,2022-05,Annexure-I,108
+,Gulbarga,AFZALPUR,Karajgi1,Unconfined,4.55,measured,2022-05,Annexure-I,108
+,Gulbarga,AFZALPUR,Mallabad,Unconfined,14.5,measured,2022-05,Annexure-I,108
+,Gulbarga,AFZALPUR,Mashal,Unconfined,8.79,measured,2022-05,Annexure-I,108
+,Gulbarga,AFZALPUR,New Diksangi,Semi Confined,11.44,measured,2022-05,Annexure-I,108
+,Gulbarga,ALAND,Battarga,Unconfined,5.85,measured,2022-05,Annexure-I,108
+,Gulbarga,ALAND,Belamagi,Unconfined,7.75,measured,2022-05,Annexure-I,108
+,Gulbarga,ALAND,Darga Sirur,Unconfined,3.63,measured,2022-05,Annexure-I,108
+,Gulbarga,ALAND,Gangapur(R.S),Unconfined,14.12,measured,2022-05,Annexure-I,108
+,Gulbarga,ALAND,Gobur Buzurg,Unconfined,11.49,measured,2022-05,Annexure-I,108
+,Gulbarga,ALAND,Hosahalli(gulburga),Unconfined,3.6,measured,2022-05,Annexure-I,108
+,Gulbarga,ALAND,Kadganchi,Semi Confined,15.0,measured,2022-05,Annexure-I,108
+,Gulbarga,ALAND,Kamalanagar,Unconfined,10.86,measured,2022-05,Annexure-I,108
+,Gulbarga,ALAND,Karahari,Unconfined,4.64,measured,2022-05,Annexure-I,108
+,Gulbarga,ALAND,Ladmugli,Unconfined,2.78,measured,2022-05,Annexure-I,108
+,Gulbarga,ALAND,Madanhipperga1,Unconfined,7.0,measured,2022-05,Annexure-I,108
+,Gulbarga,ALAND,Moga Buzurga,Unconfined,5.45,measured,2022-05,Annexure-I,108
+,Gulbarga,ALAND,Nimbala,Unconfined,14.55,measured,2022-05,Annexure-I,108
+,Gulbarga,ALAND,Nimbarga,Unconfined,7.55,measured,2022-05,Annexure-I,108
+,Gulbarga,ALAND,Salgar,Unconfined,2.45,measured,2022-05,Annexure-I,108
+,Gulbarga,CHINCHOLI,Ainapur1,Unconfined,10.4,measured,2022-05,Annexure-I,108
+,Gulbarga,CHINCHOLI,Chandapur,Semi Confined,14.95,measured,2022-05,Annexure-I,108
+,Gulbarga,CHINCHOLI,Chimanchode,Unconfined,3.66,measured,2022-05,Annexure-I,108
+,Gulbarga,CHINCHOLI,Chincholi,Unconfined,8.25,measured,2022-05,Annexure-I,108
+,Gulbarga,CHINCHOLI,Chitaguppa,Unconfined,18.6,measured,2022-05,Annexure-I,108
+,Gulbarga,CHINCHOLI,Kadli,Unconfined,4.01,measured,2022-05,Annexure-I,108
+,Gulbarga,CHINCHOLI,Kallur,Unconfined,5.3,measured,2022-05,Annexure-I,108
+,Gulbarga,CHINCHOLI,Kollur,Unconfined,1.63,measured,2022-05,Annexure-I,109
+,Gulbarga,CHINCHOLI,Moghe,Unconfined,3.4,measured,2022-05,Annexure-I,109
+,Gulbarga,CHINCHOLI,Nagaidalai,Unconfined,5.58,measured,2022-05,Annexure-I,109
+,Gulbarga,CHINCHOLI,Sasargaon,Unconfined,1.9,measured,2022-05,Annexure-I,109
+,Gulbarga,CHITAPUR,Chitapur A,Unconfined,6.25,measured,2022-05,Annexure-I,109
+,Gulbarga,CHITAPUR,Haldihal,Unconfined,3.74,measured,2022-05,Annexure-I,109
+,Gulbarga,CHITAPUR,Kaalgi,Semi Confined,9.8,measured,2022-05,Annexure-I,109
+,Gulbarga,CHITAPUR,Ravur,Unconfined,8.55,measured,2022-05,Annexure-I,109
+,Gulbarga,CHITAPUR,Shahabad A,Unconfined,0.85,measured,2022-05,Annexure-I,109
+,Gulbarga,CHITAPUR,Wadi,Unconfined,2.77,measured,2022-05,Annexure-I,109
+,Gulbarga,GULBARGA,Farhatabad A,Unconfined,7.79,measured,2022-05,Annexure-I,109
+,Gulbarga,GULBARGA,Ferozabad,Unconfined,9.6,measured,2022-05,Annexure-I,109
+,Gulbarga,GULBARGA,Jogur,Unconfined,14.6,measured,2022-05,Annexure-I,109
+,Gulbarga,GULBARGA,Kamalapur,Unconfined,3.08,measured,2022-05,Annexure-I,109
+,Gulbarga,GULBARGA,Kawalga1,Unconfined,8.06,measured,2022-05,Annexure-I,109
+,Gulbarga,GULBARGA,Mahagaon A,Unconfined,4.15,measured,2022-05,Annexure-I,109
+,Gulbarga,GULBARGA,Margutti,Unconfined,7.39,measured,2022-05,Annexure-I,109
+,Gulbarga,GULBARGA,Martur,Unconfined,5.2,measured,2022-05,Annexure-I,109
+,Gulbarga,GULBARGA,Pathan,Unconfined,4.75,measured,2022-05,Annexure-I,109
+,Gulbarga,GULBARGA,Saradgi,Unconfined,3.55,measured,2022-05,Annexure-I,109
+,Gulbarga,GULBARGA,Uplai,Unconfined,3.49,measured,2022-05,Annexure-I,109
+,Gulbarga,JEVARGI,Alur2,Unconfined,7.45,measured,2022-05,Annexure-I,109
+,Gulbarga,JEVARGI,Chigerahalli,Unconfined,11.51,measured,2022-05,Annexure-I,109
+,Gulbarga,JEVARGI,Jeratgi,Unconfined,1.99,measured,2022-05,Annexure-I,109
+,Gulbarga,JEVARGI,Jevargi,Semi Confined,1.54,measured,2022-05,Annexure-I,109
+,Gulbarga,JEVARGI,Malnoor,Semi Confined,6.27,measured,2022-05,Annexure-I,109
+,Gulbarga,JEVARGI,Revannur,Unconfined,1.94,measured,2022-05,Annexure-I,109
+,Gulbarga,JEVARGI,Shivpur Tanda,Unconfined,3.7,measured,2022-05,Annexure-I,109
+,Gulbarga,JEVARGI,Sona,Unconfined,3.66,measured,2022-05,Annexure-I,109
+,Gulbarga,JEVARGI,Ukinal,Unconfined,3.93,measured,2022-05,Annexure-I,109
+,Gulbarga,SEDAM,Huda,Unconfined,6.59,measured,2022-05,Annexure-I,109
+,Gulbarga,SEDAM,Mothakpalli,Unconfined,2.91,measured,2022-05,Annexure-I,109
+,Gulbarga,SEDAM,Nilhalli,Unconfined,4.05,measured,2022-05,Annexure-I,109
+,Hassan,Alur,Alur1,Unconfined,4.9,measured,2022-05,Annexure-I,109
+,Hassan,Alur,Harihalli,Unconfined,13.0,measured,2022-05,Annexure-I,109
+,Hassan,Alur,Hosapalya,Unconfined,4.81,measured,2022-05,Annexure-I,109
+,Hassan,Alur,Kanathur,Unconfined,11.25,measured,2022-05,Annexure-I,109
+,Hassan,Alur,Kenchammana Hoskote,Unconfined,9.65,measured,2022-05,Annexure-I,109
+,Hassan,Alur,Lakkamanahalli,Unconfined,9.55,measured,2022-05,Annexure-I,109
+,Hassan,Arakalgad,Arkalgud1,Unconfined,2.79,measured,2022-05,Annexure-I,109
+,Hassan,Arakalgad,Basavapatna1,Unconfined,2.21,measured,2022-05,Annexure-I,109
+,Hassan,Arakalgad,Bidurmalai Koppalu,Unconfined,2.48,measured,2022-05,Annexure-I,109
+,Hassan,Arakalgad,Budaluru,Unconfined,6.45,measured,2022-05,Annexure-I,110
+,Hassan,Arakalgad,Hethakondanahalli,Unconfined,7.8,measured,2022-05,Annexure-I,110
+,Hassan,Arakalgad,Hulikal,Unconfined,0.62,measured,2022-05,Annexure-I,110
+,Hassan,Arakalgad,Kaniyar,Unconfined,8.02,measured,2022-05,Annexure-I,110
+,Hassan,Arakalgad,Keralapura,Unconfined,9.65,measured,2022-05,Annexure-I,110
+,Hassan,Arakalgad,Mula hosahalli,Unconfined,3.8,measured,2022-05,Annexure-I,110
+,Hassan,Arakalgad,Ramanathapura,Unconfined,2.02,measured,2022-05,Annexure-I,110
+,Hassan,Arakalgad,Sheradanahally,Unconfined,4.2,measured,2022-05,Annexure-I,110
+,Hassan,Arakalgad,Shirdanahalli,Unconfined,4.6,measured,2022-05,Annexure-I,110
+,Hassan,Arakalgad,Vaddarahalli,Unconfined,1.46,measured,2022-05,Annexure-I,110
+,Hassan,Arakalgad,Vijayapura,Unconfined,18.2,measured,2022-05,Annexure-I,110
+,Hassan,ARKALGUD,Konanur,Unconfined,2.7,measured,2022-05,Annexure-I,110
+,Hassan,Arsikere,Agunda thandya (sidarahalli),Unconfined,9.18,measured,2022-05,Annexure-I,110
+,Hassan,Arsikere,Ahmedpur,Unconfined,1.1,measured,2022-05,Annexure-I,110
+,Hassan,Arsikere,Arasikere,Unconfined,1.95,measured,2022-05,Annexure-I,110
+,Hassan,Arsikere,G.n.koppalu,Unconfined,8.71,measured,2022-05,Annexure-I,110
+,Hassan,Arsikere,J.C.Pura,Unconfined,1.8,measured,2022-05,Annexure-I,110
+,Hassan,Arsikere,Kankatte,Unconfined,3.39,measured,2022-05,Annexure-I,110
+,Hassan,Arsikere,Mududi,Unconfined,6.4,measured,2022-05,Annexure-I,110
+,Hassan,Arsikere,Yachgondanahally,Unconfined,1.77,measured,2022-05,Annexure-I,110
+,Hassan,Belur,Agadalu,Unconfined,6.85,measured,2022-05,Annexure-I,110
+,Hassan,Belur,Ankihalli,Unconfined,8.27,measured,2022-05,Annexure-I,110
+,Hassan,Belur,Arehalli,Unconfined,6.0,measured,2022-05,Annexure-I,110
+,Hassan,Belur,Belur1,Unconfined,4.96,measured,2022-05,Annexure-I,110
+,Hassan,Belur,Biccodu A,Unconfined,5.75,measured,2022-05,Annexure-I,110
+,Hassan,Belur,Gendehalli,Unconfined,4.66,measured,2022-05,Annexure-I,110
+,Hassan,Belur,Hagare,Unconfined,3.3,measured,2022-05,Annexure-I,110
+,Hassan,Belur,Halebeedu,Unconfined,2.49,measured,2022-05,Annexure-I,110
+,Hassan,Belur,Singapurpet,Unconfined,9.7,measured,2022-05,Annexure-I,110
+,Hassan,Channarayapatana,Baaguru,Unconfined,1.36,measured,2022-05,Annexure-I,110
+,Hassan,Channarayapatana,Ballupet,Unconfined,7.41,measured,2022-05,Annexure-I,110
+,Hassan,Channarayapatana,Gulsinda,Unconfined,2.43,measured,2022-05,Annexure-I,110
+,Hassan,Channarayapatana,K.Mallenahalli,Unconfined,5.25,measured,2022-05,Annexure-I,110
+,Hassan,Channarayapatana,Mallenahalli,Unconfined,5.37,measured,2022-05,Annexure-I,110
+,Hassan,Channarayapatana,Navile,Unconfined,2.8,measured,2022-05,Annexure-I,110
+,Hassan,Channarayapatana,Nuggehalli,Unconfined,1.83,measured,2022-05,Annexure-I,110
+,Hassan,Channarayapatana,Shravan belgola,Unconfined,1.0,measured,2022-05,Annexure-I,110
+,Hassan,Channarayapatana,Srinivasapura,Unconfined,7.05,measured,2022-05,Annexure-I,110
+,Hassan,CHANNARAYAPATNA,Balasinda,Unconfined,2.77,measured,2022-05,Annexure-I,110
+,Hassan,Hassan,Anchaneyapura,Unconfined,7.4,measured,2022-05,Annexure-I,110
+,Hassan,HASSAN,Bailahalli,Unconfined,7.7,measured,2022-05,Annexure-I,110
+,Hassan,HASSAN,Govt L V Polytechnic,Semi Confined,19.32,measured,2022-05,Annexure-I,110
+,Hassan,HASSAN,Hassan,Unconfined,18.69,measured,2022-05,Annexure-I,111
+,Hassan,Hassan,Hennali,Unconfined,4.85,measured,2022-05,Annexure-I,111
+,Hassan,Hassan,Honnavara,Unconfined,11.55,measured,2022-05,Annexure-I,111
+,Hassan,Hassan,Kallenahalli,Unconfined,5.4,measured,2022-05,Annexure-I,111
+,Hassan,Hassan,Kattaya,Unconfined,10.03,measured,2022-05,Annexure-I,111
+,Hassan,Hassan,Kuppalli,Unconfined,4.45,measured,2022-05,Annexure-I,111
+,Hassan,Hassan,Naymanahalli,Unconfined,1.08,measured,2022-05,Annexure-I,111
+,Hassan,Hassan,Parsanahalli,Unconfined,0.95,measured,2022-05,Annexure-I,111
+,Hassan,Hassan,Rameshwaranagar,Unconfined,0.71,measured,2022-05,Annexure-I,111
+,Hassan,Hassan,Settihalli,Unconfined,3.36,measured,2022-05,Annexure-I,111
+,Hassan,Hassan,Shanthigrama,Unconfined,6.86,measured,2022-05,Annexure-I,111
+,Hassan,Hassan,Shenkaranahalli,Unconfined,2.55,measured,2022-05,Annexure-I,111
+,Hassan,Holenarsipur,Elleshpura,Unconfined,1.34,measured,2022-05,Annexure-I,111
+,Hassan,Holenarsipur,Hale Kote,Unconfined,3.8,measured,2022-05,Annexure-I,111
+,Hassan,Holenarsipur,Hirehalli Koppalu,Unconfined,0.45,measured,2022-05,Annexure-I,111
+,Hassan,Holenarsipur,Holenarsipur,Unconfined,1.31,measured,2022-05,Annexure-I,111
+,Hassan,Holenarsipur,Inchanahalli,Unconfined,1.03,measured,2022-05,Annexure-I,111
+,Hassan,Holenarsipur,Kuppe,Unconfined,5.3,measured,2022-05,Annexure-I,111
+,Hassan,Holenarsipur,Mudalahippe,Unconfined,1.08,measured,2022-05,Annexure-I,111
+,Hassan,Manjarabad,Achangi,Unconfined,8.15,measured,2022-05,Annexure-I,111
+,Hassan,Manjarabad,Anemall,Unconfined,12.8,measured,2022-05,Annexure-I,111
+,Hassan,Manjarabad,Balasinda,Unconfined,2.77,measured,2022-05,Annexure-I,111
+,Hassan,Manjarabad,Ballupet,,7.41,measured,2022-05,Annexure-I,111
+,Hassan,Manjarabad,Harlakudi,Unconfined,8.1,measured,2022-05,Annexure-I,111
+,Hassan,Manjarabad,Hullahally,Unconfined,8.3,measured,2022-05,Annexure-I,111
+,Hassan,Manjarabad,Kelagadale,Unconfined,8.5,measured,2022-05,Annexure-I,111
+,Hassan,Manjarabad,Kunigal,Unconfined,3.02,measured,2022-05,Annexure-I,111
+,Hassan,Manjarabad,Sakaleshpura,Unconfined,5.46,measured,2022-05,Annexure-I,111
+,Hassan,Manjarabad,Sukvarsanthe,Unconfined,8.53,measured,2022-05,Annexure-I,111
+,Haveri,BYADGI,Dhundshi,Unconfined,12.6,measured,2022-05,Annexure-I,111
+,Haveri,BYADGI,Motebennur,Semi Confined,5.36,measured,2022-05,Annexure-I,111
+,Haveri,HANGAL,Akki Alur,Unconfined,4.3,measured,2022-05,Annexure-I,111
+,Haveri,HANGAL,Girigakoppa,Unconfined,3.69,measured,2022-05,Annexure-I,111
+,Haveri,HANGAL,Hangal A,Unconfined,1.89,measured,2022-05,Annexure-I,111
+,Haveri,HANGAL,Hanumakoppa,Unconfined,9.44,measured,2022-05,Annexure-I,111
+,Haveri,HANGAL,Hulgur,Unconfined,2.34,measured,2022-05,Annexure-I,111
+,Haveri,HANGAL,Kalkatti,Unconfined,5.51,measured,2022-05,Annexure-I,111
+,Haveri,HANGAL,Nitiginal Koppa,Unconfined,6.6,measured,2022-05,Annexure-I,111
+,Haveri,HANGAL,Shadukupee,Unconfined,5.55,measured,2022-05,Annexure-I,111
+,Haveri,HAVERI,Hosaritti,Semi Confined,8.72,measured,2022-05,Annexure-I,111
+,Haveri,HIREKERUR,Hirekerur (A),Unconfined,0.98,measured,2022-05,Annexure-I,111
+,Haveri,HIREKERUR,Masur,Unconfined,6.95,measured,2022-05,Annexure-I,111
+,Haveri,HIREKERUR,Satenahalli,Unconfined,2.14,measured,2022-05,Annexure-I,112
+,Haveri,RANIBENNUR,Halgeri,Unconfined,2.15,measured,2022-05,Annexure-I,112
+,Haveri,RANIBENNUR,Hosa Huli Halli,Unconfined,4.78,measured,2022-05,Annexure-I,112
+,Haveri,RANIBENNUR,Makanur,Unconfined,4.3,measured,2022-05,Annexure-I,112
+,Haveri,RANIBENNUR,Mallanayakanahalli,Unconfined,1.45,measured,2022-05,Annexure-I,112
+,Haveri,RANIBENNUR,Ranibennur A,Unconfined,1.3,measured,2022-05,Annexure-I,112
+,Haveri,RANIBENNUR,Sunakalbidari,Unconfined,2.14,measured,2022-05,Annexure-I,112
+,Haveri,SHIGGAON,Hosur,Unconfined,0.97,measured,2022-05,Annexure-I,112
+,Haveri,SHIGGAON,Kunnur,Unconfined,1.26,measured,2022-05,Annexure-I,112
+,Haveri,SHIGGAON,Kuppelur,Unconfined,3.56,measured,2022-05,Annexure-I,112
+,Haveri,SHIGGAON,Tadas A,Unconfined,1.4,measured,2022-05,Annexure-I,112
+,Haveri,SHIGGAON,Tumminkatti,Unconfined,2.74,measured,2022-05,Annexure-I,112
+,Haveri,SHIGGAON,Vadarayanahalli,Unconfined,3.31,measured,2022-05,Annexure-I,112
+,Kodagu,Madikeri,Ayyangeri,Unconfined,3.93,measured,2022-05,Annexure-I,112
+,Kodagu,Madikeri,Ballamavathu,Unconfined,11.1,measured,2022-05,Annexure-I,112
+,Kodagu,Madikeri,Benguru 50 okallu,Unconfined,13.95,measured,2022-05,Annexure-I,112
+,Kodagu,Madikeri,Bettagiri,Unconfined,7.6,measured,2022-05,Annexure-I,112
+,Kodagu,Madikeri,Chattahalli,Unconfined,10.9,measured,2022-05,Annexure-I,112
+,Kodagu,Madikeri,Cheerambane,Unconfined,9.2,measured,2022-05,Annexure-I,112
+,Kodagu,Madikeri,Chettimani,Unconfined,5.26,measured,2022-05,Annexure-I,112
+,Kodagu,Madikeri,Cheyyandane,Unconfined,11.87,measured,2022-05,Annexure-I,112
+,Kodagu,Madikeri,Devarakolli,Unconfined,0.93,measured,2022-05,Annexure-I,112
+,Kodagu,Madikeri,Heravanadu,Unconfined,6.85,measured,2022-05,Annexure-I,112
+,Kodagu,Madikeri,Kakkabe,Unconfined,4.12,measured,2022-05,Annexure-I,112
+,Kodagu,Madikeri,Katakeri,Unconfined,12.13,measured,2022-05,Annexure-I,112
+,Kodagu,Madikeri,Ketagal 7th main,Unconfined,10.2,measured,2022-05,Annexure-I,112
+,Kodagu,Madikeri,Khagodu,Unconfined,1.46,measured,2022-05,Annexure-I,112
+,Kodagu,Madikeri,Madikeri A,Unconfined,1.18,measured,2022-05,Annexure-I,112
+,Kodagu,Madikeri,Mekari,Unconfined,15.25,measured,2022-05,Annexure-I,112
+,Kodagu,Madikeri,Napoklu,Unconfined,7.84,measured,2022-05,Annexure-I,112
+,Kodagu,Madikeri,Neerkolli,Unconfined,12.03,measured,2022-05,Annexure-I,112
+,Kodagu,Madikeri,Nelaje,Unconfined,9.6,measured,2022-05,Annexure-I,112
+,Kodagu,Madikeri,Nilwagilu,Unconfined,5.35,measured,2022-05,Annexure-I,112
+,Kodagu,Madikeri,Peraje,Unconfined,5.83,measured,2022-05,Annexure-I,112
+,Kodagu,Madikeri,Suntikoppa,Unconfined,4.22,measured,2022-05,Annexure-I,112
+,Kodagu,Somvarpet,Abhyath Mangale,Unconfined,2.37,measured,2022-05,Annexure-I,112
+,Kodagu,Somvarpet,Basavanahalli A,Unconfined,1.83,measured,2022-05,Annexure-I,112
+,Kodagu,Somvarpet,Basavanare,Unconfined,5.18,measured,2022-05,Annexure-I,112
+,Kodagu,Somvarpet,Beluru,Unconfined,6.47,measured,2022-05,Annexure-I,112
+,Kodagu,Somvarpet,Gopalapura,Unconfined,2.6,measured,2022-05,Annexure-I,112
+,Kodagu,Somvarpet,Goudahalli,Unconfined,7.9,measured,2022-05,Annexure-I,112
+,Kodagu,Somvarpet,Hoodur,Unconfined,4.81,measured,2022-05,Annexure-I,112
+,Kodagu,Somvarpet,Hosapatna,Unconfined,12.6,measured,2022-05,Annexure-I,113
+,Kodagu,Somvarpet,Huduguru,Unconfined,2.79,measured,2022-05,Annexure-I,113
+,Kodagu,Somvarpet,Igoor,Unconfined,1.88,measured,2022-05,Annexure-I,113
+,Kodagu,Somvarpet,Khowdikatte,Unconfined,14.7,measured,2022-05,Annexure-I,113
+,Kodagu,Somvarpet,Kodagarahalligrama,Unconfined,7.8,measured,2022-05,Annexure-I,113
+,Kodagu,Somvarpet,Kodlipet,Unconfined,8.45,measured,2022-05,Annexure-I,113
+,Kodagu,Somvarpet,Kushalanagara,Unconfined,9.66,measured,2022-05,Annexure-I,113
+,Kodagu,Somvarpet,Madalapura,Unconfined,4.37,measured,2022-05,Annexure-I,113
+,Kodagu,Somvarpet,Nanjarajpatna,Unconfined,1.3,measured,2022-05,Annexure-I,113
+,Kodagu,Somvarpet,Shanivarasante,Unconfined,5.62,measured,2022-05,Annexure-I,113
+,Kodagu,Somvarpet,Shivaralli,Unconfined,11.68,measured,2022-05,Annexure-I,113
+,Kodagu,Somvarpet,Somvarpet1,Unconfined,9.45,measured,2022-05,Annexure-I,113
+,Kodagu,Virajpet,Ammatti,Unconfined,9.56,measured,2022-05,Annexure-I,113
+,Kodagu,Virajpet,Begur,Unconfined,12.5,measured,2022-05,Annexure-I,113
+,Kodagu,Virajpet,Bittangala,Unconfined,5.2,measured,2022-05,Annexure-I,113
+,Kodagu,Virajpet,Devanagere,Unconfined,9.35,measured,2022-05,Annexure-I,113
+,Kodagu,Virajpet,Devarapura,Unconfined,3.35,measured,2022-05,Annexure-I,113
+,Kodagu,Virajpet,Gonikoppal,Unconfined,3.82,measured,2022-05,Annexure-I,113
+,Kodagu,Virajpet,Haathuru,Unconfined,1.05,measured,2022-05,Annexure-I,113
+,Kodagu,Virajpet,Hosuru Betekeri,Unconfined,7.1,measured,2022-05,Annexure-I,113
+,Kodagu,Virajpet,Hudikeri,Unconfined,8.28,measured,2022-05,Annexure-I,113
+,Kodagu,Virajpet,Ingilgere,Unconfined,11.3,measured,2022-05,Annexure-I,113
+,Kodagu,VIRAJPET,Jodubeeti,Unconfined,7.78,measured,2022-05,Annexure-I,113
+,Kodagu,Virajpet,Kaarekaadu,Unconfined,3.37,measured,2022-05,Annexure-I,113
+,Kodagu,Virajpet,Kadanga,Unconfined,16.68,measured,2022-05,Annexure-I,113
+,Kodagu,Virajpet,Kadanur,Unconfined,4.37,measured,2022-05,Annexure-I,113
+,Kodagu,Virajpet,Kaimane,Unconfined,6.68,measured,2022-05,Annexure-I,113
+,Kodagu,Virajpet,Kakotu parambu,Unconfined,11.5,measured,2022-05,Annexure-I,113
+,Kodagu,Virajpet,Kunda,Unconfined,7.92,measured,2022-05,Annexure-I,113
+,Kodagu,Virajpet,Majiyalla Ana Camp,Unconfined,5.53,measured,2022-05,Annexure-I,113
+,Kodagu,VIRAJPET,Marandodu,Unconfined,12.02,measured,2022-05,Annexure-I,113
+,Kodagu,Virajpet,Ontiangadi,Unconfined,7.85,measured,2022-05,Annexure-I,113
+,Kodagu,Virajpet,Ponnampet A,Unconfined,8.1,measured,2022-05,Annexure-I,113
+,Kodagu,Virajpet,Siddapura-A,Unconfined,11.14,measured,2022-05,Annexure-I,113
+,Kodagu,Virajpet,T.settigere,Unconfined,8.9,measured,2022-05,Annexure-I,113
+,Kodagu,Virajpet,Thayagathoor,Unconfined,3.86,measured,2022-05,Annexure-I,113
+,Kodagu,Virajpet,Titimathi,Unconfined,2.15,measured,2022-05,Annexure-I,113
+,Kodagu,Virajpet,Virajpet1,Unconfined,11.43,measured,2022-05,Annexure-I,113
+,Kolar,BANGARAPET,Bangarapet,Semi Confined,24.66,measured,2022-05,Annexure-I,113
+,Kolar,BANGARAPET,Bhimganapalli,Unconfined,1.85,measured,2022-05,Annexure-I,113
+,Kolar,BANGARAPET,Budikote,Unconfined,0.56,measured,2022-05,Annexure-I,113
+,Kolar,BANGARAPET,Budikunte,Unconfined,2.16,measured,2022-05,Annexure-I,113
+,Kolar,BANGARAPET,Gadarajhalli,Unconfined,6.0,measured,2022-05,Annexure-I,114
+,Kolar,BANGARAPET,Hudukula,Semi Confined,20.0,measured,2022-05,Annexure-I,114
+,Kolar,BANGARAPET,Kgf,Semi Confined,15.2,measured,2022-05,Annexure-I,114
+,Kolar,BANGARAPET,Lakkenahalli1,Semi Confined,17.45,measured,2022-05,Annexure-I,114
+,Kolar,BANGARAPET,Thoralakki,Unconfined,2.1,measured,2022-05,Annexure-I,114
+,Kolar,GUDIBANDA,Hampasandra,Unconfined,2.07,measured,2022-05,Annexure-I,114
+,Kolar,KOLAR,Antarganga,Unconfined,4.35,measured,2022-05,Annexure-I,114
+,Kolar,KOLAR,Arabi Kottanuru,Unconfined,1.5,measured,2022-05,Annexure-I,114
+,Kolar,KOLAR,Avani,Unconfined,2.67,measured,2022-05,Annexure-I,114
+,Kolar,KOLAR,Dalasanur,Semi Confined,16.17,measured,2022-05,Annexure-I,114
+,Kolar,KOLAR,Kendatti,Unconfined,2.9,measured,2022-05,Annexure-I,114
+,Kolar,KOLAR,Kolar,Semi Confined,31.1,measured,2022-05,Annexure-I,114
+,Kolar,KOLAR,Kurugal A,Unconfined,1.65,measured,2022-05,Annexure-I,114
+,Kolar,KOLAR,Manighatte,Semi Confined,25.12,measured,2022-05,Annexure-I,114
+,Kolar,KOLAR,Mitiganahalli,Unconfined,0.05,measured,2022-05,Annexure-I,114
+,Kolar,KOLAR,Moorandahalli NAQUIM,Semi Confined,44.24,measured,2022-05,Annexure-I,114
+,Kolar,KOLAR,Nelam,Unconfined,2.66,measured,2022-05,Annexure-I,114
+,Kolar,KOLAR,Vadagere,Unconfined,2.3,measured,2022-05,Annexure-I,114
+,Kolar,KOLAR,Yeshwanthpura,Semi Confined,73.4,measured,2022-05,Annexure-I,114
+,Kolar,MALUR,Doddashivara,Semi Confined,39.39,measured,2022-05,Annexure-I,114
+,Kolar,MULBAGAL,Angondanahalli,Unconfined,3.4,measured,2022-05,Annexure-I,114
+,Kolar,MULBAGAL,Bairakur,Unconfined,3.85,measured,2022-05,Annexure-I,114
+,Kolar,MULBAGAL,Bevahalli,Unconfined,2.2,measured,2022-05,Annexure-I,114
+,Kolar,MULBAGAL,Devarayasamudra,Unconfined,1.65,measured,2022-05,Annexure-I,114
+,Kolar,MULBAGAL,Gudpalli,Unconfined,2.22,measured,2022-05,Annexure-I,114
+,Kolar,MULBAGAL,Keilolli,Unconfined,3.32,measured,2022-05,Annexure-I,114
+,Kolar,MULBAGAL,Kurudmale,Unconfined,2.05,measured,2022-05,Annexure-I,114
+,Kolar,MULBAGAL,Mallasandra,Unconfined,1.73,measured,2022-05,Annexure-I,114
+,Kolar,MULBAGAL,Mulbagal Dw,Unconfined,0.65,measured,2022-05,Annexure-I,114
+,Kolar,MULBAGAL,Sangasandra,Unconfined,2.3,measured,2022-05,Annexure-I,114
+,Kolar,MULBAGAL,Tatikal,Unconfined,0.77,measured,2022-05,Annexure-I,114
+,Kolar,MULBAGAL,Tirumani,Semi Confined,7.85,measured,2022-05,Annexure-I,114
+,Kolar,SIDLAGHATTA,Dibburahalli PZ,Semi Confined,10.8,measured,2022-05,Annexure-I,114
+,Kolar,SIDLAGHATTA,Madivala,Semi Confined,13.82,measured,2022-05,Annexure-I,114
+,Kolar,SRINIVASPUR,Challdiganahalli,Semi Confined,39.6,measured,2022-05,Annexure-I,114
+,Kolar,SRINIVASPUR,Chintamakanahalli,Semi Confined,6.27,measured,2022-05,Annexure-I,114
+,Kolar,SRINIVASPUR,Lakshmisagara,Unconfined,23.0,measured,2022-05,Annexure-I,114
+,Koppal,GANGAVATHI,Gangavathi,Semi Confined,5.67,measured,2022-05,Annexure-I,114
+,Koppal,GANGAVATHI,Muslapur,Semi Confined,7.86,measured,2022-05,Annexure-I,114
+,Koppal,Gangawati,Gangavati1,Unconfined,2.95,measured,2022-05,Annexure-I,114
+,Koppal,GANGAWATI,Herur,Unconfined,1.75,measured,2022-05,Annexure-I,114
+,Koppal,GANGAWATI,Jaratgi,Unconfined,2.38,measured,2022-05,Annexure-I,114
+,Koppal,Gangawati,Kanakgiri,Unconfined,4.42,measured,2022-05,Annexure-I,115
+,Koppal,Gangawati,Kesarhatti,Unconfined,4.35,measured,2022-05,Annexure-I,115
+,Koppal,Gangawati,Siddapur1,Unconfined,3.9,measured,2022-05,Annexure-I,115
+,Koppal,KOPPAL,Basapur2,Unconfined,4.8,measured,2022-05,Annexure-I,115
+,Koppal,Koppal,Hosabandiharlapur,Unconfined,1.55,measured,2022-05,Annexure-I,115
+,Koppal,KOPPAL,Hoshalli,Unconfined,1.41,measured,2022-05,Annexure-I,115
+,Koppal,KOPPAL,Igalkere,Unconfined,2.35,measured,2022-05,Annexure-I,115
+,Koppal,KOPPAL,Irkalgad,Unconfined,4.3,measured,2022-05,Annexure-I,115
+,Koppal,Kushtagi,K. Gonal,Unconfined,4.27,measured,2022-05,Annexure-I,115
+,Koppal,Kushtagi,K. Hosur,Unconfined,3.55,measured,2022-05,Annexure-I,115
+,Koppal,Kushtagi,Kengunti,Unconfined,3.9,measured,2022-05,Annexure-I,115
+,Koppal,KUSHTAGI,Kyadiguppa,Unconfined,4.95,measured,2022-05,Annexure-I,115
+,Koppal,Kushtagi,Mudenoor,Unconfined,7.97,measured,2022-05,Annexure-I,115
+,Koppal,Kushtagi,Tawargera1,Unconfined,3.25,measured,2022-05,Annexure-I,115
+,Koppal,KUSHTAGI,Umalimulur,Unconfined,6.7,measured,2022-05,Annexure-I,115
+,Koppal,YELBARGA,Itagi,Unconfined,3.8,measured,2022-05,Annexure-I,115
+,Koppal,YELBARGA,Kuknoor,Unconfined,3.76,measured,2022-05,Annexure-I,115
+,Koppal,YELBARGA,Manapura,Unconfined,3.83,measured,2022-05,Annexure-I,115
+,Koppal,YELBARGA,Rajora,Unconfined,4.2,measured,2022-05,Annexure-I,115
+,Koppal,YELBARGA,Sanganhal,Semi Confined,4.13,measured,2022-05,Annexure-I,115
+,Koppal,YELBARGA,Sanganhal Dw,Unconfined,3.67,measured,2022-05,Annexure-I,115
+,Koppal,YELBARGA,Talakal,Unconfined,12.65,measured,2022-05,Annexure-I,115
+,Koppal,YELBARGA,Yelburga,Unconfined,7.3,measured,2022-05,Annexure-I,115
+,Koppal,Yelburga,Bandi,Unconfined,8.1,measured,2022-05,Annexure-I,115
+,Mandya,KRISHNARAJPET,Baligatta,Unconfined,4.82,measured,2022-05,Annexure-I,115
+,Mandya,KRISHNARAJPET,Krishnarajapet,Unconfined,0.17,measured,2022-05,Annexure-I,115
+,Mandya,KRISHNARAJPET,Maravanahalli,Unconfined,0.4,measured,2022-05,Annexure-I,115
+,Mandya,KRISHNARAJPET,Sindaghatta,Semi Confined,3.97,measured,2022-05,Annexure-I,115
+,Mandya,KRISHNARAJPET,Tendekere,Unconfined,0.96,measured,2022-05,Annexure-I,115
+,Mandya,MADDUR,Agalahalli,Unconfined,0.71,measured,2022-05,Annexure-I,115
+,Mandya,MADDUR,Basavanapura,Unconfined,1.35,measured,2022-05,Annexure-I,115
+,Mandya,MADDUR,Bharati Nagar,Unconfined,0.98,measured,2022-05,Annexure-I,115
+,Mandya,MADDUR,Chikka Arasinkere,Unconfined,2.35,measured,2022-05,Annexure-I,115
+,Mandya,MADDUR,Hagalahalli,Unconfined,5.68,measured,2022-05,Annexure-I,115
+,Mandya,MADDUR,Honnanayakanathalli,Unconfined,1.75,measured,2022-05,Annexure-I,115
+,Mandya,MADDUR,Kawdley,Unconfined,2.98,measured,2022-05,Annexure-I,115
+,Mandya,MADDUR,Maddur,Semi Confined,4.82,measured,2022-05,Annexure-I,115
+,Mandya,MADDUR,Maddur2,Unconfined,0.66,measured,2022-05,Annexure-I,115
+,Mandya,MADDUR,Malavalli,Semi Confined,1.11,measured,2022-05,Annexure-I,115
+,Mandya,MADDUR,Shivapura,Unconfined,1.9,measured,2022-05,Annexure-I,115
+,Mandya,MALVALLI,Anchedoddi,Unconfined,1.97,measured,2022-05,Annexure-I,115
+,Mandya,MALVALLI,Hadli,Unconfined,1.2,measured,2022-05,Annexure-I,115
+,Mandya,MALVALLI,Shivanasamudra,Unconfined,3.1,measured,2022-05,Annexure-I,116
+,Mandya,MANDYA,G.Kundipatna,Unconfined,2.08,measured,2022-05,Annexure-I,116
+,Mandya,MANDYA,Gopalapura,Unconfined,7.48,measured,2022-05,Annexure-I,116
+,Mandya,MANDYA,HaleBudanur,Unconfined,2.13,measured,2022-05,Annexure-I,116
+,Mandya,MANDYA,Kallahallimandya,Unconfined,0.85,measured,2022-05,Annexure-I,116
+,Mandya,MANDYA,Mandya Dw,Unconfined,1.3,measured,2022-05,Annexure-I,116
+,Mandya,NAGAMANGALA,Anjabhuvanahalli,Unconfined,1.89,measured,2022-05,Annexure-I,116
+,Mandya,NAGAMANGALA,Bindiganavale,Unconfined,1.6,measured,2022-05,Annexure-I,116
+,Mandya,NAGAMANGALA,Chunchunahalli,Unconfined,3.4,measured,2022-05,Annexure-I,116
+,Mandya,NAGAMANGALA,Devalapura,Unconfined,0.84,measured,2022-05,Annexure-I,116
+,Mandya,NAGAMANGALA,Mudlu Koppalu,Unconfined,2.38,measured,2022-05,Annexure-I,116
+,Mandya,NAGAMANGALA,Nagamangala1,Semi Confined,1.77,measured,2022-05,Annexure-I,116
+,Mandya,NAGAMANGALA,Nelligere,Unconfined,1.94,measured,2022-05,Annexure-I,116
+,Mandya,NAGAMANGALA,Tirumala Sagara Chatra,Unconfined,0.8,measured,2022-05,Annexure-I,116
+,Mandya,PANDAVAPURA,Ankegowdanakoppalu,Unconfined,4.0,measured,2022-05,Annexure-I,116
+,Mandya,PANDAVAPURA,Darasaguppe,Unconfined,1.18,measured,2022-05,Annexure-I,116
+,Mandya,PANDAVAPURA,Devegowdana Koppalu,Unconfined,1.09,measured,2022-05,Annexure-I,116
+,Mandya,PANDAVAPURA,Haravoo,Unconfined,1.34,measured,2022-05,Annexure-I,116
+,Mandya,PANDAVAPURA,Melukote,Semi Confined,1.03,measured,2022-05,Annexure-I,116
+,Mandya,PANDAVAPURA,Melukote-1,Unconfined,0.5,measured,2022-05,Annexure-I,116
+,Mandya,SHRIRANGAPATTANA,Arakere1,Unconfined,1.4,measured,2022-05,Annexure-I,116
+,Mandya,SHRIRANGAPATTANA,Kodiyala1,Unconfined,1.12,measured,2022-05,Annexure-I,116
+,Mandya,SHRIRANGAPATTANA,Mahadevapura1,Unconfined,2.59,measured,2022-05,Annexure-I,116
+,Mandya,SHRIRANGAPATTANA,Naguvanahalli,Unconfined,1.64,measured,2022-05,Annexure-I,116
+,Mandya,SHRIRANGAPATTANA,Srirangapatna,Unconfined,2.67,measured,2022-05,Annexure-I,116
+,Mandya,,Tadagavadi,Unconfined,2.29,measured,2022-05,Annexure-I,116
+,Mysore,Heggadevanakote,Hampapur,Unconfined,2.75,measured,2022-05,Annexure-I,116
+,Mysore,Heggadevanakote,Hanagodu,Unconfined,0.74,measured,2022-05,Annexure-I,116
+,Mysore,Heggadevanakote,Heggadevanakote,Unconfined,5.7,measured,2022-05,Annexure-I,116
+,Mysore,Heggadevanakote,Mulluru,Unconfined,12.97,measured,2022-05,Annexure-I,116
+,Mysore,Heggadevanakote,Nanjanayakanahalli,Unconfined,1.96,measured,2022-05,Annexure-I,116
+,Mysore,Heggadevanakote,Saragur,Unconfined,4.71,measured,2022-05,Annexure-I,116
+,Mysore,Hunsur,Anechowkur,Unconfined,5.73,measured,2022-05,Annexure-I,116
+,Mysore,Hunsur,Gowdagere,Unconfined,5.17,measured,2022-05,Annexure-I,116
+,Mysore,Hunsur,Hejjodlu,Unconfined,8.15,measured,2022-05,Annexure-I,116
+,Mysore,Hunsur,Hunsur A,Unconfined,1.65,measured,2022-05,Annexure-I,116
+,Mysore,Hunsur,Koimuthur colony,Unconfined,2.85,measured,2022-05,Annexure-I,116
+,Mysore,Hunsur,Krishnarajanagara1,Unconfined,1.47,measured,2022-05,Annexure-I,116
+,Mysore,Hunsur,Rathnapuri,Unconfined,1.51,measured,2022-05,Annexure-I,116
+,Mysore,Hunsur,Shiriyur,Unconfined,8.7,measured,2022-05,Annexure-I,116
+,Mysore,K.R.Nagara,Badakanakoppalu,Unconfined,1.85,measured,2022-05,Annexure-I,116
+,Mysore,K.R.Nagara,Bheerya-A,Unconfined,0.62,measured,2022-05,Annexure-I,116
+,Mysore,K.R.Nagara,Chamundi hill,Unconfined,3.29,measured,2022-05,Annexure-I,117
+,Mysore,K.R.Nagara,Chunchankatte,Unconfined,1.2,measured,2022-05,Annexure-I,117
+,Mysore,K.R.Nagara,Hosaramanahalli,Unconfined,2.85,measured,2022-05,Annexure-I,117
+,Mysore,K.R.Nagara,Mayagowdanahalli,Unconfined,4.75,measured,2022-05,Annexure-I,117
+,Mysore,K.R.Nagara,Saligrama,Unconfined,0.74,measured,2022-05,Annexure-I,117
+,Mysore,KRISHNARAJANAGARA,Gargeswari,Unconfined,6.64,measured,2022-05,Annexure-I,117
+,Mysore,Mysore,Bevinahalli,Unconfined,1.35,measured,2022-05,Annexure-I,117
+,Mysore,Mysore,Deveerammanahalli,Unconfined,1.86,measured,2022-05,Annexure-I,117
+,Mysore,Mysore,Kalasthavadi,Unconfined,2.21,measured,2022-05,Annexure-I,117
+,Mysore,Mysore,Kethupura,Unconfined,0.9,measured,2022-05,Annexure-I,117
+,Mysore,Mysore,Mysore,Unconfined,1.05,measured,2022-05,Annexure-I,117
+,Mysore,Mysore,Siddalingapura,Unconfined,1.05,measured,2022-05,Annexure-I,117
+,Mysore,Mysore,Varuna,Unconfined,0.96,measured,2022-05,Annexure-I,117
+,Mysore,Nanjangud,Alambur,Unconfined,2.29,measured,2022-05,Annexure-I,117
+,Mysore,NANJANGUD,Allampur,Unconfined,2.29,measured,2022-05,Annexure-I,117
+,Mysore,Nanjangud,Beeredevanapura,Unconfined,6.62,measured,2022-05,Annexure-I,117
+,Mysore,Nanjangud,Gandhigram,Unconfined,3.22,measured,2022-05,Annexure-I,117
+,Mysore,Nanjangud,Guluru,Unconfined,0.8,measured,2022-05,Annexure-I,117
+,Mysore,Nanjangud,Hullahalli,Unconfined,7.34,measured,2022-05,Annexure-I,117
+,Mysore,Nanjangud,Ibjala,Unconfined,3.1,measured,2022-05,Annexure-I,117
+,Mysore,Nanjangud,Kahalli,Unconfined,5.9,measured,2022-05,Annexure-I,117
+,Mysore,Nanjangud,Kannenuru,Unconfined,4.3,measured,2022-05,Annexure-I,117
+,Mysore,Nanjangud,Kothanahalli,Unconfined,6.36,measured,2022-05,Annexure-I,117
+,Mysore,Nanjangud,Motha,Unconfined,0.9,measured,2022-05,Annexure-I,117
+,Mysore,Nanjangud,Palya,Unconfined,2.64,measured,2022-05,Annexure-I,117
+,Mysore,Nanjangud,Vidyapitha,Unconfined,1.85,measured,2022-05,Annexure-I,117
+,Mysore,Piriyapatana,Attigod,Unconfined,16.1,measured,2022-05,Annexure-I,117
+,Mysore,Piriyapatana,Bylakuppe,Unconfined,2.91,measured,2022-05,Annexure-I,117
+,Mysore,Piriyapatana,Depuru,Unconfined,3.07,measured,2022-05,Annexure-I,117
+,Mysore,Piriyapatana,Kamalapura,Unconfined,1.35,measured,2022-05,Annexure-I,117
+,Mysore,Piriyapatana,Kittur,Unconfined,1.8,measured,2022-05,Annexure-I,117
+,Mysore,Piriyapatana,Konasuru,Unconfined,1.15,measured,2022-05,Annexure-I,117
+,Mysore,Piriyapatana,Muguru1,Unconfined,9.2,measured,2022-05,Annexure-I,117
+,Mysore,Piriyapatana,Punnadahalli koppalu,Unconfined,5.32,measured,2022-05,Annexure-I,117
+,Mysore,Piriyapatana,Ranganathapura,Unconfined,1.8,measured,2022-05,Annexure-I,117
+,Mysore,Piriyapatana,Yelemuddanahalli,Unconfined,0.78,measured,2022-05,Annexure-I,117
+,Mysore,T.Narsipura,Alaguda,Unconfined,1.32,measured,2022-05,Annexure-I,117
+,Mysore,T.Narsipura,Somanathapura,Unconfined,3.96,measured,2022-05,Annexure-I,117
+,Mysore,TIRUMAKUDAL- NARSIPUR,Hunugunahalli,Unconfined,0.3,measured,2022-05,Annexure-I,117
+,Raichur,DEVADURGA,Arkera,Unconfined,10.9,measured,2022-05,Annexure-I,117
+,Raichur,DEVADURGA,Chikkahonakuni,Unconfined,1.7,measured,2022-05,Annexure-I,117
+,Raichur,DEVADURGA,Gabbur,Semi Confined,3.26,measured,2022-05,Annexure-I,117
+,Raichur,DEVADURGA,Gabbur1,Unconfined,1.85,measured,2022-05,Annexure-I,118
+,Raichur,DEVADURGA,Galaga,Unconfined,6.65,measured,2022-05,Annexure-I,118
+,Raichur,DEVADURGA,Hemanur,Unconfined,1.97,measured,2022-05,Annexure-I,118
+,Raichur,DEVADURGA,Jalahalli A,Unconfined,0.4,measured,2022-05,Annexure-I,118
+,Raichur,DEVADURGA,Kakargal,Unconfined,10.07,measured,2022-05,Annexure-I,118
+,Raichur,DEVADURGA,Mustoor,Unconfined,0.97,measured,2022-05,Annexure-I,118
+,Raichur,DEVADURGA,Vachanayakana Thanda,Unconfined,2.2,measured,2022-05,Annexure-I,118
+,Raichur,DEVADURGA,Vanukuni,Unconfined,0.65,measured,2022-05,Annexure-I,118
+,Raichur,LINGSUGUR,Ambareswar,Semi Confined,4.1,measured,2022-05,Annexure-I,118
+,Raichur,LINGSUGUR,Ankusha Doddy,Unconfined,4.2,measured,2022-05,Annexure-I,118
+,Raichur,LINGSUGUR,Asha Tanda,Unconfined,3.0,measured,2022-05,Annexure-I,118
+,Raichur,LINGSUGUR,Bagalwad,Unconfined,1.95,measured,2022-05,Annexure-I,118
+,Raichur,LINGSUGUR,Bhyagawat,Unconfined,0.6,measured,2022-05,Annexure-I,118
+,Raichur,LINGSUGUR,Bomanhal,Unconfined,3.15,measured,2022-05,Annexure-I,118
+,Raichur,LINGSUGUR,Chaatra,Unconfined,2.35,measured,2022-05,Annexure-I,118
+,Raichur,LINGSUGUR,Chikksarur,Unconfined,6.25,measured,2022-05,Annexure-I,118
+,Raichur,LINGSUGUR,Devarabupur Vkp Camp,Unconfined,6.8,measured,2022-05,Annexure-I,118
+,Raichur,LINGSUGUR,Echanal,Unconfined,1.0,measured,2022-05,Annexure-I,118
+,Raichur,LINGSUGUR,GORBAL DW,Unconfined,2.85,measured,2022-05,Annexure-I,118
+,Raichur,LINGSUGUR,Honnali,Semi Confined,3.89,measured,2022-05,Annexure-I,118
+,Raichur,LINGSUGUR,Lingasugur A,Unconfined,6.49,measured,2022-05,Annexure-I,118
+,Raichur,LINGSUGUR,Maski,Semi Confined,4.42,measured,2022-05,Annexure-I,118
+,Raichur,LINGSUGUR,Maski A,Unconfined,5.5,measured,2022-05,Annexure-I,118
+,Raichur,LINGSUGUR,Ulimeshwar,Unconfined,5.55,measured,2022-05,Annexure-I,118
+,Raichur,MANVI,Ballatagi,Unconfined,6.1,measured,2022-05,Annexure-I,118
+,Raichur,MANVI,Buddinni,Unconfined,9.05,measured,2022-05,Annexure-I,118
+,Raichur,MANVI,Chincherki,Unconfined,4.7,measured,2022-05,Annexure-I,118
+,Raichur,MANVI,Hirekotankal,Unconfined,3.56,measured,2022-05,Annexure-I,118
+,Raichur,MANVI,Jakkaladinni,Unconfined,6.95,measured,2022-05,Annexure-I,118
+,Raichur,MANVI,Janekal,Unconfined,6.95,measured,2022-05,Annexure-I,118
+,Raichur,MANVI,Kurdi,Semi Confined,4.47,measured,2022-05,Annexure-I,118
+,Raichur,MANVI,Kurdi A,Unconfined,8.95,measured,2022-05,Annexure-I,118
+,Raichur,MANVI,Manvi,Semi Confined,8.4,measured,2022-05,Annexure-I,118
+,Raichur,MANVI,Pamankallur,Unconfined,2.97,measured,2022-05,Annexure-I,118
+,Raichur,MANVI,Rajalabanda,Unconfined,0.82,measured,2022-05,Annexure-I,118
+,Raichur,MANVI,Watgal,Unconfined,8.6,measured,2022-05,Annexure-I,118
+,Raichur,RAICHUR,Gandhalu,Unconfined,2.15,measured,2022-05,Annexure-I,118
+,Raichur,RAICHUR,Gunjehalli,Unconfined,1.25,measured,2022-05,Annexure-I,118
+,Raichur,RAICHUR,Raichur,Semi Confined,5.16,measured,2022-05,Annexure-I,118
+,Raichur,RAICHUR,Raichur,Unconfined,2.9,measured,2022-05,Annexure-I,118
+,Raichur,RAICHUR,Shaktinagar,Unconfined,0.85,measured,2022-05,Annexure-I,118
+,Raichur,RAICHUR,Yeragara,Unconfined,3.83,measured,2022-05,Annexure-I,118
+,Raichur,SINDHNUR,Chikbergi,Unconfined,4.5,measured,2022-05,Annexure-I,119
+,Raichur,SINDHNUR,Gunda,Unconfined,4.85,measured,2022-05,Annexure-I,119
+,Raichur,SINDHNUR,Hanchihal,Unconfined,2.48,measured,2022-05,Annexure-I,119
+,Raichur,SINDHNUR,Jawalgeri A,Unconfined,1.9,measured,2022-05,Annexure-I,119
+,Raichur,SINDHNUR,Kalamangi,Unconfined,2.46,measured,2022-05,Annexure-I,119
+,Raichur,SINDHNUR,Mahampur,Unconfined,1.7,measured,2022-05,Annexure-I,119
+,Raichur,SINDHNUR,Sindhnur,Semi Confined,0.04,measured,2022-05,Annexure-I,119
+,Raichur,SINDHNUR,Sindhnur,Unconfined,2.92,measured,2022-05,Annexure-I,119
+,Raichur,SINDHNUR,Turvihal,Unconfined,2.3,measured,2022-05,Annexure-I,119
+,Shimoga,Bhadravati,Arabilachi,Unconfined,0.75,measured,2022-05,Annexure-I,119
+,Shimoga,Bhadravati,Bhadravati1,Unconfined,0.63,measured,2022-05,Annexure-I,119
+,Shimoga,Bhadravati,Hiriyur,Unconfined,1.15,measured,2022-05,Annexure-I,119
+,Shimoga,Bhadravati,Holehonnur,Unconfined,1.25,measured,2022-05,Annexure-I,119
+,Shimoga,Bhadravati,Hunsekatte Junction,Unconfined,8.9,measured,2022-05,Annexure-I,119
+,Shimoga,Bhadravati,Kempegowdanagara,Unconfined,0.6,measured,2022-05,Annexure-I,119
+,Shimoga,Bhadravati,Kudligere,Unconfined,1.19,measured,2022-05,Annexure-I,119
+,Shimoga,Bhadravati,Masarahalli A,Unconfined,0.7,measured,2022-05,Annexure-I,119
+,Shimoga,Bhadravati,Melinahanasavadi,Unconfined,0.97,measured,2022-05,Annexure-I,119
+,Shimoga,Bhadravati,Virapur,Unconfined,0.78,measured,2022-05,Annexure-I,119
+,Shimoga,Hosanagara,Battemallappa,Unconfined,9.43,measured,2022-05,Annexure-I,119
+,Shimoga,Hosanagara,Bilehalli,Unconfined,6.35,measured,2022-05,Annexure-I,119
+,Shimoga,Hosanagara,Brahmeeshwara,Unconfined,6.87,measured,2022-05,Annexure-I,119
+,Shimoga,Hosanagara,Chennakoppa,Unconfined,1.7,measured,2022-05,Annexure-I,119
+,Shimoga,Hosanagara,Gartikere,Unconfined,7.8,measured,2022-05,Annexure-I,119
+,Shimoga,Hosanagara,Heddaripura,Unconfined,3.8,measured,2022-05,Annexure-I,119
+,Shimoga,Hosanagara,Hosanagara1,Unconfined,11.51,measured,2022-05,Annexure-I,119
+,Shimoga,HOSANAGARA,Humacha,Unconfined,4.8,measured,2022-05,Annexure-I,119
+,Shimoga,Hosanagara,Kaijegebulu,Unconfined,8.52,measured,2022-05,Annexure-I,119
+,Shimoga,Hosanagara,Kote Kargya,Unconfined,8.85,measured,2022-05,Annexure-I,119
+,Shimoga,Hosanagara,Riponpet,Unconfined,6.26,measured,2022-05,Annexure-I,119
+,Shimoga,Sagar,Anandapuram,Unconfined,1.83,measured,2022-05,Annexure-I,119
+,Shimoga,Sagar,Arivadki,Unconfined,9.95,measured,2022-05,Annexure-I,119
+,Shimoga,Sagar,Balasagodu,Unconfined,4.65,measured,2022-05,Annexure-I,119
+,Shimoga,Sagar,Bheemankone,Unconfined,8.87,measured,2022-05,Annexure-I,119
+,Shimoga,SAGAR,Hosur,Unconfined,7.05,measured,2022-05,Annexure-I,119
+,Shimoga,Sagar,Sagar,Unconfined,5.45,measured,2022-05,Annexure-I,119
+,Shimoga,SAGAR,Talaguppa,Semi Confined,8.68,measured,2022-05,Annexure-I,119
+,Shimoga,Sagar,Talaguppa1,Unconfined,8.94,measured,2022-05,Annexure-I,119
+,Shimoga,Sagar,Ullur(thyagarthi cross),Unconfined,4.7,measured,2022-05,Annexure-I,119
+,Shimoga,Shikarpura,Ambligolla,Unconfined,5.78,measured,2022-05,Annexure-I,119
+,Shimoga,Shikarpura,Arekoppa,Unconfined,0.23,measured,2022-05,Annexure-I,119
+,Shimoga,Shikarpura,Hosur2,Unconfined,7.05,measured,2022-05,Annexure-I,119
+,Shimoga,Shikarpura,Shikarpur1,Unconfined,1.4,measured,2022-05,Annexure-I,120
+,Shimoga,Shimoga,Ayanur,Unconfined,0.87,measured,2022-05,Annexure-I,120
+,Shimoga,Shimoga,Gajanur,Unconfined,0.65,measured,2022-05,Annexure-I,120
+,Shimoga,Shimoga,Jaddihalli,Unconfined,6.03,measured,2022-05,Annexure-I,120
+,Shimoga,Shimoga,Nidigi,Unconfined,1.28,measured,2022-05,Annexure-I,120
+,Shimoga,Shimoga,Pillangere,Unconfined,0.38,measured,2022-05,Annexure-I,120
+,Shimoga,Shimoga,Purale,Unconfined,1.42,measured,2022-05,Annexure-I,120
+,Shimoga,SHIMOGA,Shimoga,Semi Confined,1.87,measured,2022-05,Annexure-I,120
+,Shimoga,Shimoga,Shimoga,Unconfined,5.44,measured,2022-05,Annexure-I,120
+,Shimoga,Shimoga,Sugur,Unconfined,0.7,measured,2022-05,Annexure-I,120
+,Shimoga,Shimoga,Tevarachatnahalli,Unconfined,1.21,measured,2022-05,Annexure-I,120
+,Shimoga,Shimoga,Umblibailu,Unconfined,1.12,measured,2022-05,Annexure-I,120
+,Shimoga,Sorab,Anavatti,Unconfined,4.76,measured,2022-05,Annexure-I,120
+,Shimoga,SORAB,Anavatti1,Semi Confined,7.86,measured,2022-05,Annexure-I,120
+,Shimoga,Sorab,Ankaravalli,Unconfined,13.45,measured,2022-05,Annexure-I,120
+,Shimoga,SORAB,Ankaravalli,Unconfined,13.45,measured,2022-05,Annexure-I,120
+,Shimoga,Sorab,Chandraguthi,Unconfined,4.4,measured,2022-05,Annexure-I,120
+,Shimoga,Sorab,Hosabale,Unconfined,7.71,measured,2022-05,Annexure-I,120
+,Shimoga,Sorab,Madsur Lingadalli,Unconfined,8.86,measured,2022-05,Annexure-I,120
+,Shimoga,Sorab,Sorab,Unconfined,16.16,measured,2022-05,Annexure-I,120
+,Shimoga,Tirthahalli,Agumbe,Unconfined,9.23,measured,2022-05,Annexure-I,120
+,Shimoga,Tirthahalli,Araga,Unconfined,6.35,measured,2022-05,Annexure-I,120
+,Shimoga,Tirthahalli,Bagavalli,Unconfined,4.8,measured,2022-05,Annexure-I,120
+,Shimoga,Tirthahalli,Devangi,Unconfined,10.05,measured,2022-05,Annexure-I,120
+,Shimoga,Tirthahalli,Gabadi,Unconfined,11.15,measured,2022-05,Annexure-I,120
+,Shimoga,Tirthahalli,Ganapathikatte(surani),Unconfined,8.9,measured,2022-05,Annexure-I,120
+,Shimoga,Tirthahalli,Guddekeri,Unconfined,10.0,measured,2022-05,Annexure-I,120
+,Shimoga,Tirthahalli,Guddekoppa,Unconfined,10.83,measured,2022-05,Annexure-I,120
+,Shimoga,Tirthahalli,Hosahalli,Unconfined,1.45,measured,2022-05,Annexure-I,120
+,Shimoga,Tirthahalli,Hulkod,Unconfined,10.2,measured,2022-05,Annexure-I,120
+,Shimoga,Tirthahalli,Kalmane,Unconfined,3.85,measured,2022-05,Annexure-I,120
+,Shimoga,Tirthahalli,Kavurehakkalu,Unconfined,7.95,measured,2022-05,Annexure-I,120
+,Shimoga,Tirthahalli,Kodlu,Unconfined,12.93,measured,2022-05,Annexure-I,120
+,Shimoga,Tirthahalli,Kodur1,Unconfined,9.86,measured,2022-05,Annexure-I,120
+,Shimoga,Tirthahalli,Konandur Dw,Unconfined,11.58,measured,2022-05,Annexure-I,120
+,Shimoga,Tirthahalli,Konandur ii,Unconfined,7.05,measured,2022-05,Annexure-I,120
+,Shimoga,Tirthahalli,Kudumallige,Unconfined,8.9,measured,2022-05,Annexure-I,120
+,Shimoga,Tirthahalli,Malur (shimoga),Unconfined,4.59,measured,2022-05,Annexure-I,120
+,Shimoga,Tirthahalli,Mandagadde,Unconfined,2.66,measured,2022-05,Annexure-I,120
+,Shimoga,Tirthahalli,Megaravalli,Unconfined,13.17,measured,2022-05,Annexure-I,120
+,Shimoga,Tirthahalli,Mytheri,Unconfined,11.0,measured,2022-05,Annexure-I,120
+,Shimoga,Tirthahalli,Naluru,Unconfined,10.3,measured,2022-05,Annexure-I,120
+,Shimoga,Tirthahalli,Nandikatte,Unconfined,16.5,measured,2022-05,Annexure-I,121
+,Shimoga,Tirthahalli,Nidagalale,Unconfined,1.95,measured,2022-05,Annexure-I,121
+,Shimoga,Tirthahalli,Shankarahalli,Unconfined,8.84,measured,2022-05,Annexure-I,121
+,Shimoga,Tirthahalli,Taluve,Unconfined,6.95,measured,2022-05,Annexure-I,121
+,Shimoga,Tirthahalli,Tirthahalli,Unconfined,5.19,measured,2022-05,Annexure-I,121
+,Shimoga,Tirthahalli,Tirthamatthur,Unconfined,16.4,measured,2022-05,Annexure-I,121
+,Shimoga,Tirthahalli,Tudki,Unconfined,9.13,measured,2022-05,Annexure-I,121
+,Tumkur,CHIKNAYAKANHALLI,Ankasandra I,Semi Confined,10.0,measured,2022-05,Annexure-I,121
+,Tumkur,CHIKNAYAKANHALLI,Huliyar,Semi Confined,9.19,measured,2022-05,Annexure-I,121
+,Tumkur,CHIKNAYAKANHALLI,Katturikihalli,Semi Confined,30.45,measured,2022-05,Annexure-I,121
+,Tumkur,CHIKNAYAKANHALLI,Kenkere OW,Semi Confined,3.5,measured,2022-05,Annexure-I,121
+,Tumkur,CHIKNAYAKANHALLI,Madapurahatti,Semi Confined,19.5,measured,2022-05,Annexure-I,121
+,Tumkur,CHIKNAYAKANHALLI,Madihalli,Unconfined,5.47,measured,2022-05,Annexure-I,121
+,Tumkur,CHIKNAYAKANHALLI,Madihalli I,Semi Confined,10.15,measured,2022-05,Annexure-I,121
+,Tumkur,CHIKNAYAKANHALLI,Sasalu,Semi Confined,8.02,measured,2022-05,Annexure-I,121
+,Tumkur,CHIKNAYAKANHALLI,Somanahalli OW,Semi Confined,14.4,measured,2022-05,Annexure-I,121
+,Tumkur,CHIKNAYAKANHALLI,Tarabenahalli,Semi Confined,28.0,measured,2022-05,Annexure-I,121
+,Tumkur,CNHalli,Chattasandra,Unconfined,1.2,measured,2022-05,Annexure-I,121
+,Tumkur,CNHalli,Huliyar,Unconfined,4.14,measured,2022-05,Annexure-I,121
+,Tumkur,CNHalli,Lakshipura,Unconfined,2.48,measured,2022-05,Annexure-I,121
+,Tumkur,CNHalli,Mattighatta,Unconfined,1.82,measured,2022-05,Annexure-I,121
+,Tumkur,CNHalli,Mysorappan palya,Unconfined,3.55,measured,2022-05,Annexure-I,121
+,Tumkur,CNHalli,Navule,Unconfined,7.02,measured,2022-05,Annexure-I,121
+,Tumkur,GUBBI,Chelur,Semi Confined,14.3,measured,2022-05,Annexure-I,121
+,Tumkur,GUBBI,Gubbi,Unconfined,2.7,measured,2022-05,Annexure-I,121
+,Tumkur,GUBBI,Hagalawadi,Semi Confined,45.5,measured,2022-05,Annexure-I,121
+,Tumkur,GUBBI,Iriksandra,Unconfined,1.28,measured,2022-05,Annexure-I,121
+,Tumkur,GUBBI,Kadaba2,Semi Confined,15.55,measured,2022-05,Annexure-I,121
+,Tumkur,GUBBI,Marishettyhalli Ow Naquim,Semi Confined,31.75,measured,2022-05,Annexure-I,121
+,Tumkur,GUBBI,Mavinahalli,Unconfined,6.86,measured,2022-05,Annexure-I,121
+,Tumkur,GUBBI,Singanahalli,Unconfined,0.5,measured,2022-05,Annexure-I,121
+,Tumkur,KORATAGERE,Doddapalanahalli Ow Naquim,Semi Confined,23.58,measured,2022-05,Annexure-I,121
+,Tumkur,KORATAGERE,Gatlagollahalli,Unconfined,1.32,measured,2022-05,Annexure-I,121
+,Tumkur,KORATAGERE,Koratagere2,Semi Confined,1.28,measured,2022-05,Annexure-I,121
+,Tumkur,KORATAGERE,Koratagere2,Unconfined,1.95,measured,2022-05,Annexure-I,121
+,Tumkur,KORATAGERE,Koratagere-A,Unconfined,1.95,measured,2022-05,Annexure-I,121
+,Tumkur,KORATAGERE,Nagenahalli,Unconfined,1.68,measured,2022-05,Annexure-I,121
+,Tumkur,KORATAGERE,Neelagondanahalli,Unconfined,1.14,measured,2022-05,Annexure-I,121
+,Tumkur,KORATAGERE,Tumbadi,Unconfined,0.55,measured,2022-05,Annexure-I,121
+,Tumkur,KUNIGAL,Anchihalli,Unconfined,4.28,measured,2022-05,Annexure-I,121
+,Tumkur,KUNIGAL,Kunigal-A,Unconfined,9.82,measured,2022-05,Annexure-I,121
+,Tumkur,KUNIGAL,Nagavalli,Semi Confined,11.67,measured,2022-05,Annexure-I,122
+,Tumkur,KUNIGAL,Yediyur,Semi Confined,11.3,measured,2022-05,Annexure-I,122
+,Tumkur,MADHUGIRI,Badavanahalli(A),Unconfined,1.76,measured,2022-05,Annexure-I,122
+,Tumkur,MADHUGIRI,Bidarakere1,Unconfined,1.62,measured,2022-05,Annexure-I,122
+,Tumkur,MADHUGIRI,Byalya1,Semi Confined,18.7,measured,2022-05,Annexure-I,122
+,Tumkur,MADHUGIRI,Chelanahalli,Unconfined,0.94,measured,2022-05,Annexure-I,122
+,Tumkur,MADHUGIRI,Chilanahalli,Unconfined,1.06,measured,2022-05,Annexure-I,122
+,Tumkur,MADHUGIRI,Giriyammanapalya,Unconfined,3.43,measured,2022-05,Annexure-I,122
+,Tumkur,MADHUGIRI,Hosakere2,Semi Confined,0.35,measured,2022-05,Annexure-I,122
+,Tumkur,MADHUGIRI,Jadegondanahalli,Unconfined,0.89,measured,2022-05,Annexure-I,122
+,Tumkur,MADHUGIRI,Madhugiri,Unconfined,0.89,measured,2022-05,Annexure-I,122
+,Tumkur,MADHUGIRI,Madhugiri(Pz),Unconfined,0.05,measured,2022-05,Annexure-I,122
+,Tumkur,MADHUGIRI,Midigeshi,Unconfined,0.91,measured,2022-05,Annexure-I,122
+,Tumkur,MADHUGIRI,Muddenahalli1,Semi Confined,34.7,measured,2022-05,Annexure-I,122
+,Tumkur,PAVAGADA,C.K.Pura,Unconfined,1.32,measured,2022-05,Annexure-I,122
+,Tumkur,PAVAGADA,Kanameri,Unconfined,0.81,measured,2022-05,Annexure-I,122
+,Tumkur,PAVAGADA,Karekyathanahalli,Unconfined,4.5,measured,2022-05,Annexure-I,122
+,Tumkur,PAVAGADA,Kotagudda,Unconfined,3.97,measured,2022-05,Annexure-I,122
+,Tumkur,PAVAGADA,Palavalli,Unconfined,3.47,measured,2022-05,Annexure-I,122
+,Tumkur,PAVAGADA,Pavagada,Unconfined,1.0,measured,2022-05,Annexure-I,122
+,Tumkur,SIRA,Dodda Agrahara Naquim,Semi Confined,12.65,measured,2022-05,Annexure-I,122
+,Tumkur,SIRA,G.Ranganahalli Ow Naquim,Semi Confined,97.5,measured,2022-05,Annexure-I,122
+,Tumkur,SIRA,Sidhlakona Ow Naquim,Semi Confined,17.7,measured,2022-05,Annexure-I,122
+,Tumkur,SIRA,Sira,Semi Confined,5.55,measured,2022-05,Annexure-I,122
+,Tumkur,SIRA,Sira I,Unconfined,4.98,measured,2022-05,Annexure-I,122
+,Tumkur,TIPTUR,Adinayakanahalli Pz,Semi Confined,44.4,measured,2022-05,Annexure-I,122
+,Tumkur,Tiptur,Balavaneralu,Unconfined,1.1,measured,2022-05,Annexure-I,122
+,Tumkur,TIPTUR,Balavanerlu Pz,Semi Confined,15.84,measured,2022-05,Annexure-I,122
+,Tumkur,TIPTUR,Bommanahalli Thanda Pz,Semi Confined,32.47,measured,2022-05,Annexure-I,122
+,Tumkur,TIPTUR,Halkurke-A,Unconfined,0.81,measured,2022-05,Annexure-I,122
+,Tumkur,TIPTUR,Hosur,Semi Confined,14.0,measured,2022-05,Annexure-I,122
+,Tumkur,TIPTUR,Huchanahatti Pz,Semi Confined,25.85,measured,2022-05,Annexure-I,122
+,Tumkur,TIPTUR,Karadikodi,Unconfined,2.43,measured,2022-05,Annexure-I,122
+,Tumkur,TIPTUR,Kibbanahalli1,Semi Confined,26.6,measured,2022-05,Annexure-I,122
+,Tumkur,TIPTUR,Nonavinakere,Unconfined,1.28,measured,2022-05,Annexure-I,122
+,Tumkur,TIPTUR,Rudrapura I,Unconfined,0.98,measured,2022-05,Annexure-I,122
+,Tumkur,TIPTUR,Sarathvalli Pz,Semi Confined,21.8,measured,2022-05,Annexure-I,122
+,Tumkur,Tiptur,Suragondanahalli,Unconfined,1.62,measured,2022-05,Annexure-I,122
+,Tumkur,TIPTUR,Tiptur,Unconfined,12.32,measured,2022-05,Annexure-I,122
+,Tumkur,TIPTUR,Tiptur1,Semi Confined,18.55,measured,2022-05,Annexure-I,122
+,Tumkur,TUMKUR,Bellavi1,Semi Confined,11.3,measured,2022-05,Annexure-I,122
+,Tumkur,TUMKUR,D.S Hosahalli Ow Naquim,Semi Confined,18.6,measured,2022-05,Annexure-I,122
+,Tumkur,TUMKUR,Dandinadibba,Semi Confined,13.58,measured,2022-05,Annexure-I,123
+,Tumkur,TUMKUR,Nelahalu,Semi Confined,15.4,measured,2022-05,Annexure-I,123
+,Tumkur,TUMKUR,Siddagangamatha,Unconfined,2.75,measured,2022-05,Annexure-I,123
+,Tumkur,TUMKUR,Tumkur,Unconfined,1.65,measured,2022-05,Annexure-I,123
+,Tumkur,TUMKUR,Tumkur1,Semi Confined,2.9,measured,2022-05,Annexure-I,123
+,Tumkur,TURUVEKERE,Mayasandra,Unconfined,1.37,measured,2022-05,Annexure-I,123
+,Tumkur,TURUVEKERE,Turuvekere,Unconfined,0.54,measured,2022-05,Annexure-I,123
+,Tumkur,TURUVEKERE,Turuvekere1,Semi Confined,11.0,measured,2022-05,Annexure-I,123
+,Udupi,KARKAL,Jodu Katte Guddeanngadi,Unconfined,11.75,measured,2022-05,Annexure-I,123
+,Udupi,KARKALA,Ajekar,Semi Confined,11.98,measured,2022-05,Annexure-I,123
+,Udupi,KARKALA,Ajekar,Unconfined,4.62,measured,2022-05,Annexure-I,123
+,Udupi,KARKALA,Bailur,Unconfined,6.36,measured,2022-05,Annexure-I,123
+,Udupi,KARKALA,Bajegoli,Unconfined,12.05,measured,2022-05,Annexure-I,123
+,Udupi,KARKALA,Hebri,Unconfined,8.88,measured,2022-05,Annexure-I,123
+,Udupi,KARKALA,Hosmar,Unconfined,6.6,measured,2022-05,Annexure-I,123
+,Udupi,KARKALA,Kukundur,Unconfined,5.25,measured,2022-05,Annexure-I,123
+,Udupi,KARKALA,Maathbettu-Maniyala,Unconfined,7.42,measured,2022-05,Annexure-I,123
+,Udupi,KARKALA,Miyar,Unconfined,6.53,measured,2022-05,Annexure-I,123
+,Udupi,KARKALA,Mudubidri A,Unconfined,6.87,measured,2022-05,Annexure-I,123
+,Udupi,KARKALA,Mundargi,Unconfined,8.53,measured,2022-05,Annexure-I,123
+,Udupi,KARKALA,Nitte,Unconfined,6.38,measured,2022-05,Annexure-I,123
+,Udupi,KARKALA,Samplge,Unconfined,9.43,measured,2022-05,Annexure-I,123
+,Udupi,KARKALA,Someswar,Unconfined,8.61,measured,2022-05,Annexure-I,123
+,Udupi,KARKALA,Thodaaru,Unconfined,10.37,measured,2022-05,Annexure-I,123
+,Udupi,KARKALA,Yennehole,Unconfined,5.22,measured,2022-05,Annexure-I,123
+,Udupi,KUNDAPURA,Ampaaru,Unconfined,9.9,measured,2022-05,Annexure-I,123
+,Udupi,KUNDAPURA,Ankadakatte,Unconfined,5.4,measured,2022-05,Annexure-I,123
+,Udupi,KUNDAPURA,Ardi,Unconfined,9.63,measured,2022-05,Annexure-I,123
+,Udupi,KUNDAPURA,Areshirur,Unconfined,7.87,measured,2022-05,Annexure-I,123
+,Udupi,KUNDAPURA,Asodu-Kalavara,Unconfined,5.02,measured,2022-05,Annexure-I,123
+,Udupi,KUNDAPURA,Baindur 1,Unconfined,0.04,measured,2022-05,Annexure-I,123
+,Udupi,KUNDAPURA,Golihole,Unconfined,3.83,measured,2022-05,Annexure-I,123
+,Udupi,KUNDAPURA,Gopadi,Unconfined,3.32,measured,2022-05,Annexure-I,123
+,Udupi,KUNDAPURA,Halbadi Jn,Unconfined,7.18,measured,2022-05,Annexure-I,123
+,Udupi,KUNDAPURA,Halkal,Unconfined,10.5,measured,2022-05,Annexure-I,123
+,Udupi,KUNDAPURA,Hangarakatte,Unconfined,1.7,measured,2022-05,Annexure-I,123
+,Udupi,KUNDAPURA,Hunsemakki,Unconfined,4.03,measured,2022-05,Annexure-I,123
+,Udupi,KUNDAPURA,Idooru Kunjadi,Unconfined,7.31,measured,2022-05,Annexure-I,123
+,Udupi,KUNDAPURA,Kandlur,Unconfined,6.75,measured,2022-05,Annexure-I,123
+,Udupi,KUNDAPURA,Karebylu,Unconfined,3.47,measured,2022-05,Annexure-I,123
+,Udupi,KUNDAPURA,Kirimanjeshwar,Unconfined,6.65,measured,2022-05,Annexure-I,123
+,Udupi,KUNDAPURA,Kollur1,Unconfined,11.19,measured,2022-05,Annexure-I,123
+,Udupi,KUNDAPURA,Kumbashi,Unconfined,3.64,measured,2022-05,Annexure-I,124
+,Udupi,KUNDAPURA,Kundapura,Unconfined,5.47,measured,2022-05,Annexure-I,124
+,Udupi,KUNDAPURA,Madamakki,Unconfined,4.95,measured,2022-05,Annexure-I,124
+,Udupi,KUNDAPURA,Maikome,Unconfined,10.61,measured,2022-05,Annexure-I,124
+,Udupi,KUNDAPURA,Maravanthe,Unconfined,9.28,measured,2022-05,Annexure-I,124
+,Udupi,KUNDAPURA,Nandanavana,Unconfined,3.88,measured,2022-05,Annexure-I,124
+,Udupi,KUNDAPURA,Neralakatte,Unconfined,6.02,measured,2022-05,Annexure-I,124
+,Udupi,KUNDAPURA,Shankarnarayana,Unconfined,12.65,measured,2022-05,Annexure-I,124
+,Udupi,KUNDAPURA,Siddapur2,Semi Confined,15.04,measured,2022-05,Annexure-I,124
+,Udupi,KUNDAPURA,Siddapura1,Unconfined,12.62,measured,2022-05,Annexure-I,124
+,Udupi,KUNDAPURA,Thekkatte,Unconfined,5.85,measured,2022-05,Annexure-I,124
+,Udupi,KUNDAPURA,Trasi,Unconfined,10.0,measured,2022-05,Annexure-I,124
+,Udupi,KUNDAPURA,Vandse,Unconfined,5.16,measured,2022-05,Annexure-I,124
+,Udupi,KUNDAPURA,Vastre,Unconfined,4.8,measured,2022-05,Annexure-I,124
+,Udupi,UDUPI,Airodi,Unconfined,3.49,measured,2022-05,Annexure-I,124
+,Udupi,UDUPI,Badamikatte,Unconfined,7.5,measured,2022-05,Annexure-I,124
+,Udupi,UDUPI,Bantkal,Unconfined,9.55,measured,2022-05,Annexure-I,124
+,Udupi,UDUPI,Brahmavara,Unconfined,9.32,measured,2022-05,Annexure-I,124
+,Udupi,UDUPI,Goliangadi,Unconfined,10.88,measured,2022-05,Annexure-I,124
+,Udupi,UDUPI,Herady-Barkur,Unconfined,5.79,measured,2022-05,Annexure-I,124
+,Udupi,UDUPI,Kannangaaru,Unconfined,8.1,measured,2022-05,Annexure-I,124
+,Udupi,UDUPI,Karje,Unconfined,6.3,measured,2022-05,Annexure-I,124
+,Udupi,UDUPI,Katpadi,Unconfined,10.7,measured,2022-05,Annexure-I,124
+,Udupi,UDUPI,Kaup,Semi Confined,8.74,measured,2022-05,Annexure-I,124
+,Udupi,UDUPI,Kokkarne,Unconfined,6.56,measured,2022-05,Annexure-I,124
+,Udupi,UDUPI,Kota,Unconfined,4.59,measured,2022-05,Annexure-I,124
+,Udupi,UDUPI,Koup Uliyargoli,Unconfined,9.27,measured,2022-05,Annexure-I,124
+,Udupi,UDUPI,Kukkehalli,Unconfined,10.25,measured,2022-05,Annexure-I,124
+,Udupi,UDUPI,Kunjaragiri Cross,Unconfined,9.02,measured,2022-05,Annexure-I,124
+,Udupi,UDUPI,Kunjibettu,Unconfined,9.1,measured,2022-05,Annexure-I,124
+,Udupi,UDUPI,Kurkal,Unconfined,10.65,measured,2022-05,Annexure-I,124
+,Udupi,UDUPI,Malpe,Unconfined,4.43,measured,2022-05,Annexure-I,124
+,Udupi,UDUPI,Mandarti,Unconfined,10.47,measured,2022-05,Annexure-I,124
+,Udupi,UDUPI,Mannuru,Unconfined,3.94,measured,2022-05,Annexure-I,124
+,Udupi,UDUPI,Perduru,Unconfined,11.35,measured,2022-05,Annexure-I,124
+,Udupi,UDUPI,Pethri,Unconfined,12.7,measured,2022-05,Annexure-I,124
+,Udupi,UDUPI,Sabrikatta,Unconfined,10.25,measured,2022-05,Annexure-I,124
+,Udupi,UDUPI,Saligrama,Unconfined,4.8,measured,2022-05,Annexure-I,124
+,Udupi,UDUPI,Santhekatte,Unconfined,9.45,measured,2022-05,Annexure-I,124
+,Udupi,UDUPI,Sasthana,Unconfined,3.6,measured,2022-05,Annexure-I,124
+,Udupi,UDUPI,Shiroor,Unconfined,6.05,measured,2022-05,Annexure-I,124
+,Udupi,UDUPI,Uchila,Unconfined,7.6,measured,2022-05,Annexure-I,124
+,Udupi,UDUPI,Uchila A,Unconfined,13.0,measured,2022-05,Annexure-I,125
+,Udupi,UDUPI,Udupi,Unconfined,14.7,measured,2022-05,Annexure-I,125
+,Uttara Kannada,,Arekoppa,Unconfined,5.82,measured,2022-05,Annexure-I,125
+,Uttara Kannada,ANKOLA,Ankola,Semi Confined,6.8,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Ankola,Ankola1,Unconfined,5.75,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Ankola,Belekeri,Unconfined,6.97,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Ankola,Keni,Unconfined,3.78,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Bhatkal,Bhatkal1,Unconfined,1.48,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Bhatkal,Manki1,Unconfined,5.11,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Bhatkal,Murudeswar,Unconfined,4.79,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Bhatkal,Shirali,Unconfined,2.32,measured,2022-05,Annexure-I,125
+,Uttara Kannada,HALIYAL,Dandeli,Semi Confined,10.96,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Halliyal,Bhagavathi,Unconfined,5.78,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Halliyal,Dandeli Dw,Unconfined,1.0,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Halliyal,Kulgi A,Unconfined,2.88,measured,2022-05,Annexure-I,125
+,Uttara Kannada,HONAVAR,Honnavar,Unconfined,17.07,measured,2022-05,Annexure-I,125
+,Uttara Kannada,HONAVAR,Manki,Semi Confined,3.6,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Honnawar,Chandavar,Unconfined,6.27,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Honnawar,Dibbanagal,Unconfined,5.47,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Honnawar,Gerusoppa Kpc Colony,Unconfined,2.55,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Honnawar,Haldipur,Unconfined,3.63,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Honnawar,Hirematha,Unconfined,2.74,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Honnawar,Idagunji,Unconfined,6.52,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Honnawar,Kabbinahakkalu,Unconfined,4.7,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Honnawar,Moodkani,Unconfined,3.17,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Karwar,Amdalli,Unconfined,2.42,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Karwar,Arge Karwar,Unconfined,1.85,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Karwar,Asnoti,Unconfined,4.24,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Karwar,Gopishitta,Unconfined,6.44,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Karwar,Gotegali,Unconfined,6.18,measured,2022-05,Annexure-I,125
+,Uttara Kannada,KARWAR,Hapkarni,Unconfined,2.22,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Karwar,Honakona,Unconfined,3.85,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Karwar,Kadra,Unconfined,5.57,measured,2022-05,Annexure-I,125
+,Uttara Kannada,KARWAR,Karwar,Semi Confined,2.53,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Karwar,Karwar1,Unconfined,3.3,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Karwar,Majali,Unconfined,2.12,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Karwar,Sadashivgad,Unconfined,2.73,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Kumta,Alakod,Unconfined,9.6,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Kumta,Antarvalli,Unconfined,13.3,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Kumta,Badal,Unconfined,4.99,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Kumta,Bargi,Unconfined,2.54,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Kumta,Deevalli,Unconfined,3.74,measured,2022-05,Annexure-I,125
+,Uttara Kannada,Kumta,Dhareshwara,Unconfined,3.8,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Kumta,Gokarn,Unconfined,5.46,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Kumta,Kumta1,Unconfined,6.37,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Kumta,Madangeri,Unconfined,6.16,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Kumta,Mirjan,Unconfined,6.31,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Kumta,Torke,Unconfined,3.05,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Mundgod,Katur,Unconfined,2.65,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Mundgod,Malgi,Unconfined,7.2,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Mundgod,Mundgod,Unconfined,0.4,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Mundgod,Vadageri,Unconfined,7.69,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Siddapur,Basavanabail,Unconfined,2.39,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Siddapur,Bilgi1,Unconfined,11.94,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Siddapur,Dodmane,Unconfined,4.58,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Siddapur,Golgod,Unconfined,13.58,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Siddapur,Hematemane,Unconfined,4.65,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Siddapur,Hosalli,Unconfined,11.95,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Siddapur,Kanagod,Unconfined,4.75,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Siddapur,Kansur1,Unconfined,4.73,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Siddapur,Mandlikoppa,Unconfined,5.45,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Siddapur,Mavinagundi,Unconfined,5.28,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Siddapur,Sampagod,Unconfined,8.4,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Siddapur,Siddapur2,Unconfined,6.81,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Siddapur,Sunkatti,Unconfined,6.88,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Siddapur,Tyagli,Unconfined,6.4,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Siddapur,Uppadike-haladota cross,Unconfined,8.5,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Sirsi,Amminalli,Unconfined,7.65,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Sirsi,Banavasi,Unconfined,7.43,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Sirsi,Bandal,Unconfined,5.78,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Sirsi,Islur,Unconfined,6.02,measured,2022-05,Annexure-I,126
+,Uttara Kannada,SIRSI,Kansur,Semi Confined,3.56,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Sirsi,Kolgibis,Unconfined,11.57,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Sirsi,Kursi,Unconfined,5.6,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Sirsi,Ragi hosalli,Unconfined,3.41,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Sirsi,Sirsi1,Unconfined,8.51,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Sirsi,Unchalli,Unconfined,7.38,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Sirsi,Vandatte,Unconfined,9.21,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Sirsi,Yekkambi,Unconfined,6.16,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Supa,Anshi,Unconfined,5.78,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Supa,Joida,Unconfined,3.18,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Supa,Kumbarwad,Unconfined,6.04,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Supa,Nujje,Unconfined,4.2,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Yellapur,Douginala,Unconfined,9.7,measured,2022-05,Annexure-I,126
+,Uttara Kannada,Yellapur,Kannegeri,Unconfined,3.6,measured,2022-05,Annexure-I,127
+,Uttara Kannada,YELLAPUR,Kirvatti,Semi Confined,12.98,measured,2022-05,Annexure-I,127
+,Uttara Kannada,Yellapur,Madanur,Unconfined,4.08,measured,2022-05,Annexure-I,127
+,Uttara Kannada,Yellapur,Mainalli,Unconfined,13.04,measured,2022-05,Annexure-I,127
+,Uttara Kannada,Yellapur,Yellapur1,Unconfined,10.95,measured,2022-05,Annexure-I,127
+,Yadgir,SHAHPUR,B.R.gudi,Semi Confined,2.85,measured,2022-05,Annexure-I,127
+,Yadgir,SHAHPUR,Bijaspur,Unconfined,9.07,measured,2022-05,Annexure-I,127
+,Yadgir,SHAHPUR,Doranahalli,Unconfined,2.5,measured,2022-05,Annexure-I,127
+,Yadgir,SHAHPUR,Googi,Unconfined,2.47,measured,2022-05,Annexure-I,127
+,Yadgir,SHAHPUR,Khanapur2,Unconfined,7.3,measured,2022-05,Annexure-I,127
+,Yadgir,SHAHPUR,Kurkunda A,Unconfined,5.5,measured,2022-05,Annexure-I,127
+,Yadgir,SHAHPUR,Madarki,Unconfined,1.96,measured,2022-05,Annexure-I,127
+,Yadgir,SHAHPUR,Madnal,Unconfined,5.2,measured,2022-05,Annexure-I,127
+,Yadgir,SHAHPUR,Managanal,Unconfined,5.2,measured,2022-05,Annexure-I,127
+,Yadgir,SHAHPUR,Mudbal,Unconfined,2.9,measured,2022-05,Annexure-I,127
+,Yadgir,SHAHPUR,Naikal,Unconfined,2.39,measured,2022-05,Annexure-I,127
+,Yadgir,SHAHPUR,Ulkal,Unconfined,8.1,measured,2022-05,Annexure-I,127
+,Yadgir,SHAHPUR,Wadger,Unconfined,7.86,measured,2022-05,Annexure-I,127
+,Yadgir,SHAHPUR,Wadgera,Semi Confined,8.8,measured,2022-05,Annexure-I,127
+,Yadgir,SHORAPUR,Bolashettihal,Unconfined,5.5,measured,2022-05,Annexure-I,127
+,Yadgir,SHORAPUR,Devapur,Unconfined,9.44,measured,2022-05,Annexure-I,127
+,Yadgir,SHORAPUR,Hebbal B,Unconfined,3.25,measured,2022-05,Annexure-I,127
+,Yadgir,SHORAPUR,Kakkeri,Unconfined,5.04,measured,2022-05,Annexure-I,127
+,Yadgir,SHORAPUR,Kaudimatti,Semi Confined,3.74,measured,2022-05,Annexure-I,127
+,Yadgir,SHORAPUR,Kembhavi1,Unconfined,4.37,measured,2022-05,Annexure-I,127
+,Yadgir,SHORAPUR,Malgatti,Unconfined,3.25,measured,2022-05,Annexure-I,127
+,Yadgir,SHORAPUR,Malla,Unconfined,1.84,measured,2022-05,Annexure-I,127
+,Yadgir,SHORAPUR,Shantpur,Unconfined,6.35,measured,2022-05,Annexure-I,127
+,Yadgir,SHORAPUR,Shorapur A,Unconfined,4.65,measured,2022-05,Annexure-I,127
+,Yadgir,SHORAPUR,Vajjal,Unconfined,8.5,measured,2022-05,Annexure-I,127
+,Yadgir,YADGIR,Gurmatkal,Semi Confined,5.55,measured,2022-05,Annexure-I,127
+,Yadgir,YADGIR,Gurmitkal1,Unconfined,10.15,measured,2022-05,Annexure-I,127
+,Yadgir,YADGIR,Saidapur,Unconfined,5.75,measured,2022-05,Annexure-I,127
+,Yadgir,YADGIR,Yadgir,Semi Confined,8.7,measured,2022-05,Annexure-I,127
+,Yadgir,YADGIR,Yergol,Semi Confined,11.25,measured,2022-05,Annexure-I,127

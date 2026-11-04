@@ -1,0 +1,204 @@
+{
+ "dataset": "physical setting: network design, drainage basins, geological succession",
+ "source_document": "muse-source-ingestion/runs/bengaluru-aquifer-groundwater-v1/lanes/levels-resources/downloads/gw-yearbook-karnataka-2022-23.pdf",
+ "network_design": {
+  "source_ref": "PDF pp4-5,18,21 (R04), Table-1",
+  "state_area_sqkm": 191761,
+  "state_extent": "N lat 11d31' - 18d45', E long 74d12' - 78d40'; 31 districts, 233 taluks",
+  "stations_may_aug_nov2022": {
+   "dug_wells": 1413,
+   "piezometers": 262,
+   "total": 1675
+  },
+  "stations_jan2023": {
+   "dug_wells": 1366,
+   "piezometers_tubewells": 780,
+   "total": 2146
+  },
+  "density": "1675 stations = ~1 per 101 sq km",
+  "depth_semantics": "dug wells tap phreatic aquifer mostly <=20 m; piezometers 20-100 m tap phreatic + deeper aquifers; levels may differ at same place",
+  "analysis_scope": "phreatic-aquifer wells only; piezometer levels excluded from water-level/fluctuation maps",
+  "schedule": "Jan + Nov: 1st-10th; May + Aug: 20th-31st; quality samples once yearly in May; monthly monitoring at select Bengaluru Metropolitan wells",
+  "district_analysis_note": "27 districts analysed: Bangalore Rural+Ramnagara, Kolar+Chikballapura, Bellary+Vijayanagara, Gulbarga+Yadgir merged in GEMS/WIMS software",
+  "purpose": "4 seasonal snapshots; annual fluctuation vs same month prior year; decadal fluctuation vs same-month decadal mean"
+ },
+ "physiography": {
+  "source_ref": "PDF pp6,9 (R05)",
+  "units": [
+   "coastal plain: 300 km Karwar-Mangalore, <=40 km wide, 0-200 m amsl, west-flowing rivers",
+   "Malnad: steep ranges/valleys east of coast, 50-100 km wide, 200 m to 1872 m (Kudremukh); Cauvery, Tungabhadra originate here",
+   "northern tableland: 300-350 m amsl",
+   "southern/eastern plateau: rolling topography with sporadic hills, 600-1000 m amsl"
+  ],
+  "climate": "coastal/hilly per-humid to sub-humid; plains sub-humid to semi-arid; east-of-ghats rain shadow, drought prone",
+  "seasons": "dry Jan-Feb; pre-monsoon Mar-May (squally, hail); SW monsoon Jun-Sep (bulk of rain, sets in first week June); post/NE monsoon Oct-Dec (depressions/cyclones)"
+ },
+ "drainage": {
+  "source_ref": "PDF p7, Table-2; Plate-II image-only (lane-visual-story)",
+  "shares_pct_state": {
+   "Krishna_system": 60,
+   "Cauvery_system": 18,
+   "Palar_Pennar_Ponnaiyar": 7,
+   "Godavari": 2,
+   "west_flowing_remainder": "~13"
+  },
+  "tributaries": {
+   "Krishna": "Bhima, Malaprabha, Ghataprabha, Tungabhadra, Upper Krishna, Vedavathi",
+   "Cauvery": "Arkavathi, Hemavathi, Kabini, Shimsha, Suvarnavathi, Upper Cauvery (Arkavathi/Shimsha/Pennar/Ponnaiyar rise near Nandi hills/Bengaluru)",
+   "west_flowing": "Kalinadi, Netravathi, Sharavathi, Sita, Swarna"
+  },
+  "sub_basins": [
+   {
+    "basin": "Godavari",
+    "sub_basin": "Karanja",
+    "area_sqkm": 4405,
+    "pct_state": 2,
+    "districts_note": "Bidar (machine text truncated)"
+   },
+   {
+    "basin": "Krishna",
+    "sub_basin": "Bhima",
+    "area_sqkm": 19345,
+    "pct_state": 10,
+    "districts_note": "Bidar, Bijapur, Gulbarga (text truncated)"
+   },
+   {
+    "basin": "Krishna",
+    "sub_basin": "Malaprabha & Ghataprabha",
+    "area_sqkm": 19233,
+    "pct_state": 10,
+    "districts_note": "Belgaum, Bijapur, Dharwar (text truncated)"
+   },
+   {
+    "basin": "Krishna",
+    "sub_basin": "Tungabhadra",
+    "area_sqkm": 37786,
+    "pct_state": 20,
+    "districts_note": "Bellary, Shimoga (text truncated)"
+   },
+   {
+    "basin": "Krishna",
+    "sub_basin": "Upper Krishna",
+    "area_sqkm": 17685,
+    "pct_state": 9,
+    "districts_note": "Belgaum, Bijapur (text truncated)"
+   },
+   {
+    "basin": "Krishna",
+    "sub_basin": "Vedavati",
+    "area_sqkm": 19222,
+    "pct_state": 10,
+    "districts_note": "Bellary, Hassan (text truncated)"
+   },
+   {
+    "basin": "Cauvery",
+    "sub_basin": "Arkavati",
+    "area_sqkm": 4500,
+    "pct_state": 2,
+    "districts_note": "Bangalore Urban (text truncated)"
+   },
+   {
+    "basin": "Cauvery",
+    "sub_basin": "Hemavati",
+    "area_sqkm": 5006,
+    "pct_state": 3,
+    "districts_note": "Hassan, Chikmagalur"
+   },
+   {
+    "basin": "Cauvery",
+    "sub_basin": "Kabini",
+    "area_sqkm": 5160,
+    "pct_state": 3,
+    "districts_note": "Kodagu, Mysore"
+   },
+   {
+    "basin": "Cauvery",
+    "sub_basin": "Shimsa",
+    "area_sqkm": 7810,
+    "pct_state": 4,
+    "districts_note": "Bangalore, Mandya (text truncated)"
+   },
+   {
+    "basin": "Cauvery",
+    "sub_basin": "Suvarnavati",
+    "area_sqkm": 4050,
+    "pct_state": 2,
+    "districts_note": "Mysore"
+   },
+   {
+    "basin": "Cauvery",
+    "sub_basin": "Upper Cauvery",
+    "area_sqkm": 7747,
+    "pct_state": 4,
+    "districts_note": "Kodagu, Mandya, Mysore"
+   },
+   {
+    "basin": "West-flowing rivers",
+    "sub_basin": "Kalinadi",
+    "area_sqkm": 9291,
+    "pct_state": 5,
+    "districts_note": "Belgaum, Dharwar, Uttara Kannada (text truncated)"
+   },
+   {
+    "basin": "West-flowing rivers",
+    "sub_basin": "Netravati",
+    "area_sqkm": 7057,
+    "pct_state": 4,
+    "districts_note": "Kodagu, Hassan, Dakshina Kannada (text truncated)"
+   },
+   {
+    "basin": "West-flowing rivers",
+    "sub_basin": "Sharavati",
+    "area_sqkm": 5540,
+    "pct_state": 3,
+    "districts_note": "Uttara Kannada, Shimoga"
+   },
+   {
+    "basin": "West-flowing rivers",
+    "sub_basin": "Sita-Swarna",
+    "area_sqkm": 4344,
+    "pct_state": 2,
+    "districts_note": "Dakshina Kannada (text truncated)"
+   },
+   {
+    "basin": "Palar",
+    "sub_basin": "Palar",
+    "area_sqkm": 2826,
+    "pct_state": 1,
+    "districts_note": "Kolar"
+   },
+   {
+    "basin": "Pennar",
+    "sub_basin": "Pennar",
+    "area_sqkm": 7146,
+    "pct_state": 4,
+    "districts_note": "Bangalore Rural (text truncated)"
+   },
+   {
+    "basin": "Ponnaiyar",
+    "sub_basin": "Ponnaiyar",
+    "area_sqkm": 2638,
+    "pct_state": 2,
+    "districts_note": "Bangalore Urban (text truncated)"
+   }
+  ],
+  "district_lists_note": "machine-text district lists truncate mid-list; kept verbatim with truncation flag; Plate-II map is visual-lane OCR"
+ },
+ "hydrogeology": {
+  "source_ref": "PDF pp17,19 (R05), Table-7; Plate-III image-only (lane-visual-story)",
+  "succession_young_to_old": [
+   "Recent: soil & alluvium (sand, clay)",
+   "Pleistocene: laterite",
+   "Tertiary-Mesozoic: Deccan Trap basalt (hard massive & vesicular)",
+   "Bhima Series (Lower Palaeozoic-upper Precambrian): quartzite, sandstone, limestone, shale, conglomerate",
+   "Kaladgi Series (Upper Precambrian): quartzite, sandstone, limestone, shale, conglomerate",
+   "Dharwar system volcanics + schists (Lower Precambrian): greenstone, metasediments",
+   "Archaean Peninsular Gneissic Complex: gneiss, granite, charnockite, khondalite"
+  ],
+  "key_points": [
+   "majority of state: Peninsular gneiss, granite, Dharwarian schists (Archaean); basalts (Deccan Traps) in north; Bhima/Kaladgi sedimentaries small northern area; alluvium narrow coastal + stream belts",
+   "majority of monitoring stations sit in granitic-gneissic terrain",
+   "crystalline/consolidated rocks lack primary porosity (except vesicular basalt zones); groundwater held in secondary porosity: weathering, fracturing, jointing; solution cavities in limestone form good aquifers"
+  ]
+ }
+}

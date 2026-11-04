@@ -1,6 +1,17 @@
 /**
- * Standardized Scientific Contract Schema (v1.0)
- * Source-grounded, domain-neutral scientific output from the synthesizer.
+ * @file scientific.ts
+ * @module ui-v2/types/scientific
+ * @description Canonical domain interfaces and data models for Subsurface UI V2.
+ *
+ * Defines the standardized schema contracts for scientific features, spatial geometries,
+ * depth intervals, hydrogeological observations, quantitative series, and executive synthesis.
+ *
+ * Core Guarantees:
+ * - Evidence Grounding: Every measurement links to a `SourceReference` (document, page, table/figure).
+ * - Confidence Typing: Explicit tiers (`measured` | `interpreted` | `reported` | `unknown`).
+ * - Spatial Integrity: Strict distinction between located WGS84 coordinates and unlocated features.
+ * - Subsurface Stratigraphy: Top/bottom intervals measured in meters below ground level (mbgl)
+ *   or meters above mean sea level (m amsl).
  */
 
 export interface SourceReference {
@@ -45,9 +56,16 @@ export interface FeatureProperty {
   unit?: string | null;
 }
 
+export type GeometryKind =
+  | 'Point' | 'MultiPoint'
+  | 'LineString' | 'MultiLineString'
+  | 'Polygon' | 'MultiPolygon';
+
 export interface FeatureGeometry {
-  type: string; // 'Point'
-  coordinates: [number, number]; // [lng, lat]
+  type: GeometryKind;
+  coordinates: unknown;
+  crs?: string;
+  fidelity?: string;
 }
 
 export interface NarrativeInsight {
@@ -63,15 +81,17 @@ export interface NarrativeInsight {
 }
 
 export interface FeatureNarrative {
-  status: string;
+  analysis: string;
+  evidence_refs?: string[];
+  /** Legacy ui-narrative.v2 fields retained for package compatibility. */
+  status?: string;
   insight_type?: string;
-  headline: string;
-  summary: string;
-  why_it_matters: string;
+  headline?: string;
+  summary?: string;
+  why_it_matters?: string;
   visual_takeaway?: string;
   insights?: NarrativeInsight[];
   secondary_context?: string | null;
-  evidence_refs?: string[];
 }
 
 export interface RawFeature {
@@ -87,6 +107,12 @@ export interface RawFeature {
   aliases?: string[];
   geometry?: FeatureGeometry | null;
   narrative?: FeatureNarrative | null;
+  evidenceStatus?: 'observed' | 'reported' | 'derived' | 'figure-derived' | 'proposed' | 'external-context' | string;
+  locationFidelity?: 'exact' | 'approximate' | 'unlocated' | string;
+  confidence?: 'high' | 'medium' | 'low' | string;
+  observedAt?: string;
+  publishedAt?: string;
+  layerIds?: string[];
 }
 
 export interface RawObservation {
@@ -129,6 +155,87 @@ export interface PreservedDataset {
   columns?: string[];
   rows?: Array<Record<string, unknown> | Array<unknown>>;
   source_refs?: string[];
+  path?: string;
+  kind?: string;
+  ui_role?: string;
+  row_count?: number;
+  description?: string;
+}
+
+export interface NativeAsset {
+  id: string;
+  title: string;
+  kind: string;
+  path?: string;
+  page?: number | string;
+  caption?: string;
+  mimeType?: string;
+  bounds?: [number, number, number, number];
+  fidelity?: string;
+  evidenceRefs: string[];
+  controlPoints?: Array<{ pixel: [number, number]; coordinate: [number, number] }>;
+  legend?: Array<{ label: string; color?: string; value?: string | number }>;
+  extractionQuality?: string;
+  sourceKind?: 'direct-source' | 'model-generated' | string;
+  hotspots?: Array<{ id: string; label: string; x: number; y: number; featureId?: string }>;
+}
+
+export interface QuantitativeSeries {
+  id: string;
+  title: string;
+  kind: string;
+  xLabel?: string;
+  yLabel?: string;
+  unit?: string;
+  points: Array<{
+    x: string | number;
+    y: number;
+    yLow?: number;
+    yHigh?: number;
+    group?: string;
+    category?: string;
+    threshold?: number;
+    uncertainty?: number;
+    featureId?: string;
+    observationId?: string;
+    datasetId?: string;
+    evidenceRefs?: string[];
+  }>;
+  evidenceRefs: string[];
+  xUnit?: string;
+  threshold?: number;
+  thresholdLabel?: string;
+  stackMode?: 'grouped' | 'stacked' | 'normalized';
+  status?: 'historical' | 'current' | 'forecast' | 'proposed' | string;
+  description?: string;
+}
+
+export interface TimelineEvent {
+  id: string;
+  title: string;
+  timelineId?: string;
+  timelineTitle?: string;
+  timelineDescription?: string;
+  timelineUnit?: string;
+  date?: string;
+  period?: string;
+  status?: string;
+  description?: string;
+  featureIds: string[];
+  evidenceRefs: string[];
+  kind?: 'observation' | 'publication' | 'forecast' | 'revision' | 'proposal' | string;
+  datasetIds?: string[];
+  assetIds?: string[];
+}
+
+export interface GenericExtension {
+  id: string;
+  kind: string;
+  title: string;
+  description?: string;
+  rendererHint?: string;
+  payload: unknown;
+  evidenceRefs: string[];
 }
 
 export interface ScientificPackage {
@@ -143,9 +250,14 @@ export interface ScientificPackage {
     datasets?: PreservedDataset[];
     relationships?: Array<Record<string, unknown>>;
     agentic?: AgenticPackageMetadata;
+    nativeAssets?: NativeAsset[];
+    quantitativeSeries?: QuantitativeSeries[];
+    timelineEvents?: TimelineEvent[];
+    genericExtensions?: GenericExtension[];
   };
   analysis_schema_version?: string;
   report_synthesis?: ReportSynthesisPackage;
+  document_analysis?: DocumentAnalysisPackage;
 }
 
 export interface AgenticLayer {
@@ -187,6 +299,14 @@ export interface AgenticStructuredResource {
   evidence_refs?: string[];
 }
 
+export interface AgenticNarrativeTarget {
+  targetId: string;
+  targetKind: 'feature' | 'layer' | 'vertical_profile' | 'study';
+  objectId: string;
+  analysis: string;
+  evidenceRefs: string[];
+}
+
 export interface AgenticPackageMetadata {
   sourceSchemaVersion: string;
   renderingSchemaVersion?: string;
@@ -198,6 +318,7 @@ export interface AgenticPackageMetadata {
   layers: AgenticLayer[];
   verticalProfiles: AgenticVerticalProfile[];
   structuredResources: AgenticStructuredResource[];
+  narrativeTargets: AgenticNarrativeTarget[];
   nativeAssets: Array<Record<string, unknown>>;
   evidenceDispositions: Array<Record<string, unknown>>;
   coverage: Record<string, unknown>;
@@ -205,7 +326,29 @@ export interface AgenticPackageMetadata {
   unresolvedItems: string[];
   validation?: Record<string, unknown>;
   adapterDiagnostics: string[];
+  quantitativeSeries: QuantitativeSeries[];
+  timelineEvents: TimelineEvent[];
 }
+
+export type GenericCapabilityId =
+  | 'point-map' | 'line-map' | 'polygon-map' | 'raster-overlay'
+  | 'surface-markers' | 'vertical-profiles' | 'cross-sections'
+  | 'statistics' | 'time-series' | 'comparisons' | 'distributions'
+  | 'structured-tables' | 'native-assets'
+  | 'narratives' | 'report' | 'timeline' | 'unlocated-evidence'
+  | 'extensions' | 'provenance' | 'comparison-workspace';
+
+export interface CapabilityAvailability {
+  id: GenericCapabilityId;
+  available: boolean;
+  count: number;
+  label: string;
+  reason?: string;
+}
+
+export type AdaptiveLayoutMode =
+  | 'map-first' | 'vertical-first' | 'corridor-first'
+  | 'dashboard-first' | 'figure-first' | 'report-first';
 
 export type ReportFindingBasis = 'source_stated' | 'synthesized_pattern' | 'deterministic_derived' | string;
 export type ReportFindingConfidence = 'high' | 'medium' | 'low' | string;
@@ -337,6 +480,38 @@ export interface ReportAnalysisModel {
   diagnostics: string[];
 }
 
+export interface DocumentAnalysisMetric {
+  label: string;
+  display_value: string;
+  explanation?: string;
+  evidence_refs: string[];
+}
+
+export interface DocumentAnalysisBlock {
+  id: string;
+  headline?: string;
+  content?: string;
+  metrics?: DocumentAnalysisMetric[];
+  evidence_refs?: string[];
+  related_object_ids?: string[];
+}
+
+export interface DocumentAnalysisPackage {
+  schema_version: string;
+  report_id: string;
+  source_title: string;
+  display_title: string;
+  short_title: string;
+  brief_description: string;
+  blocks: DocumentAnalysisBlock[];
+}
+
+export interface DocumentAnalysisModel {
+  raw: DocumentAnalysisPackage;
+  blocks: DocumentAnalysisBlock[];
+  diagnostics: string[];
+}
+
 /**
  * Normalized UI Render-Ready Model
  */
@@ -362,6 +537,7 @@ export interface RenderablePointFeature {
   depthFidelity: 'reported' | 'interval_derived' | 'illustrative_default';
   hasSyntheticIntervals: boolean;
   isSpatialOutlier: boolean;
+  layerIds?: string[];
 }
 
 export interface RenderableInterval {
@@ -418,6 +594,14 @@ export interface ScientificUIModel {
   allFeatures: (RenderablePointFeature | RawFeature)[];
   regionalSlabs: RenderableRegionalSlab[];
   preservedDatasets: PreservedDataset[];
+  spatialFeatures: RawFeature[];
+  nativeAssets: NativeAsset[];
+  quantitativeSeries: QuantitativeSeries[];
+  timelineEvents: TimelineEvent[];
+  allIntervals: RawInterval[];
+  genericExtensions: GenericExtension[];
+  capabilities: CapabilityAvailability[];
+  primaryLayout: AdaptiveLayoutMode;
   allObservations: RawObservation[];
   sourcesCount: number;
   renderingNotes: {
@@ -425,6 +609,8 @@ export interface ScientificUIModel {
     hiddenFeatureCount: number;
   };
   reportAnalysis?: ReportAnalysisModel;
+  documentAnalysis?: DocumentAnalysisModel;
   packageFamily: 'research-engine' | 'agentic-flow';
+  sourceBaseUrl?: string;
   agentic?: AgenticPackageMetadata;
 }

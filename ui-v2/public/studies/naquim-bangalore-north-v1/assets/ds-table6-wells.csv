@@ -1,0 +1,15 @@
+location,type,lat_deg,lon_deg,depth_drilled_mbgl,casing_mbgl,lithology,fracture_zones_mbgl,swl_mbgl,discharge_lps,transmissivity_m2day,source_ref,note
+B'lore-GSI,PZ,12.91027,77.56805,200.2,12,Granite gneiss,"11.2-32.12; 30.48-32.12",,0.51,,Table 6 report p6,first Table 6 row spans pp9-10
+Blore CWC,PZ,13.03944,77.53888,52,,Granite gneiss,,,,,Table 6 report p7,
+"IISc, Sadashivnagar",EW,13.02775,77.56916,162.5,32.75,Granitic gneiss with veins,"22.84-24.48; 34.12-35.12; 43.76-47.40; 158.36-162.50",54.8,4.26,281.24,Table 6 report p7,highest yield in table
+Cubbon Park,EW,12.97436,77.59388,116.16,11.5,Granitic gneiss,"9.20-11.20; 32.12-34.12",2.12,1,,Table 6 report p7,
+"BWSSB Yelahanka, Jakkur",EW,13.09527,77.60597,139.08,24.05,Fractured and weathered granitic gneiss,"59.04-61.04; 89.60-91.60; 137.44-139.08",1.6,0.75,4.55,Table 6 report p7,
+"Rachnehalli, Jakkur",EW,13.09750,77.60944,100.88,32,Granitic gneiss weathered,Nil,24.3,0.08,365.5,Table 6 report p7,no fracture zone encountered
+"IIM, Bannerghatta Road",EW,13.89555,77.60000,108.52,32.5,Granitic gneiss,51.4-55.04,30.8,0.22,1277.75,Table 6 report p7,SUSPECT latitude: printed 13.89555 incompatible with Bannerghatta Road (~12.89N); kept as reported
+Hessarghatta,PZ,13.13333,77.50361,310,18,Granite,171.9-173,160.9,negligible,,Table 6 report p7,deepest hole 310 m
+Vidyanagar,EW,13.14166,77.66666,209.27,39.1,Granitic gneiss,"32; 32.40; 60.49; 62.49; 64; 66.11; 209.27",,,,Table 6 report p7,SWL/discharge/T blank in source
+Yelahanka,EW,13.11111,77.57083,200,31.5,Granitic gneiss,"31; 49; 64; 140",,1.4,7,Table 6 report p7,
+Hessarghatta I,EW,13.08888,77.49444,241.37,,Granitic gneiss with quartz,"13-21; 28-29; 50; 80-89",,1.75,14,Table 6 report p7,
+Hassarghatta OW II,OW,13.08888,77.49444,100,,Granitic gneiss quartzite,"15-19; 46-47; 58-60; 64-68",,1.75,12,Table 6 report p7,observation well
+Hassarghatta OW II,OW,13.08888,77.49444,50.25,,Granitic gneiss,"15-17; 21-23; 44-46",,0.13,,Table 6 report p7,shallow observation well same site
+NIMHANS,PZ,12.93861,77.59208,100,32.5,Granitic gneiss with pegmatite veins,"47.40-51.40; 68.68-72.32",5.36,1,,Table 6 report p7,

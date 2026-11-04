@@ -1,3 +1,11 @@
+/**
+ * @file ScientificHeader.tsx
+ * @module ui-v2/components/hud/ScientificHeader
+ * @description Application top navigation bar and chrome.
+ * Displays Subsurface identity, location badge, study switcher,
+ * evidence summary badges, and viewport mode toggle buttons.
+ */
+
 import React from 'react';
 import { ScientificUIModel } from '../../types/scientific';
 import { Box, Map, Layers, ShieldCheck, Database, Table } from 'lucide-react';
@@ -33,7 +41,7 @@ export const ScientificHeader: React.FC<ScientificHeaderProps> = ({
             </span>
           </div>
           <div className="text-[11px] text-slate-400 flex items-center gap-1.5 max-w-xl truncate">
-            <span className="truncate">Universal Spatial-Temporal Digital Twin</span>
+            <span className="truncate">Adaptive Scientific Evidence Explorer</span>
             {selectedFeatureName && (
               <>
                 <span className="text-slate-600">/</span>
@@ -87,7 +95,7 @@ export const ScientificHeader: React.FC<ScientificHeaderProps> = ({
       <div className="flex items-center gap-4 text-xs font-mono">
         <div className="flex items-center gap-1.5 text-slate-400">
           <Database className="w-3.5 h-3.5 text-cyan-400" />
-          <span>{model.featuresWithCoords.length} Geocoded Features</span>
+          <span>{model.spatialFeatures.filter((feature) => feature.geometry).length} Mapped Objects</span>
         </div>
 
         <div className="flex items-center gap-1.5 text-slate-400">

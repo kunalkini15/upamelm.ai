@@ -1,0 +1,7 @@
+aquifer,parameter,min_value,max_value,unit,bis_limit,verdict,source_ref
+Aquifer-I (phreatic),EC,220,2170,uS/cm at 25C,TDS 500 mg/l desirable (EC ~750) extendable to 2000 mg/l (EC ~3000); unsuitable above 2250 mg/l TDS,All samples within 2250 mg/l TDS - suitable,"Ch 3.3 (report p10 / PDF p13); Fig 10 map classes: <=750 and 751-2250"
+Aquifer-I (phreatic),Fluoride,0.02,1.56,mg/l,1.5 (all samples below 1.5 mg/l - suitable for drinking),Suitable for drinking,"Ch 3.3 (report p10 / PDF p13); Fig 11 map classes: 0-1 and 1-1.5 mg/l"
+Aquifer-I (phreatic),Nitrate,0.2,145,mg/l,45 (BIS IS 10500:2012),Contaminated in some samples - exceeds limit,"Ch 3.3 (report p10 / PDF p13); Fig 12 map classes: <45 and >45 mg/l"
+Aquifer-II (fractured),EC,86,2300,uS/cm at 25C,,Good for domestic and irrigation except localized nitrate,"Ch 3.3 (report p11 / PDF p14)"
+Aquifer-II (fractured),Fluoride,0.14,0.67,mg/l,1.5,Suitable,"Ch 3.3 (report p11 / PDF p14)"
+Aquifer-II (fractured),Nitrate (NO3),2,129,mg/l,45,Localized anthropogenic nitrate pollution,"Ch 3.3 (report p11 / PDF p14)"

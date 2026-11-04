@@ -1,0 +1,34 @@
+{
+  "studies": [
+    {
+      "id": "naquim-bangalore-north-v1",
+      "title": "Bangalore North Aquifer Plan",
+      "package": "/studies/naquim-bangalore-north-v1/study_package.json",
+      "family": "NAQUIM aquifer management plan"
+    },
+    {
+      "id": "naquim-bangalore-east-v1",
+      "title": "Bangalore East Aquifer Plan",
+      "package": "/studies/naquim-bangalore-east-v1/study_package.json",
+      "family": "NAQUIM aquifer management plan"
+    },
+    {
+      "id": "gw-yearbook-karnataka-2022-23-v1",
+      "title": "Karnataka Ground Water Year Book 2022–23",
+      "package": "/studies/gw-yearbook-karnataka-2022-23-v1/study_package.json",
+      "family": "Groundwater monitoring year book"
+    },
+    {
+      "id": "dgwr-karnataka-2024-v1",
+      "title": "Karnataka Groundwater Resources & Quality 2024",
+      "package": "/studies/dgwr-karnataka-2024-v1/study_package.json",
+      "family": "Dynamic groundwater resources and quality"
+    },
+    {
+      "id": "dgwr-karnataka-2023-v1",
+      "title": "Karnataka Groundwater Resources 2023",
+      "package": "/studies/dgwr-karnataka-2023-v1/study_package.json",
+      "family": "Dynamic groundwater resources"
+    }
+  ]
+}

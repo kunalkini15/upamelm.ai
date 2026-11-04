@@ -1,0 +1,18 @@
+{
+  "title": "Nine aquifer groups of Karnataka (GWRA-2024 factsheet)",
+  "source_ref": "Page 2 salient features item 2 + Recommendations bullet 1 (R07/R10)",
+  "evidence_refs": ["Q-023"],
+  "columns": ["aquifer_group", "setting_as_printed", "ui_note"],
+  "rows": [
+    {"aquifer_group": "Banded Gneissic Complex (BGC)", "setting_as_printed": "Hard Archaean terrain covering major parts of the state", "ui_note": "Fracture/weathered-zone groundwater; context only, no yield printed"},
+    {"aquifer_group": "Basalt", "setting_as_printed": "Deccan Traps continuation in the northern part of the state", "ui_note": "Northern basalt aquifer; context only"},
+    {"aquifer_group": "Schists", "setting_as_printed": "Dharwar Schists of Archaean age", "ui_note": "Hard-rock group; context only"},
+    {"aquifer_group": "Granites", "setting_as_printed": "Archaean granites (with Peninsular Gneisses)", "ui_note": "Hard-rock group; context only"},
+    {"aquifer_group": "Charnockites", "setting_as_printed": "Archaean charnockites", "ui_note": "Hard-rock group; context only"},
+    {"aquifer_group": "Limestones", "setting_as_printed": "Bhima/Kaladgi sedimentary formations, small area in northern districts", "ui_note": "Sedimentary group; context only"},
+    {"aquifer_group": "Laterites", "setting_as_printed": "Listed among the nine groups (no separate extent printed)", "ui_note": "Context only; no area or yield printed"},
+    {"aquifer_group": "Sandstones", "setting_as_printed": "Bhima/Kaladgi sedimentary formations, small northern area", "ui_note": "Sedimentary group; context only"},
+    {"aquifer_group": "Alluvium", "setting_as_printed": "Recent alluvium in a narrow coastal belt and along stream courses", "ui_note": "Only porous group; narrow extent as printed"}
+  ],
+  "validation": {"row_count": 9, "note": "Group names and settings transcribed as printed; no transmissivity, yield or thickness printed in the factsheet, so none is shown."}
+}

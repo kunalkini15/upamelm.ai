@@ -1,0 +1,7 @@
+component,value_ham,note
+Annual extractable GW resources,2433,dynamic
+"Fresh in-storage GW resources, phreatic",8441,in-storage
+"Fresh in-storage GW resources, fractured down to 200 m",1229,in-storage
+Total availability of fresh GW resources,9670,printed; equals 8441 + 1229
+Net GW availability for future irrigation development,0,GEC-2017
+Domestic/industrial demand for next 25 years (additional allocation),334,GEC-2017

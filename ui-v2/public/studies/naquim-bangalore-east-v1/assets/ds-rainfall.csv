@@ -1,0 +1,14 @@
+period,season,value_mm,kind
+2001-2015 average,Pre-Monsoon,202,average
+2001-2015 average,Monsoon (Jun-Sep),395,average
+2001-2015 average,Post-Monsoon,189,average
+2001-2015 average,Annual,786,average
+2020,Pre-monsoon (Jan-May) normal,119,normal
+2020,Pre-monsoon (Jan-May) actual,220,actual
+2020,SW monsoon (Jun-Sep) normal,479,normal
+2020,SW monsoon (Jun-Sep) actual,544,actual
+2020,NE monsoon (Oct-Dec) normal,217,normal
+2020,NE monsoon (Oct-Dec) actual,254,actual
+2020,Annual normal,815,normal
+2020,Annual actual,1019,actual
+2020,Annual departure %,25,departure

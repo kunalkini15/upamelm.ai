@@ -1,3 +1,12 @@
+/**
+ * @file ReportAnalysis.ts
+ * Indexes, categorizes, and normalizes executive synthesis findings,
+ * statistical indicators, and scientific uncertainties for the Executive Dossier Drawer.
+ *
+ * Implements strict referential validation against spatial features, observations,
+ * and intervals to ensure every reported claim is grounded.
+ */
+
 import {
   NormalizedPatternCategory,
   ReportAnalysisModel,
@@ -9,6 +18,10 @@ import {
   VisualizationCapability,
 } from '../types/scientific';
 
+/**
+ * Validated lookup sets for cross-referencing findings against
+ * ingested spatial, temporal, and subsurface data points.
+ */
 export interface ReportReferenceSets {
   featureIds: Set<string>;
   studyAreaIds: Set<string>;
@@ -74,6 +87,15 @@ function hasScenarioPair(callouts: ReportStatCallout[]): boolean {
   return Array.from(groups.values()).some((group) => group.current && group.projected);
 }
 
+/**
+ * Builds the structured ReportAnalysisModel from the report synthesis package.
+ * Correlates findings with chapters, themes, spatial features, and observations,
+ * and derives analytical categories and visualization capabilities.
+ *
+ * @param pkg - The raw ReportSynthesisPackage from the study package.
+ * @param refs - Referential validation lookup sets.
+ * @returns Fully indexed ReportAnalysisModel with findings, reverse indices, and metrics.
+ */
 export function buildReportAnalysis(
   pkg: ReportSynthesisPackage,
   refs: ReportReferenceSets,

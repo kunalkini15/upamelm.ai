@@ -1,0 +1,17 @@
+{
+  "title": "Factsheet management recommendations (proposed, not observed)",
+  "source_ref": "Page 2 Recommendations bullets (R10)",
+  "evidence_refs": ["Q-033", "SP-R10-spatial-recommendations", "Q-023"],
+  "columns": ["recommendation", "lever", "status"],
+  "rows": [
+    {"recommendation": "Build more water-harvesting and conservation structures to catch rain (>1000 mm/yr), especially in hard-rock terrain; use the CGWB Master Plan for Artificial Recharge", "lever": "Recharge", "status": "proposed"},
+    {"recommendation": "Restore and rejuvenate all existing tanks to capture surface runoff for artificial recharge, with periodic maintenance (CGWB Manual on Artificial Recharge Techniques)", "lever": "Recharge", "status": "proposed"},
+    {"recommendation": "Use NAQUIM aquifer-mapping reports and the Ground Water Year Book (water level and quality) for local groundwater management", "lever": "Planning data", "status": "proposed"},
+    {"recommendation": "Expand micro-irrigation: irrigation uses about 89% of groundwater, so efficiency gains cut the largest load", "lever": "Demand (irrigation 89%)", "status": "proposed"},
+    {"recommendation": "Run mass-awareness campaigns, farmer/public outreach, display boards, water-management training, and school painting/essay activities", "lever": "Awareness", "status": "proposed"},
+    {"recommendation": "In urban and industrial areas, treat and safely dispose of industrial effluents, solid waste and sewage so the shallow (phreatic) aquifer is not polluted", "lever": "Quality protection", "status": "proposed"},
+    {"recommendation": "Enforce the Ministry of Jal Shakti groundwater-extraction guidelines notified 24.09.2020 and amended March 2023", "lever": "Regulation", "status": "proposed"},
+    {"recommendation": "Plan by aquifer group (BGC, Basalt, Schists, Granites, Charnockites, Limestones, Laterites, Sandstones, Alluvium): hard-rock groups need fracture-focused recharge; alluvium is a narrow coastal/stream belt", "lever": "Aquifer context", "status": "proposed"}
+  ],
+  "validation": {"row_count": 8, "note": "All rows are proposed guidance (proposed_not_observed); none is an observed outcome. The irrigation 89% share is the only quantified lever (Q-033)."}
+}

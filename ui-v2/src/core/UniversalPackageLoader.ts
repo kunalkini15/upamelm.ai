@@ -1,3 +1,16 @@
+/**
+ * @file UniversalPackageLoader.ts
+ * @module ui-v2/core/UniversalPackageLoader
+ * @description Ingestion pipeline translating domain JSON packages into high-performance
+ * 3D scene models (`UniversalSceneModel`) for Three.js / React Three Fiber rendering.
+ *
+ * Geometric & Dimensional Primitives:
+ * - Coordinates: WGS84 [longitude, latitude] decimal degrees.
+ * - Depths: Positive numbers (meters below ground level / mbgl).
+ * - Elevations: Meters above mean sea level (m amsl).
+ * - Horizons: [top_depth, bottom_depth] intervals.
+ */
+
 import {
   UniversalRenderingPackage,
   UniversalSceneModel,

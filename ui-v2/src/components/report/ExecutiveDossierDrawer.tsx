@@ -55,6 +55,9 @@ export const ExecutiveDossierDrawer: React.FC<ExecutiveDossierDrawerProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [showCaveatsModal, setShowCaveatsModal] = useState(false);
   const [activeTab, setActiveTab] = useState<'station' | 'executive'>('executive');
+  const agentic = model.agentic;
+  const auditContextCount = (agentic?.limitations.length || 0) + (agentic?.unresolvedItems.length || 0);
+  const renderingCoverage = (agentic?.coverage.rendering || {}) as Record<string, unknown>;
 
   // If focusedFeature changes and has specific findings, default tab to 'station'
   const stationFindings = useMemo(() => {
@@ -128,7 +131,7 @@ export const ExecutiveDossierDrawer: React.FC<ExecutiveDossierDrawerProps> = ({
                   {focusedFeature ? `${focusedFeature.name} • Report Dossier` : 'Executive Intelligence Dossier'}
                 </div>
                 <div className="text-[10px] text-slate-400 font-mono truncate">
-                  {model.studyAreaName} • Synthesis Engine
+                  Study Area • Synthesis Engine
                 </div>
               </div>
             </div>
@@ -140,7 +143,7 @@ export const ExecutiveDossierDrawer: React.FC<ExecutiveDossierDrawerProps> = ({
                 title="View Scientific Caveats"
               >
                 <Info className="w-3.5 h-3.5 text-amber-400" />
-                <span>Caveats ({analysis.uncertainties.length})</span>
+                <span>Scientific context ({analysis.uncertainties.length})</span>
               </button>
               <button
                 onClick={onClose}
@@ -270,6 +273,29 @@ export const ExecutiveDossierDrawer: React.FC<ExecutiveDossierDrawerProps> = ({
                 {analysis.raw.executive_overview.abstract}
               </p>
             </div>
+
+            {agentic && (
+              <div className="rounded-xl border border-emerald-500/20 bg-emerald-950/10 p-3.5 space-y-3">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-emerald-300">
+                    <Activity className="w-3.5 h-3.5" />
+                    <span>Evidence package</span>
+                  </div>
+                  <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[9px] text-emerald-200">
+                    {agentic.status?.replace(/_/g, ' ') || 'validated'}
+                  </span>
+                </div>
+                <div className="grid grid-cols-4 gap-2 text-center">
+                  <div><div className="text-sm font-bold text-slate-100">{agentic.layers.length}</div><div className="text-[9px] text-slate-500">Layers</div></div>
+                  <div><div className="text-sm font-bold text-slate-100">{agentic.verticalProfiles.length}</div><div className="text-[9px] text-slate-500">Profiles</div></div>
+                  <div><div className="text-sm font-bold text-slate-100">{agentic.structuredResources.length}</div><div className="text-[9px] text-slate-500">Resources</div></div>
+                  <div><div className="text-sm font-bold text-slate-100">{String(renderingCoverage.evidence_linked_to_ui ?? '—')}</div><div className="text-[9px] text-slate-500">Evidence linked</div></div>
+                </div>
+                <p className="text-[10px] leading-relaxed text-slate-400 font-sans">
+                  Geometry, native layers, depth profiles, structured tables, and evidence dispositions are retained from the source package. Approximate and narrative-only material remains explicitly qualified.
+                </p>
+              </div>
+            )}
 
             {/* 2. DETERMINISTIC KEY METRICS (GROUNDED IN CALLOUTS) */}
             {keyCallouts.length > 0 && (
@@ -502,7 +528,7 @@ export const ExecutiveDossierDrawer: React.FC<ExecutiveDossierDrawerProps> = ({
 
             <p className="mt-4 text-xs text-slate-400 font-sans leading-relaxed">
               Every hydrogeological synthesis depends on boundary assumptions, field extraction approximations, and
-              aquifer geometry limits. Below are all explicit caveats parsed from the scientific report.
+              aquifer geometry limits. Below are the report-level caveats, followed by {auditContextCount} detailed source-audit notes retained from the source package.
             </p>
 
             <div className="mt-5 space-y-3 flex-1">
@@ -518,6 +544,26 @@ export const ExecutiveDossierDrawer: React.FC<ExecutiveDossierDrawerProps> = ({
                   {u.statement}
                 </div>
               ))}
+              {agentic && agentic.limitations.length > 0 && (
+                <details className="rounded-xl border border-slate-800 bg-slate-950/50 p-3.5">
+                  <summary className="cursor-pointer text-[10px] font-mono font-bold uppercase tracking-wider text-cyan-300">
+                    Source and rendering limitations ({agentic.limitations.length})
+                  </summary>
+                  <div className="mt-3 space-y-2">
+                    {agentic.limitations.map((limitation, index) => <p key={`${index}:${limitation}`} className="text-xs leading-relaxed text-slate-400">{limitation}</p>)}
+                  </div>
+                </details>
+              )}
+              {agentic && agentic.unresolvedItems.length > 0 && (
+                <details className="rounded-xl border border-slate-800 bg-slate-950/50 p-3.5">
+                  <summary className="cursor-pointer text-[10px] font-mono font-bold uppercase tracking-wider text-violet-300">
+                    Unresolved source items ({agentic.unresolvedItems.length})
+                  </summary>
+                  <div className="mt-3 space-y-2">
+                    {agentic.unresolvedItems.map((item, index) => <p key={`${index}:${item}`} className="text-xs leading-relaxed text-slate-400">{item}</p>)}
+                  </div>
+                </details>
+              )}
             </div>
           </div>
         </div>

@@ -33,7 +33,7 @@ export const ScientificHeader: React.FC<ScientificHeaderProps> = ({
             </span>
           </div>
           <div className="text-[11px] text-slate-400 flex items-center gap-1.5 max-w-xl truncate">
-            <span className="truncate">{model.shortTitle || model.studyAreaName}</span>
+            <span className="truncate">Universal Spatial-Temporal Digital Twin</span>
             {selectedFeatureName && (
               <>
                 <span className="text-slate-600">/</span>

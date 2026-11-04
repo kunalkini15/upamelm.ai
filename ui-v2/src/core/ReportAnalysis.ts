@@ -83,6 +83,10 @@ export function buildReportAnalysis(
   const calloutsById = new Map(pkg.stat_callouts.map((callout) => [callout.id, callout]));
   const findingsById = new Map<string, ReportFindingView>();
   const uncertaintiesByThemeId = new Map<string, ReportUncertainty[]>();
+  const publishedContextIds = new Set([
+    ...pkg.themes.map((theme) => theme.id),
+    ...pkg.chapters.map((chapter) => chapter.id),
+  ]);
   const reverse = {
     findingsByThemeId: new Map<string, ReportFindingView[]>(),
     findingsByChapterId: new Map<string, ReportFindingView[]>(),
@@ -159,7 +163,7 @@ export function buildReportAnalysis(
     list.push(uncertainty);
     uncertaintiesByThemeId.set(uncertainty.theme_id || '__unresolved__', list);
   }
-  const unresolvedUncertaintyCount = (pkg.uncertainties || []).filter((item) => !item.theme_id || !chaptersById.has(item.theme_id)).length;
+  const unresolvedUncertaintyCount = (pkg.uncertainties || []).filter((item) => !item.theme_id || !publishedContextIds.has(item.theme_id)).length;
   if (unresolvedUncertaintyCount > 0) {
     diagnostics.push(`${unresolvedUncertaintyCount} uncertainty records do not resolve to published chapters`);
   }

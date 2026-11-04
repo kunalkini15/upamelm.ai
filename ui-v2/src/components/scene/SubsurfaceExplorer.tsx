@@ -192,6 +192,15 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
     () => model.featuresWithCoords.filter((feature) => !feature.isSpatialOutlier),
     [model.featuresWithCoords]
   );
+  const isDepthReady = (feature: RenderablePointFeature) =>
+    feature.intervals.length > 0 ||
+    (typeof feature.totalDepthMeters === 'number' &&
+      feature.totalDepthMeters > 0 &&
+      feature.depthFidelity !== 'illustrative_default');
+  const depthReadyCount = useMemo(
+    () => sceneFeatures.filter(isDepthReady).length,
+    [sceneFeatures]
+  );
   const [focusMode, setFocusMode] = useState<boolean>(false);
   const focusModeRef = useRef(focusMode);
   focusModeRef.current = focusMode;
@@ -363,17 +372,21 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
       rings: THREE.Mesh[];
     }[] = [];
 
-    // A. Render All Boreholes (Extruded downwards from the surface)
+    // A. Render every located feature. Only source-supported depths are literal;
+    // other locations use symbolic surface beacons and never invent a borehole.
     stationPositions.forEach(({ feat, x, z }) => {
       const isSelected = currentFeature && feat.id === currentFeature.id;
+      const depthReady = isDepthReady(feat);
       const stationColor = wellColor(feat.id);
       const bGroup = new THREE.Group();
       bGroup.position.set(x, 0, z);
       bGroup.userData = { feature: feat };
 
-      const fDepth = feat.totalDepthMeters || (feat.intervals.length > 0 ? feat.intervals[feat.intervals.length - 1].end : 80);
+      const fDepth = depthReady
+        ? (feat.totalDepthMeters || feat.intervals[feat.intervals.length - 1]?.end || 0)
+        : 0;
       const totalH = fDepth * scaleY;
-      const radius = 1.5;
+      const radius = depthReady ? 1.5 : 1.15;
 
       const casingMeshes: THREE.Mesh[] = [];
       const rings: THREE.Mesh[] = [];
@@ -396,47 +409,60 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
       bGroup.add(collarMesh);
       clickableObjects.push(collarMesh);
 
-      // Ink-dark silhouette keeps each well legible against regional slabs
-      // and against neighboring wells when their screen projections converge.
-      const outlinePipe = new THREE.Mesh(
-        new THREE.CylinderGeometry(radius * 1.28, radius * 1.28, totalH, 16),
-        new THREE.MeshBasicMaterial({
-          color: '#020617',
-          side: THREE.BackSide,
-          transparent: true,
-          opacity: 0.9,
-          depthWrite: false,
-        })
-      );
-      outlinePipe.position.y = -totalH / 2;
-      bGroup.add(outlinePipe);
+      if (depthReady) {
+        const outlinePipe = new THREE.Mesh(
+          new THREE.CylinderGeometry(radius * 1.28, radius * 1.28, totalH, 16),
+          new THREE.MeshBasicMaterial({
+            color: '#020617',
+            side: THREE.BackSide,
+            transparent: true,
+            opacity: 0.9,
+            depthWrite: false,
+          })
+        );
+        outlinePipe.position.y = -totalH / 2;
+        bGroup.add(outlinePipe);
 
-      // Subterranean casing extending downwards into negative Y
-      // 1. Draw a continuous casing pipe from surface (y=0) to the bottom of the borehole
-      const continuousPipe = new THREE.Mesh(
-        new THREE.CylinderGeometry(radius * 0.92, radius * 0.92, totalH, 16),
-        new THREE.MeshStandardMaterial({
-          color: isSelected ? '#fde047' : stationColor,
-          emissive: isSelected ? '#d97706' : stationColor,
-          emissiveIntensity: isSelected ? 0.75 : 0.42,
-          transparent: true,
-          opacity: 0.98,
-          metalness: 0.55,
-          roughness: 0.18,
-        })
-      );
-      continuousPipe.position.y = -totalH / 2;
-      continuousPipe.userData = {
-        feature: feat,
-        wellBaseColor: stationColor,
-        wellBaseEmissive: stationColor,
-      };
-      bGroup.add(continuousPipe);
-      clickableObjects.push(continuousPipe);
-      casingMeshes.push(continuousPipe);
+        const continuousPipe = new THREE.Mesh(
+          new THREE.CylinderGeometry(radius * 0.92, radius * 0.92, totalH, 16),
+          new THREE.MeshStandardMaterial({
+            color: isSelected ? '#fde047' : stationColor,
+            emissive: isSelected ? '#d97706' : stationColor,
+            emissiveIntensity: isSelected ? 0.75 : 0.42,
+            transparent: true,
+            opacity: 0.98,
+            metalness: 0.55,
+            roughness: 0.18,
+          })
+        );
+        continuousPipe.position.y = -totalH / 2;
+        continuousPipe.userData = {
+          feature: feat,
+          wellBaseColor: stationColor,
+          wellBaseEmissive: stationColor,
+        };
+        bGroup.add(continuousPipe);
+        clickableObjects.push(continuousPipe);
+        casingMeshes.push(continuousPipe);
+      } else {
+        const symbolicHalo = new THREE.Mesh(
+          new THREE.TorusGeometry(radius * 2.35, 0.28, 8, 28),
+          new THREE.MeshBasicMaterial({
+            color: isSelected ? '#fbbf24' : stationColor,
+            transparent: true,
+            opacity: isSelected ? 1 : 0.72,
+          })
+        );
+        symbolicHalo.rotation.x = Math.PI / 2;
+        symbolicHalo.position.y = 0.35;
+        symbolicHalo.userData = { feature: feat };
+        bGroup.add(symbolicHalo);
+        clickableObjects.push(symbolicHalo);
+        rings.push(symbolicHalo);
+      }
 
       // 2. Overlay specific screen / lithology interval segments with colored casing collars
-      if (feat.intervals.length > 0) {
+      if (depthReady && feat.intervals.length > 0) {
         feat.intervals.forEach((iv) => {
           const top = iv.start * scaleY;
           const btm = iv.end * scaleY;
@@ -484,7 +510,7 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
       }
 
       // Skyward Plummet Laser Beam (visible above ground) - compact height
-      const laserH = isSelected ? 24 : 16;
+      const laserH = isSelected ? 24 : (depthReady ? 16 : 10);
       const laser = new THREE.Mesh(
         new THREE.CylinderGeometry(0.35, 0.35, laserH, 8),
         new THREE.MeshBasicMaterial({
@@ -500,7 +526,7 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
 
       // Station Name Callout Sprite (positioned just above wellhead beacon)
       const sprite = createTextSprite(
-        `${feat.name} (${fDepth}m)`,
+        depthReady ? `${feat.name} (${fDepth}m)` : `${feat.name} · surface`,
         isSelected ? '#f59e0b' : stationColor,
         '#090d16',
         28,
@@ -516,7 +542,7 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
         group: bGroup,
         collar: collarMesh,
         laser,
-        laserH: 16,
+        laserH: depthReady ? 16 : 10,
         sprite,
         fDepth,
         featName: feat.name,
@@ -530,10 +556,10 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
 
       // Expanded hit target for smooth clicking
       const hitCylinder = new THREE.Mesh(
-        new THREE.CylinderGeometry(radius * 3.5, radius * 3.5, totalH + laserH, 12),
+        new THREE.CylinderGeometry(radius * 3.5, radius * 3.5, Math.max(4, totalH + laserH), 12),
         new THREE.MeshBasicMaterial({ visible: false })
       );
-      hitCylinder.position.y = (laserH - totalH) / 2;
+      hitCylinder.position.y = depthReady ? (laserH - totalH) / 2 : laserH / 2;
       hitCylinder.userData = { feature: feat };
       bGroup.add(hitCylinder);
       clickableObjects.push(hitCylinder);
@@ -546,12 +572,13 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
     rootSubsurface.add(curtainsGroup);
 
     // B. Transect Curtain Fences Connecting Wells
-    if (stationPositions.length > 1) {
+    const depthStationPositions = stationPositions.filter(({ feat }) => isDepthReady(feat));
+    if (depthStationPositions.length > 1) {
       let connections = 0;
-      for (let i = 0; i < stationPositions.length && connections < 24; i++) {
-        for (let j = i + 1; j < stationPositions.length && connections < 24; j++) {
-          const a = stationPositions[i];
-          const b = stationPositions[j];
+      for (let i = 0; i < depthStationPositions.length && connections < 24; i++) {
+        for (let j = i + 1; j < depthStationPositions.length && connections < 24; j++) {
+          const a = depthStationPositions[i];
+          const b = depthStationPositions[j];
           const dx = b.x - a.x;
           const dz = b.z - a.z;
           const dist = Math.sqrt(dx * dx + dz * dz);
@@ -559,8 +586,8 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
           if (dist > 5 && dist < 70) {
             connections++;
             const maxD = Math.max(
-              a.feat.totalDepthMeters || 80,
-              b.feat.totalDepthMeters || 80
+              a.feat.totalDepthMeters || a.feat.intervals[a.feat.intervals.length - 1]?.end || 0,
+              b.feat.totalDepthMeters || b.feat.intervals[b.feat.intervals.length - 1]?.end || 0
             );
             const curtainH = maxD * scaleY;
             const midX = (a.x + b.x) / 2;
@@ -1078,8 +1105,8 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
       <div className="absolute top-16 bottom-5 left-5 z-50 w-76 bg-slate-900/95 backdrop-blur-xl border border-slate-700/70 rounded-xl shadow-[0_16px_50px_rgba(0,0,0,0.8)] p-3 pointer-events-auto flex min-h-0 flex-col">
         {/* Header */}
         <div className="flex items-center justify-between pb-2 border-b border-slate-800 text-xs font-mono">
-          <span className="text-slate-200 font-bold tracking-wide">RESEARCH STATIONS</span>
-          <span className="text-cyan-400 font-semibold">{sceneFeatures.length} Points</span>
+          <span className="text-slate-200 font-bold tracking-wide">LOCATED STUDY OBJECTS</span>
+          <span className="text-cyan-400 font-semibold">{sceneFeatures.length} Located · {depthReadyCount} Depth</span>
         </div>
 
         {/* Distinct Mode Segmented Action Banner */}
@@ -1141,8 +1168,10 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
                   </div>
                   <div className="text-[10px] text-slate-400 capitalize">{feat.type.replace('_', ' ')}</div>
                 </div>
-                <span className="text-[11px] font-bold text-cyan-400 whitespace-nowrap">
-                  {feat.totalDepthMeters ? `${feat.totalDepthMeters}m` : ''}
+                <span className={`text-[10px] font-bold whitespace-nowrap ${isDepthReady(feat) ? 'text-cyan-400' : 'text-violet-300'}`}>
+                  {isDepthReady(feat)
+                    ? `${feat.totalDepthMeters || feat.intervals[feat.intervals.length - 1]?.end || 0}m`
+                    : 'SURFACE'}
                 </span>
               </button>
             );

@@ -142,9 +142,69 @@ export interface ScientificPackage {
   extensions?: {
     datasets?: PreservedDataset[];
     relationships?: Array<Record<string, unknown>>;
+    agentic?: AgenticPackageMetadata;
   };
   analysis_schema_version?: string;
   report_synthesis?: ReportSynthesisPackage;
+}
+
+export interface AgenticLayer {
+  id: string;
+  name: string;
+  kind?: string;
+  description?: string;
+  representation?: string;
+  semantic_category?: string;
+  default_visible?: boolean;
+  feature_ids?: string[];
+  profile_ids?: string[];
+  resource_ids?: string[];
+  source_asset_ids?: string[];
+  evidence_refs?: string[];
+}
+
+export interface AgenticVerticalProfile {
+  id: string;
+  name: string;
+  axis?: string;
+  reference?: string;
+  description?: string;
+  feature_id?: string;
+  interval_ids?: string[];
+  semantic_category?: string;
+  evidence_refs?: string[];
+}
+
+export interface AgenticStructuredResource {
+  id: string;
+  name: string;
+  kind?: string;
+  ui_role?: string;
+  path?: string;
+  source_asset_id?: string;
+  row_count?: number;
+  columns?: string[];
+  evidence_refs?: string[];
+}
+
+export interface AgenticPackageMetadata {
+  sourceSchemaVersion: string;
+  renderingSchemaVersion?: string;
+  studyId: string;
+  documentId?: string;
+  status?: string;
+  primaryRenderingMode?: string;
+  capabilities: Record<string, boolean>;
+  layers: AgenticLayer[];
+  verticalProfiles: AgenticVerticalProfile[];
+  structuredResources: AgenticStructuredResource[];
+  nativeAssets: Array<Record<string, unknown>>;
+  evidenceDispositions: Array<Record<string, unknown>>;
+  coverage: Record<string, unknown>;
+  limitations: string[];
+  unresolvedItems: string[];
+  validation?: Record<string, unknown>;
+  adapterDiagnostics: string[];
 }
 
 export type ReportFindingBasis = 'source_stated' | 'synthesized_pattern' | 'deterministic_derived' | string;
@@ -365,4 +425,6 @@ export interface ScientificUIModel {
     hiddenFeatureCount: number;
   };
   reportAnalysis?: ReportAnalysisModel;
+  packageFamily: 'research-engine' | 'agentic-flow';
+  agentic?: AgenticPackageMetadata;
 }

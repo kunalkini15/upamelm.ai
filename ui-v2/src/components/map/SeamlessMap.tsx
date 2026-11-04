@@ -443,7 +443,7 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
             <div class="w-3.5 h-3.5 rounded-full bg-slate-950"></div>
           </div>
           <div class="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap px-3 py-1 rounded-full bg-slate-900/95 border border-cyan-500/60 text-xs font-mono font-bold text-cyan-300 shadow-2xl">
-            ${escapeHtml(studyAreaName)} • ${features.length} Stations
+            Study Area • ${features.length} Stations
           </div>
         </div>
       `;

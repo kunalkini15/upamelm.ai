@@ -433,6 +433,8 @@ export class ScientificPackageLoader {
         studyAreaBoundary,
         hiddenFeatureCount: featuresWithoutCoords.length,
       },
+      packageFamily: pkg.extensions?.agentic ? 'agentic-flow' : 'research-engine',
+      agentic: pkg.extensions?.agentic,
     };
 
     if (

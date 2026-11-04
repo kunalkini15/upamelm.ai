@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useState, useEffect, useRef } from 'react';
-import { ScientificPackageLoader } from './core/ScientificPackageLoader';
+import { PackageIngestion } from './core/PackageIngestion';
 import {
   ScientificUIModel,
   RenderablePointFeature,
@@ -63,14 +63,25 @@ export function App() {
     async function load() {
       try {
         setLoading(true);
-        // Load ui_consolidated_package.json with fallback to scientific_package.json
-        let res = await fetch('/ui_consolidated_package.json');
-        if (!res.ok) {
-          res = await fetch('/scientific_package.json');
+        const requestedPackage = new URLSearchParams(window.location.search).get('package');
+        const candidates = uniquePackageCandidates([
+          requestedPackage,
+          '/study_package.json',
+          '/ui_consolidated_package.json',
+          '/scientific_package.json',
+        ]);
+        let json: unknown;
+        let loadedFrom = '';
+        for (const candidate of candidates) {
+          const response = await fetch(candidate);
+          if (!response.ok) continue;
+          json = await response.json();
+          loadedFrom = candidate;
+          break;
         }
-        if (!res.ok) throw new Error(`HTTP Error ${res.status}: Failed to load package`);
-        const json = await res.json();
-        const parsed = ScientificPackageLoader.parse(json);
+        if (!json) throw new Error(`Failed to load a supported package from: ${candidates.join(', ')}`);
+        const parsed = PackageIngestion.parse(json);
+        console.info(`Loaded ${parsed.packageFamily} package from ${loadedFrom}`);
         setModel(parsed);
       } catch (err: any) {
         console.error('Failed to parse scientific package:', err);
@@ -195,7 +206,7 @@ export function App() {
             <h1 className="text-sm font-bold tracking-tight text-slate-100 flex items-center gap-1.5">
               SUBSURFACE <span className="text-cyan-400">v2</span>
             </h1>
-            <div className="text-[11px] text-slate-400 font-mono">{model.shortTitle}</div>
+            <div className="text-[11px] text-slate-400 font-mono">Universal Spatial-Temporal Digital Twin</div>
           </div>
         </div>
 
@@ -230,11 +241,6 @@ export function App() {
 
         {/* Right: Quick actions & Reset */}
         <div className="flex items-center gap-2.5">
-          <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-slate-400 border border-slate-800/80 bg-slate-900/60 px-3 py-1.5 rounded-lg">
-            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-            <span>{model.featuresWithCoords.length} Stations Active</span>
-          </div>
-
           {mode === 'map' && (
             <button
               onClick={() => {
@@ -338,6 +344,10 @@ export function App() {
       </div>
     </div>
   );
+}
+
+function uniquePackageCandidates(values: Array<string | null>): string[] {
+  return Array.from(new Set(values.filter((value): value is string => Boolean(value))));
 }
 
 export default App;

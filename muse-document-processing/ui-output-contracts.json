@@ -1,0 +1,93 @@
+{
+  "contract_version": "ui-output-contracts.v1",
+  "purpose": "Exact model-facing serialization contract for AgenticStudyAdapter. Semantic drafts may use other shapes temporarily; final files may not.",
+  "narrative_package": {
+    "schema_version": "ui-narrative.v3",
+    "required": ["schema_version", "study_id", "target_insights", "coverage", "limitations"],
+    "target_insight": {
+      "required": ["target_id", "target_kind", "object_id", "analysis", "evidence_refs"],
+      "types": {
+        "target_id": "string",
+        "target_kind": "string",
+        "object_id": "string",
+        "analysis": "string",
+        "evidence_refs": "array<string>"
+      },
+      "semantics": [
+        "analysis contains only useful evidence about this specific object, written for a non-technical reader",
+        "analysis is an empty string when the document has no meaningful object-specific finding",
+        "coordinates, identifiers, table positions, list membership, missing-data statements, and shared layer conclusions do not by themselves qualify as object-specific analysis",
+        "an empty analysis makes a point non-interactive; its geometry may still contribute to coverage or aggregate layers"
+      ]
+    }
+  },
+  "report": {
+    "schema_version": "document-analysis.v1",
+    "required": ["schema_version", "report_id", "source_title", "display_title", "short_title", "brief_description", "blocks"],
+    "semantics": [
+      "The identity fields describe the document faithfully and in plain language.",
+      "blocks is an ordered, document-shaped narrative; no topic or block count is mandatory.",
+      "Omit empty blocks, empty metric arrays, and fields that add no useful information.",
+      "Do not create a block merely to discuss absent data, schema coverage, provenance mechanics, or uncertainty.",
+      "All factual claims and metrics must be supported by evidence_refs."
+    ],
+    "block": {
+      "required": ["id"],
+      "optional": ["headline", "content", "metrics", "evidence_refs", "related_object_ids"],
+      "note": "headline is a short factual one-liner. content is clear Markdown of any useful length. Retain the block only when content or at least one metric is useful."
+    },
+    "metric": {
+      "required": ["label", "display_value", "evidence_refs"],
+      "optional": ["explanation"],
+      "note": "Metrics are optional evidence-backed callouts. display_value is presentation-ready text, including its unit or category. Never invent a metric to fill a layout."
+    }
+  },
+  "rendering_consumer_fields": {
+    "structured_resource": {
+      "required": ["id", "name", "kind", "ui_role", "path", "row_count", "columns", "evidence_refs"],
+      "note": "The current adapter does not preserve inline rows. Write durable JSON/CSV data under the run directory and set path when row content must reach the UI."
+    },
+    "feature": {
+      "required": ["id", "name", "type", "geometry", "location_description", "properties", "source_refs", "dataset_ids", "fidelity", "source_object_ids"]
+    },
+    "chart_series": {
+      "location": "rendering_package.chart_series[]",
+      "required": ["id", "title", "kind", "points", "evidence_refs"],
+      "optional": ["description", "x_label", "y_label", "x_unit", "unit", "threshold", "threshold_label", "stack_mode", "status"],
+      "supported_kinds": ["time-series", "line", "range", "bar", "comparison", "grouped", "stacked-bar", "share", "histogram", "distribution", "scatter", "relationship", "threshold", "exceedance", "waterfall", "budget", "kpi"],
+      "point": {
+        "required": ["x", "y", "evidence_refs"],
+        "optional": ["y_low", "y_high", "group", "category", "threshold", "uncertainty", "feature_id", "observation_id", "dataset_id"],
+        "types": {
+          "x": "string|number",
+          "y": "number",
+          "y_low": "number",
+          "y_high": "number",
+          "threshold": "number",
+          "uncertainty": "number",
+          "evidence_refs": "array<string>"
+        }
+      },
+      "semantics": [
+        "Use one point per source-backed observation or explicitly labelled deterministic derivation.",
+        "Preserve dates, categories, groups, units, ranges, thresholds, missing values, and evidence references rather than flattening them into prose.",
+        "Never combine incompatible parameters or units in one series.",
+        "Do not interpolate missing observations or convert missing values to zero.",
+        "Use feature_id, observation_id, or dataset_id when a chart point can link back to another UI object.",
+        "The schema is domain-neutral and applies to any quantitative source."
+      ]
+    }
+  },
+  "adapted_output_acceptance": {
+    "forbidden_fallbacks": ["Untitled theme", "Untitled finding", "Untitled chapter", "Scientific feature narrative"],
+    "requirements": [
+      "The adapted report retains its identity fields and ordered non-empty blocks.",
+      "Empty optional block fields and empty metric groups are omitted rather than padded.",
+      "Every displayed metric has a label, presentation-ready value, and evidence reference.",
+      "Every intended quantitative visualization survives adaptation with its numeric points, dimensions, units, links, and evidence references intact.",
+      "Only features with non-empty, evidence-backed object-specific analysis become interactive points.",
+      "Structured resources have human names and usable durable paths.",
+      "Adapter diagnostics are empty."
+    ]
+  }
+}

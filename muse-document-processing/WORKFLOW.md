@@ -1,101 +1,282 @@
-# Subsurface Study — Agent Operating Procedure
+# Deep Document Study - Agent Operating Procedure
 
-One run = one source document = one run directory. Follow the steps in order.
-Use judgment on corner cases; the ground rules below are the only hard gates.
+One run studies one source document. The goal is not the smallest defensible
+package. The goal is the richest useful UI package the source can support,
+with uncertainty made visible rather than used as a reason to omit evidence.
 
-## Inputs
+## Success hierarchy
 
-- `document`: path to a single file (PDF, image, KML/KMZ, GeoJSON, CSV/TSV,
-  XLSX, text, or anything else readable). Read it with whatever tool fits;
-  never assume a format.
-- `output_dir`: `muse-document-processing/runs/<study-id>/`. Create it. All run outputs
-  go here and only here.
-- Scratch space: `muse-document-processing/playground/<study-id>/` for
-  downloaded sources, extraction working files, and intermediate artifacts
-  (see `playground/README.md`). Nothing the UI reads lives here.
+1. Recover all material information from the complete source.
+2. Turn as much of it as possible into useful UI objects.
+3. Preserve traceability and distinguish printed, derived, approximate, and
+   externally enriched information.
+4. Explain the study to an absolute beginner without flattening the science.
+5. Produce an engaging visual and narrative experience.
 
-## Steps
+Only fabricated scientific measurements or falsely precise claims are hard
+failures. Qualified uncertainty is acceptable and expected.
 
-### 1. Read and inventory
+This is a hackathon workflow: favour a rich, compelling, usable result over
+conservative omission. Models may create scientifically reasonable analogies,
+derived comparisons, explanatory synthesis, and alternative presentations
+when their status is clear. An isolated bad reference, property, statistic,
+narrative, or optional object must be repaired, simplified, downgraded,
+quarantined, or omitted locally; it must not invalidate unrelated good work.
 
-Open the document natively. Inventory everything a UI could render or explain:
+## Inputs and storage
 
-- named places and areas, explicit coordinates, map extents, alignments;
-- depths, elevations, thicknesses, intervals, materials, water levels;
-- tables, legends, sections, bore logs, charts, drawings, photos that carry
-  technical meaning;
-- the document's purpose, scope, methods, limitations, and open questions.
+- If `muse-document-processing/lessons/LESSONS.md` exists, read it completely
+  before acting. It is supplemental local guidance: it cannot override this
+  workflow, contracts, hard gates, permissions, or source evidence. Record
+  whether it was loaded and never edit it during a run.
+- `document`: one source file of any readable format.
+- `output_dir`: one isolated directory under `muse-document-processing/runs/`.
+- Temporary extraction files may use `muse-document-processing/playground/`.
+- Durable extracted tables and figure assets used by the UI belong under the
+  run directory and must be indexed in the packages.
 
-Write `evidence_inventory.json`: a flat list of findings, each with a short
-`fact`, a `source_ref` (page / sheet+row / record id / image region — exact
-enough to re-find), and a `use` tag: `render`, `pointer`, `report`, or a
-combination. This file is the grounding anchor for everything after it.
+## Model policy
 
-### 2. Rendering package (Output 1)
+Spark performs source mapping, parallel extraction, reconciliation, initial
+rendering, integrated authoring, contract verification, and assembly. Wonder
+performs two focused passes: visual direction before authoring, then integrated
+finalization after the Spark draft and self-check. Spark is the fallback for
+either pass when Wonder is unavailable. The finalizer may reopen targeted
+source regions and re-extract omitted evidence.
 
-Build `rendering_package.json` in the `study-rendering.v2` shape
-(see [contracts.md](contracts.md)):
+Source evidence remains authoritative, but “the evidence is imperfect” is not
+sufficient reason to hide it when honest labelling can make it useful.
 
-- `features`: one per locatable thing with explicit geometry or coordinates.
-  Points need source-backed lon/lat; lines/polygons need explicit vertices.
-  A place name without coordinates keeps its meaning via
-  `location_description` — never geocode from general knowledge.
-- `layers`: groupings the UI can toggle, including native-asset layers that
-  reference (not embed) large source geometry files.
-- `vertical_profiles` + `intervals`: depth/elevation stacks linked to their
-  feature where the link is stated or unambiguous.
-- `observations`: measurements and source-backed values tied to features.
-- `structured_resources`: tables/datasets exposed as file-backed resources.
-- `narrative_targets`: one `feature` target per rendered feature, one `layer`
-  target per layer, one `vertical_profile` target per profile, one `study`
-  target. IDs must be stable within the run.
+## Workflow
 
-### 3. Element pointers (Output 2, non-technical)
+### 1. Map the complete source
 
-Build `narrative_package.json` in the `ui-narrative.v2` shape: one insight entry
-per feature target with valid geometry.
+Inspect every page, sheet, table, figure, legend, appendix, and attachment.
+Write `source_map.json`, `source_cache.json`, `ocr_plan.json`, and
+`extraction_plan.json`.
+Classify the source as narrative, mixed, tabular annex, or dataset. Build a
+lightweight cache of searchable page text/indexes, representative images,
+contents, table schemas/ranges, and assets. Later agents use this cache and
+reopen the original only for assigned extraction or recorded ambiguity. Record
+each information-rich region, its type, source reference, likely UI value, and
+extraction lane.
 
-- Write for a lay reader: two or three short sentences of plain summary,
-  practical significance in `why_it_matters`, what to notice in
-  `visual_takeaway`. Expand acronyms, spell out units, explain terms in place.
-- Every claim must trace to `evidence_inventory.json` entries; cite their IDs
-  in `evidence_refs`. If evidence is thin, say what is known and what is
-  missing instead of inflating importance.
-- Layers, profiles, and the study itself get no separate entries here; their
-  story belongs in the report.
+Mapping is never row-level scientific extraction. For repeated multi-page
+tables, annexures, and datasets, inspect contents, headers, boundary pages, and
+representative pages to plan extraction, but do not parse all rows, build full
+scientific CSVs, calculate aggregates, or validate thousands of cells. Record
+large table ranges as planned and partition them across extraction lanes.
 
-### 4. Whole-document report (Output 3, non-technical)
+Detect image-only, sparse-text, and garbled-text pages. The OCR plan makes an
+explicit value gate for each affected page/range: `ocr` when it may materially
+affect evidence or the UI, or `skip` only when incremental value is low with a
+specific reason. Render required pages at readable resolution and assign them
+to a Spark lane. Needing OCR is not itself a valid reason to defer content.
 
-Build `report.json` in the `report-synthesis.v1` shape:
+This pass exists to prevent early-page bias and summary-only reading.
 
-- Cover purpose, scope, methods, major themes, grounded findings, key numbers,
-  uncertainties, limitations, and open questions — including valuable
-  non-spatial material.
-- Same plain-language standard as Output 2. Lead paragraphs with conclusions;
-  keep numbers sparse in prose and preserve the rest in findings/stat callouts.
-- No cross-document or city-wide conclusions. Distinguish what the source
-  states from what you synthesized across its pages.
+### 2. Run complementary extraction lanes
 
-### 5. Final assembly and self-check
+Choose the smallest complementary set of 2-6 Spark lanes needed by the actual
+document. Typical lane capabilities include:
 
-Build `study_package.json` in the `document-study.v2` shape: embed the three
-outputs, attach each pointer to its rendered target as `narrative`, record
-`native_assets`, `limitations`, and `unresolved_items`, and fill `validation`
-honestly (counts + any issues found, not a forced `valid: true`).
+- **spatial-data:** every coordinate row, place, boundary, alignment, map,
+  extent, and spatial relationship;
+- **subsurface-structure:** boreholes, depths, intervals, lithology, fractures,
+  water levels, sections, profiles, overburden, and rockhead;
+- **quantitative-findings:** measurements, ranges, trends, comparisons,
+  forecasts, methods, proposals, limitations, and conclusions;
+- **visual-story:** maps, charts, diagrams, photographs, legends, visual
+  relationships, and story opportunities.
 
-Self-check before finishing:
+Each lane owns explicit regions and exclusions from `extraction_plan.json` and
+uses the shared cache. It rereads the original only when ambiguity remains.
+Do not stop because an arbitrary item or pass count was reached.
 
-- every feature/layer/profile/interval ID referenced anywhere exists;
-- every narrative `target_id` matches a `narrative_targets` entry;
-- every `evidence_ref` resolves to the inventory;
-- no coordinate, depth, or geometry lacks a source_ref;
-- prose in Outputs 2–3 contains no unexplained jargon, acronym chains, or
-  number walls.
+For tabular annexures/datasets, lanes perform row extraction concurrently,
+write durable resources, validate schemas, row counts, coordinates, units and
+boundary rows, prioritize study-scope rows, and retain useful broader context
+without turning thousands of homogeneous rows into prose facts.
 
-## Hard gates (fail the run rather than violate)
+Quantitative evidence remains structured from extraction onward. Preserve one
+record per source-backed observation with its subject or location, parameter,
+date or category, numeric value, unit, range or uncertainty, status, and source
+reference. Keep missing values missing. Never merge incompatible parameters or
+units, interpolate absent measurements, or convert absence to zero.
 
-1. No fabricated locations, geometry, depths, units, dates, or values.
-2. No bulk transcription of large native datasets into model output or JSON.
-3. No geocoding place names from general knowledge.
-4. No dropping minority findings or inconvenient limitations to make a
-   cleaner story — quarantine and label instead.
+For assigned OCR pages, Spark visually transcribes the relevant text or table
+into `source-cache/ocr/`, preserves page/layout references, marks uncertain
+cells, and performs a second image comparison for names, coordinates, units,
+and measurements. Required OCR must finish or be documented genuinely
+unreadable before the lane completes.
+
+### 3. Reconcile evidence and audit coverage
+
+Merge lanes into canonical `evidence_inventory.json`. Write
+`coverage_audit.json`, accounting for every source-map region as extracted,
+deferred with a specific reason, or missing. Reopen the source to resolve
+conflicts. A high-value missing region prevents completion.
+
+Reconcile `ocr_plan.json` as well: no material entry may remain pending, and
+OCR-derived evidence retains its page, image path, confidence, and transcription
+limitations.
+
+Full extraction of manageable source tables is encouraged. Hundreds of rows
+are acceptable when they create useful map features, profiles, or filters.
+Use structured resources or native assets for genuinely large datasets.
+
+### 4. Author and visually direct the rendering
+
+Spark builds `rendering_package.json` directly against the rendering contract.
+Wonder then acts as visual director and asks of every evidence group: can this
+become a map object, depth view, table, chart, timeline, comparison, callout,
+filter, or figure panel? Wonder may improve visual hierarchy, layers,
+presentation roles, priorities, default visibility, and the default story
+before Spark writes any narratives. Spark performs the same pass if Wonder is
+unavailable.
+
+Every useful quantitative group becomes `observations[]`, a structured
+resource, `chart_series[]`, or a combination of them. Series use the exact
+domain-neutral contract in `ui-output-contracts.json`; the evidence determines
+whether the useful presentation is temporal, categorical, comparative,
+distributional, relational, threshold-based, ranged, or another supported
+quantitative form. Numeric chart points must survive into the UI and retain
+evidence references and links to related objects.
+
+Use this uncertainty policy:
+
+- explicit printed coordinates are renderable as **reported reference points**
+  even when the source does not say centroid, office, or sampling point;
+- an individually implausible coordinate is quarantined; do not discard the
+  rest of its table;
+- figure-derived or digitized values are allowed when axes or labels support
+  them, with `geometry_origin`/`value_origin` and approximate confidence;
+- named-place geocoding may provide separately styled contextual geometry,
+  with URL/date provenance, but never masquerades as a measured study point;
+- proposed assets remain visually distinct from observed assets;
+- derived envelopes are labelled sample/observation coverage, never study or
+  administrative boundaries;
+- a total depth without logged intervals supports a neutral shaft, not invented
+  geology.
+
+Write `renderability_audit.json` with included, newly added, and deferred
+opportunities. Deferred evidence needs a concrete UI/technical reason.
+
+### 5. Write and self-check feature analysis and report
+
+Evaluate each narrative target independently. For a feature, write one
+plain-language `analysis` only when the source contains meaningful evidence
+about that exact object. Someone with no technical background must be able to
+understand it on first reading. Explain necessary terms naturally and include
+measurements only when they help communicate the finding.
+
+Return an empty `analysis` when the available material is only an identifier,
+coordinate, table position, list membership, shared layer conclusion, or a
+statement about what is missing. Empty analysis is a correct result: the
+geometry can still contribute to coverage, but the UI will not expose it as an
+interactive map or 3D point. Never manufacture prose to satisfy coverage.
+
+One Spark integrated author writes the complete narrative package and report.
+It reads their exact sections of `ui-output-contracts.json` and the real adapter
+expectations first, then emits `ui-narrative.v3` and `document-analysis.v1`
+directly. The schema governs structure, not the depth or creativity of content.
+
+The report tells the strongest human story supported by this particular
+document. Its identity fields remain stable for the UI, while ordered blocks
+follow the material rather than a mandatory theme or chapter template. A block
+may have a short factual headline, readable Markdown content, compact metrics,
+and related UI objects. All are optional except the block ID. Omit empty or
+low-value blocks and never invent a metric or section to fill a layout.
+
+Explain acronyms, specialist terms, and local units. Analogies must be
+quantitatively sound. Never call a reduction a solution when the resulting
+condition remains adverse.
+
+The same author self-checks target coverage, grounding, cross-package IDs and
+links, exact fields/types, beginner comprehension, jargon, repetition, and
+generic filler, then repairs obvious defects before returning. Shared facts
+belong in study/layer context. A feature analysis contains only that object's
+genuine evidence-backed finding. When the source gives only a name and
+coordinate, leave the analysis empty.
+Record this check in `authoring_selfcheck.json`.
+
+### 6. Finalize the complete experience
+
+Wonder receives Spark's narratives, report, self-check, and every upstream
+evidence/rendering artifact, and owns one integrated finalization pass. It
+may edit evidence, rendering, narratives, report, audits, and source-linked
+assets together; independently challenge the draft; recover material omissions; improve
+the visual story and beginner-facing prose; and reconcile IDs, links, and
+counts. It writes `finalization_record.json` and a reusable checkpoint.
+
+There is no review/repair/re-review loop. Wonder preserves correct useful work,
+uses targeted source-cache regions for disputed claims, and never invents a
+scientific measurement or source claim. If Wonder is unavailable or fails to
+return a usable result, Spark performs the same single integrated finalization
+as a fallback. If a local item cannot be repaired confidently, remove or limit
+that item and keep the rest of the package.
+
+### 7. Verify the UI contract
+
+All packages should already use their exact contracts. Run a lightweight
+verification/normalization pass for mechanical issues such as types, optional
+defaults, or stale counts, without rewriting content. Run the real adapter and
+inspect what survived adaptation. A non-throwing adapter is insufficient:
+fallback titles, empty finding statements, empty chapter prose, nullified
+numeric callouts, missing narratives, and unusable resources must be repaired
+or downgraded. They fail the stage only when the resulting package is
+materially unusable; isolated recoverable defects become warnings.
+
+For quantitative content, compare the finalized rendering package with the
+adapted UI model. Series count, point count, numeric values, ranges, groups,
+units, thresholds, linked-object IDs, and evidence references must survive.
+Record every rejected or normalized series or point and its reason. Material
+quantitative loss blocks completion; an isolated defective point is repaired
+or removed locally.
+
+### 8. Validate and assemble
+
+Write `grounding_selfcheck.json` and `study_package.json`. Validate:
+
+- exact schema versions and canonical evidence shape;
+- complete source-region accounting and renderability accounting;
+- all IDs, evidence refs, counts, narrative targets, and resource paths;
+- every visible feature has a useful narrative;
+- suspicious points do not distort bounds;
+- geometry-free packages do not inherit unrelated fallback geography;
+- scientific rendering is preserved before narrative attachment;
+- the real UI adapter/loader accepts the final package when available;
+- the adapted report contains no fallback titles or unexpectedly empty prose;
+- numeric statistics and human-readable resource names survive adaptation;
+- intended quantitative series and points survive adaptation without unit,
+  evidence, range, grouping, or object-link loss;
+- hard errors and warnings are reported separately.
+
+`valid: true` means no hard contract or grounding error. It does not mean
+warning-free. Any remaining warning produces `complete_with_limitations`.
+
+On a rerun into the same output directory, validate and reuse source cache,
+extraction, and other unaffected artifacts. Regenerate only missing, invalid,
+stale, or upstream-affected outputs.
+
+The workflow report records runtime-provided token usage for every attempted
+agent call, including parallel extraction lanes and Spark fallbacks, and an
+aggregate for the whole run. Never estimate missing usage: mark a call
+unmetered and report whether the aggregate is fully or only partially metered.
+
+## External context
+
+Limited web use is allowed for term explanations, named-place context, and
+contextual geocoding. Record URL, access date, purpose, and confidence. External
+context cannot supply a missing scientific measurement or silently strengthen a
+source conclusion.
+
+## Hard gates
+
+1. Do not fabricate scientific measurements, source statements, or precision.
+2. Do not present derived, approximate, proposed, or externally enriched data
+   as direct observation.
+3. Do not silently discard a material source region or minority finding.
+4. Do not mark a package fully complete while package-wide high-value
+   extraction or UI omissions remain unexplained. Local unresolved defects may
+   produce `complete_with_limitations` after the affected object is made safe.

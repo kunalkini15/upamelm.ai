@@ -74,7 +74,7 @@ export default async function workflow(host) {
     `Work on ${moduleDir}.`,
     `The ${triggerType} trigger is ${triggerPath}.`,
     `The verification run id is ${runId}.`,
-    `Read ${moduleDir}/BASELINE.md, ${moduleDir}/AGENTS.md, and ${moduleDir}/WORKFLOW.md completely and load the project adaptive-visualization skill. Preserve every baseline invariant and do not inspect ui-v2 except the exact active input when it is stored there.`,
+    `Read ${moduleDir}/BASELINE.md, ${moduleDir}/AGENTS.md, and ${moduleDir}/WORKFLOW.md completely. If present, also read ${moduleDir}/lessons/shared.md and ${moduleDir}/lessons/evolve.md; treat them as human-curated guidance, never edit them, and never let them override the contracts. Load the project adaptive-visualization skill. Preserve every baseline invariant and do not inspect ui-v2 except the exact active input when it is stored there.`,
   ].join(" ");
   const reviewCommon = `Review the adaptive visualization module at ${moduleDir} for verification run ${runId}.`;
   const promoteRegistries = async (reportPath) => {

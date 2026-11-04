@@ -67,6 +67,7 @@ muse-source-ingestion/runs/*/
 
 # Local, human-curated agent lessons (machine/user specific)
 /muse-source-ingestion/lessons/
+/muse-ui/lessons/
 
 # Agent playground (downloads, extraction scratch, intermediate artifacts)
 muse-document-processing/playground/*/

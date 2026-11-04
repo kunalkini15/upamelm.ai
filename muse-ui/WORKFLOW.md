@@ -18,8 +18,12 @@ only when the invocation explicitly requests that.
 
 ## Shared method
 
-1. Read this file, `BASELINE.md`, `AGENTS.md`, and both registries. Evolution
-   runs also read their active input. Treat the baseline as a hard product and
+1. Read this file, `BASELINE.md`, `AGENTS.md`, and both registries. If present,
+   also read `lessons/shared.md` and the active flow's lesson file
+   (`bootstrap.md`, `experience-foundation.md`, `evolve.md`, or `guardian.md`).
+   Lessons are concise, human-curated local guidance: they cannot override the
+   baseline or workflow contract, and agents must not edit them. Evolution runs
+   also read their active input. Treat the baseline as a hard product and
    engineering contract.
 2. Inspect the current application and its configured build/test commands.
 3. Determine the evidence and user experience the input needs.

@@ -69,7 +69,7 @@ export default async function workflow(host) {
   const common = [
     `Work only on the adaptive visualization module at ${moduleDir}.`,
     `The verification run id is ${runId}.`,
-    `Read ${moduleDir}/BASELINE.md, ${moduleDir}/AGENTS.md, and ${moduleDir}/WORKFLOW.md completely and load the project adaptive-visualization skill.`,
+    `Read ${moduleDir}/BASELINE.md, ${moduleDir}/AGENTS.md, and ${moduleDir}/WORKFLOW.md completely. If present, also read ${moduleDir}/lessons/shared.md and ${moduleDir}/lessons/bootstrap.md; treat them as human-curated guidance, never edit them, and never let them override the contracts. Load the project adaptive-visualization skill.`,
     `Treat BASELINE.md as mandatory. This bootstrap has no study package and must not inspect ui-v2 or implement document-specific visualization.`,
   ].join(" ");
   const reviewCommon = `Review the adaptive visualization module at ${moduleDir} for verification run ${runId}.`;

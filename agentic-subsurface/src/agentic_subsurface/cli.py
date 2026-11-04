@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 from .loop1 import process_corpus
+from .loop2 import process_studies, requests_from_manifest
 from .models import DocumentRunRequest, PipelineConfig, RunRequest
 from .pipeline import AgenticSubsurfacePipeline
 
@@ -45,6 +46,20 @@ def main(argv: list[str] | None = None) -> int:
     loop1.add_argument("--materialization-backend", choices=["auto", "process", "thread", "sequential"], default="auto")
     loop1.add_argument("--start-step", type=int, choices=range(1, 9), default=1)
     loop1.add_argument("--end-step", type=int, choices=range(1, 9), default=8)
+    loop2 = sub.add_parser("loop2", help="build an independent UI study for each selected active Loop 1 document")
+    loop2.add_argument("--input", required=True, type=Path, help="Loop 1 corpus root containing corpus_manifest.json")
+    loop2.add_argument("--output", type=Path, help="Loop 2 root (default: <input>/loop2)")
+    loop2.add_argument("--document-id", action="append", help="active document ID to process; repeat as needed (default: all active documents)")
+    loop2.add_argument("--live", action="store_true")
+    loop2.add_argument("--no-resume", action="store_true")
+    loop2.add_argument("--no-activate", action="store_true")
+    loop2.add_argument("--max-cost-usd", type=float, default=19.0)
+    loop2.add_argument("--max-workers", type=int, default=8, help="concurrent Loop 2 model requests (1-32)")
+    loop2.add_argument("--target-batch-tokens", type=int, default=128_000, help="aggressive semantic batch target; exact overflow is split adaptively")
+    loop2.add_argument("--max-batch-tokens", type=int, default=128_000, help="hard Stage 2 request ceiling before recursive splitting")
+    loop2.add_argument("--max-output-tokens", type=int, default=128_000)
+    loop2.add_argument("--start-step", type=int, choices=range(1, 6), default=1)
+    loop2.add_argument("--end-step", type=int, choices=range(1, 6), default=5)
     args = parser.parse_args(argv)
     if args.command == "loop1":
         if args.start_step > args.end_step:
@@ -53,6 +68,15 @@ def main(argv: list[str] | None = None) -> int:
         config = PipelineConfig(live=args.live, max_cost_usd=args.max_cost_usd, target_batch_tokens=args.target_batch_tokens, max_batch_tokens=args.max_batch_tokens, max_output_tokens=args.max_output_tokens, visual_classification_batch_size=args.visual_classification_batch_size, visual_extraction_batch_size=args.visual_extraction_batch_size, max_workers=args.max_workers, materialization_mode=args.materialization_mode, materialization_workers=args.materialization_workers, materialization_chunk_size=args.materialization_chunk_size, materialization_memory_limit_mb=args.materialization_memory_limit_mb, materialization_backend=args.materialization_backend)
         requests = [DocumentRunRequest(corpus_id=args.corpus_id, objective=args.objective, source=source, output_dir=args.output, config=config, activate=not args.no_activate) for source in sources]
         print(json.dumps(process_corpus(requests, resume=not args.no_resume, start_step=args.start_step, end_step=args.end_step), indent=2))
+        return 0
+    if args.command == "loop2":
+        if args.start_step > args.end_step:
+            parser.error("--start-step must be less than or equal to --end-step")
+        output = args.output or args.input / "loop2"
+        config = PipelineConfig(live=args.live, max_cost_usd=args.max_cost_usd, max_workers=args.max_workers, target_batch_tokens=args.target_batch_tokens, max_batch_tokens=args.max_batch_tokens, max_output_tokens=args.max_output_tokens)
+        requests = requests_from_manifest(args.input, output, config, args.document_id, activate=not args.no_activate)
+        result = process_studies(requests, resume=not args.no_resume, start_step=args.start_step, end_step=args.end_step)
+        print(json.dumps(result, indent=2))
         return 0
     sources = sorted(path for path in args.input.rglob("*") if path.is_file()) if args.input.is_dir() else [args.input]
     config = PipelineConfig(live=args.live, max_cost_usd=args.max_cost_usd, target_batch_tokens=args.target_batch_tokens, max_batch_tokens=args.max_batch_tokens, max_output_tokens=args.max_output_tokens)

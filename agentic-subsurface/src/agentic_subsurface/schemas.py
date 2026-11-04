@@ -48,6 +48,79 @@ def narratives_schema() -> dict[str, Any]:
     feat=_obj({"feature_id":{"type":"string"},"status":{"type":"string"},"insight_type":{"type":"string"},"headline":{"type":"string"},"summary":{"type":"string"},"why_it_matters":{"type":"string"},"visual_takeaway":{"type":"string"},"insights":_arr(insight),"secondary_context":_null("string"),"evidence_refs":_strs()})
     return _obj({"feature_insights":_arr(feat),"limitations":_strs()})
 
+def study_presentation_schema() -> dict[str, Any]:
+    """Semantic dressing only; host-owned handles prevent scientific mutation."""
+    layer=_obj({"handle":{"type":"string"},"title":{"type":"string"},"description":{"type":"string"},"semantic_category":{"type":"string"}})
+    profile=_obj({"handle":{"type":"string"},"title":{"type":"string"},"description":{"type":"string"},"semantic_category":{"type":"string"}})
+    group=_obj({"handle":{"type":"string"},"title":{"type":"string"},"description":{"type":"string"},"semantic_category":{"type":"string"}})
+    return _obj({"title":{"type":"string"},"short_title":{"type":"string"},"domain":{"type":"string"},"summary":{"type":"string"},"layers":_arr(layer),"profiles":_arr(profile),"feature_groups":_arr(group),"limitations":_strs()})
+
+def study_rendering_plan_schema() -> dict[str, Any]:
+    """Generic LLM-authored semantic plan; host validates and materializes it."""
+    prop = _obj({"name": {"type": "string"}, "value": {"type": "string"}, "unit": _null("string")})
+    layer = _obj({
+        "id": {"type": "string"}, "name": {"type": "string"}, "description": {"type": "string"},
+        "kind": {"type": "string", "enum": ["native_asset", "generated_features", "vertical_profile", "structured_resource", "non_spatial"]},
+        "representation": {"type": "string"}, "semantic_category": {"type": "string"},
+        "source_asset_ids": _strs(), "feature_ids": _strs(), "profile_ids": _strs(),
+        "resource_ids": _strs(), "source_object_ids": _strs(), "evidence_refs": _strs(), "default_visible": {"type": "boolean"},
+    })
+    feature = _obj({
+        "id": {"type": "string"}, "name": {"type": "string"}, "type": {"type": "string"},
+        "geometry_json": _null("string"), "latitude": _null("number"), "longitude": _null("number"),
+        "location_description": _null("string"), "source_asset_id": _null("string"),
+        "properties": _arr(prop), "fidelity": {"type": "string"}, "evidence_refs": _strs(),
+        "coordinate_evidence_refs": _strs(), "source_object_ids": _strs(),
+    })
+    observation = _obj({
+        "id": {"type": "string"}, "type": {"type": "string"}, "category": _null("string"),
+        "subject_id": _null("string"), "statement": {"type": "string"}, "value": _null("string"),
+        "unit": _null("string"), "qualifier": _null("string"), "fidelity": {"type": "string"},
+        "evidence_refs": _strs(),
+    })
+    interval = _obj({
+        "id": {"type": "string"}, "name": {"type": "string"}, "type": {"type": "string"},
+        "profile_id": _null("string"), "feature_id": _null("string"), "axis": {"type": "string"},
+        "reference": {"type": "string"}, "start": _null("number"), "end": _null("number"),
+        "thickness": _null("number"), "unit": _null("string"), "material": _null("string"),
+        "qualifier": _null("string"), "fidelity": {"type": "string"}, "evidence_refs": _strs(),
+        "source_object_ids": _strs(),
+    })
+    profile = _obj({
+        "id": {"type": "string"}, "name": {"type": "string"}, "description": {"type": "string"},
+        "feature_id": _null("string"), "axis": {"type": "string"}, "reference": {"type": "string"},
+        "interval_ids": _strs(), "semantic_category": {"type": "string"}, "evidence_refs": _strs(),
+    })
+    resource = _obj({
+        "id": {"type": "string"}, "name": {"type": "string"}, "kind": {"type": "string"},
+        "source_asset_id": {"type": "string"}, "ui_role": {"type": "string"}, "evidence_refs": _strs(),
+    })
+    disposition = _obj({
+        "evidence_id": {"type": "string"},
+        "disposition": {"type": "string", "enum": ["rendered", "narrative_only", "report_only", "unsupported", "quarantined"]},
+        "target_ids": _strs(), "reason": {"type": "string"},
+    })
+    unsupported = _obj({"source_id": {"type": "string"}, "source_kind": {"type": "string"}, "reason": {"type": "string"}, "evidence_refs": _strs()})
+    return _obj({
+        "title": {"type": "string"}, "short_title": {"type": "string"}, "domain": {"type": "string"},
+        "summary": {"type": "string"}, "primary_rendering_mode": {"type": "string"},
+        "layers": _arr(layer), "features": _arr(feature), "observations": _arr(observation),
+        "intervals": _arr(interval), "vertical_profiles": _arr(profile),
+        "structured_resources": _arr(resource), "evidence_dispositions": _arr(disposition),
+        "unsupported_objects": _arr(unsupported), "limitations": _strs(),
+    })
+
+def _study_target_narrative_fields() -> dict[str, Any]:
+    insight=_obj({"type":{"type":"string"},"title":{"type":"string"},"explanation":{"type":"string"},"evidence_refs":_strs(),"grounding_status":{"type":"string"}})
+    return {"headline":{"type":"string"},"summary":{"type":"string"},"why_it_matters":{"type":"string"},"visual_takeaway":{"type":"string"},"insights":_arr(insight),"secondary_context":_null("string"),"evidence_refs":_strs(),"limitations":_strs()}
+
+def study_target_narrative_schema() -> dict[str, Any]:
+    return _obj(_study_target_narrative_fields())
+
+def study_target_narrative_batch_schema() -> dict[str, Any]:
+    item = _obj({"target_id": {"type": "string"}, **_study_target_narrative_fields()})
+    return _obj({"narratives": _arr(item)})
+
 def report_schema() -> dict[str, Any]:
     overview=_obj({"headline":{"type":"string"},"abstract":{"type":"string"},"key_finding_ids":_strs(),"key_stat_callout_ids":_strs(),"generation_mode":{"type":"string"}})
     theme=_obj({"id":{"type":"string"},"title":{"type":"string"},"summary":{"type":"string"},"chapter_ids":_strs(),"finding_ids":_strs()})
@@ -57,3 +130,6 @@ def report_schema() -> dict[str, Any]:
     uncertain=_obj({"id":{"type":"string"},"statement":{"type":"string"},"theme_id":_null("string")})
     coverage=_obj({"summary":{"type":"string"},"source_count":{"type":"integer"},"feature_count":{"type":"integer"},"finding_count":{"type":"integer"},"limitations":_strs()})
     return _obj({"schema_version":{"type":"string"},"report_id":{"type":"string"},"executive_overview":overview,"themes":_arr(theme),"chapters":_arr(chapter),"findings":_arr(finding),"stat_callouts":_arr(stat),"uncertainties":_arr(uncertain),"coverage":coverage})
+
+def report_executive_schema() -> dict[str, Any]:
+    return _obj({"headline":{"type":"string"},"abstract":{"type":"string"},"key_finding_ids":_strs(),"key_stat_callout_ids":_strs()})

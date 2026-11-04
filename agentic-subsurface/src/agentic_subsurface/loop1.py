@@ -16,6 +16,7 @@ from typing import Any, Iterable
 from .adapters import AdapterRegistry
 from .batching import EvidenceBatch, SemanticBatcher
 from .models import DocumentRunRequest, ExtractionResult, SourceBundle
+from .normalization import normalize_extraction_result_ids
 from .prompts import (
     EXTRACTION_INSTRUCTIONS,
     EXTRACTION_PROMPT_VERSION,
@@ -224,6 +225,16 @@ class DocumentLoop1Processor:
     def _load_extraction_results(directory: Path, prerequisite_step: int) -> list[ExtractionResult]:
         paths = sorted(directory.glob("*.json")) if directory.exists() else []
         if not paths:
+            # A successfully completed stage can legitimately produce zero
+            # extraction files (for example, a KML with no visual artifacts).
+            # Distinguish that from an unexecuted/missing prerequisite using
+            # the append-only stage telemetry rather than directory contents.
+            telemetry_path = next((parent / "stage_telemetry.json" for parent in directory.parents if (parent / "stage_telemetry.json").exists()), None)
+            if telemetry_path is not None:
+                telemetry = read_json(telemetry_path)
+                runs = ((telemetry.get("stages") or {}).get(str(prerequisite_step)) or {}).get("runs", [])
+                if runs and runs[-1].get("status") == "completed" and (runs[-1].get("details") or {}).get("batches") == 0:
+                    return []
             raise RuntimeError(f"stage {prerequisite_step} artifacts are missing under {directory}; run with --start-step {prerequisite_step}")
         return [ExtractionResult.model_validate(read_json(path)) for path in paths if path.name != "manifest.json"]
 
@@ -543,30 +554,112 @@ class DocumentLoop1Processor:
     def _consolidate(self, request: DocumentRunRequest, root: Path, document_id: str, version_id: str, bundle: SourceBundle, batches: list[EvidenceBatch], results: list[ExtractionResult], classifications: list[dict[str, Any]]) -> dict[str, Any]:
         artifacts = {x.artifact_id: x for x in bundle.artifacts}
         unit_ids = {x.unit_id for x in bundle.units}
+        units_by_id = {x.unit_id: x for x in bundle.units}
+        units_by_artifact: dict[str, list[Any]] = {}
+        page_units: dict[int, list[Any]] = {}
+        for unit in bundle.units:
+            units_by_artifact.setdefault(unit.artifact_id, []).append(unit)
+            if unit.kind == "pdf_page" and unit.locator.page is not None:
+                page_units.setdefault(unit.locator.page, []).append(unit)
         issues: list[dict[str, Any]] = []
+        normalized_results: list[ExtractionResult] = []
+        normalization_stats: list[dict[str, Any]] = []
+        batch_occurrences: Counter[str] = Counter()
+        for result in results:
+            batch_occurrences[result.batch_id] += 1
+            occurrence = batch_occurrences[result.batch_id]
+            scope_id = result.batch_id if occurrence == 1 else f"{result.batch_id}:result-{occurrence}"
+            normalized, normalization_issues, stats = normalize_extraction_result_ids(document_id, result, scope_id=scope_id)
+            normalized_results.append(normalized)
+            issues.extend(normalization_issues)
+            normalization_stats.append(stats)
+
         evidence_items = []
         seen = set()
-        for result in results:
+        valid_evidence_items = 0
+        provenance_repairs = 0
+
+        def repair_reference(item_id: str, ref: Any) -> None:
+            nonlocal provenance_repairs
+            original_artifact = ref.artifact_id
+            if ref.artifact_id not in artifacts:
+                if ref.artifact_id in units_by_id:
+                    ref.artifact_id = units_by_id[ref.artifact_id].artifact_id
+                elif ref.locator.artifact_id in artifacts:
+                    ref.artifact_id = ref.locator.artifact_id
+            if ref.artifact_id != original_artifact:
+                provenance_repairs += 1
+                issues.append({"severity": "warning", "code": "repaired_artifact_reference", "id": item_id, "original": original_artifact, "resolved": ref.artifact_id})
+
+            unit_id = ref.locator.unit_id
+            if not unit_id or unit_id in unit_ids or unit_id in artifacts:
+                return
+            original_unit = unit_id
+            resolved_unit: str | None = None
+
+            # Recover model output with trailing JSON fragments by selecting the
+            # longest exact native ID prefix. This never fuzzy-matches content.
+            prefix_matches = [known for known in unit_ids if unit_id.startswith(known)]
+            if prefix_matches:
+                resolved_unit = max(prefix_matches, key=len)
+            elif ref.locator.artifact_id in units_by_id:
+                resolved_unit = ref.locator.artifact_id
+            elif len(units_by_artifact.get(ref.locator.artifact_id, [])) == 1:
+                resolved_unit = units_by_artifact[ref.locator.artifact_id][0].unit_id
+            elif len(units_by_artifact.get(ref.artifact_id, [])) == 1:
+                resolved_unit = units_by_artifact[ref.artifact_id][0].unit_id
+            else:
+                artifact = artifacts.get(ref.artifact_id)
+                native_page = artifact.source_locator.page if artifact and artifact.source_locator else None
+                if native_page is not None and len(page_units.get(native_page, [])) == 1:
+                    resolved_unit = page_units[native_page][0].unit_id
+                    # The artifact locator is authoritative for native PDF page
+                    # numbering; retain report-page numbers in extracted text.
+                    ref.locator.page = native_page
+
+            if resolved_unit:
+                ref.locator.unit_id = resolved_unit
+                provenance_repairs += 1
+                issues.append({"severity": "warning", "code": "repaired_unit_reference", "id": item_id, "original": original_unit, "resolved": resolved_unit})
+            elif ref.artifact_id in artifacts:
+                # Artifact + locator provenance remains valid even when an
+                # optional model-supplied unit placeholder cannot be resolved.
+                ref.locator.unit_id = None
+                provenance_repairs += 1
+                issues.append({"severity": "warning", "code": "removed_unresolvable_optional_unit", "id": item_id, "original": original_unit, "artifact_id": ref.artifact_id})
+
+        for result in normalized_results:
             for item in result.evidence_items:
                 if item.evidence_id in seen:
-                    issues.append({"severity": "warning", "code": "duplicate_evidence_id", "id": item.evidence_id})
-                    continue
+                    # Retain the content even if an unexpected post-normalization
+                    # collision occurs. This should only be reachable if callers
+                    # supply duplicate scopes.
+                    original = item.evidence_id
+                    suffix = 2
+                    while f"{original}:collision-{suffix}" in seen:
+                        suffix += 1
+                    item.evidence_id = f"{original}:collision-{suffix}"
+                    issues.append({"severity": "warning", "code": "post_normalization_id_collision", "id": original, "retained_as": item.evidence_id})
                 seen.add(item.evidence_id)
-                valid = []
+                valid_refs = 0
                 for ref in item.evidence:
+                    repair_reference(item.evidence_id, ref)
                     if ref.artifact_id not in artifacts:
                         issues.append({"severity": "error", "code": "unknown_artifact", "id": item.evidence_id, "artifact_id": ref.artifact_id})
                     elif ref.locator.unit_id and ref.locator.unit_id not in unit_ids and ref.locator.unit_id not in artifacts:
                         issues.append({"severity": "error", "code": "unknown_unit", "id": item.evidence_id, "unit_id": ref.locator.unit_id})
                     else:
-                        valid.append(ref)
-                if valid:
-                    item.evidence = valid
-                    evidence_items.append(item.model_dump(mode="json"))
+                        valid_refs += 1
+                if valid_refs:
+                    valid_evidence_items += 1
+                # Never mutate or discard extracted evidence because provenance
+                # validation failed. Stage 7 can block activation while the full
+                # candidate remains available for inspection and repair.
+                evidence_items.append(item.model_dump(mode="json"))
 
         classified_ids = {x["artifact_id"] for x in classifications if x.get("status") == "classified"}
         meaningful_ids = {x["artifact_id"] for x in classifications if x.get("meaningful")}
-        interpreted_ids = {x.get("artifact_id") for r in results for x in r.visual_interpretations if x.get("artifact_id")}
+        interpreted_ids = {x.get("artifact_id") for r in normalized_results for x in r.visual_interpretations if x.get("artifact_id")}
         visual_ids = {x["artifact_id"] for x in bundle.visual_assets}
         table_ids = {x["asset_id"] for x in bundle.structured_assets if x.get("kind") in {"pdf_table", "table", "spreadsheet_sheet"}}
         batched_units = {u.unit_id for batch in batches for u in batch.units}
@@ -576,20 +669,31 @@ class DocumentLoop1Processor:
             "visual_assets": len(visual_ids), "visuals_classified": len(classified_ids), "unclassified_visuals": sorted(visual_ids - classified_ids),
             "meaningful_visuals": len(meaningful_ids), "meaningful_visuals_interpreted": len(meaningful_ids & interpreted_ids), "uninterpreted_meaningful_visuals": sorted(meaningful_ids - interpreted_ids),
             "structured_assets": len(bundle.structured_assets), "table_assets": len(table_ids), "table_units_batched": len(table_unit_ids & batched_units), "unprocessed_table_units": sorted(table_unit_ids - batched_units),
-            "valid_evidence_items": len(evidence_items), "validation_errors": sum(x["severity"] == "error" for x in issues),
+            "evidence_items_retained": len(evidence_items), "valid_evidence_items": valid_evidence_items, "validation_errors": sum(x["severity"] == "error" for x in issues),
         }
         package = {
             "schema_version": DOCUMENT_PACKAGE_SCHEMA, "document_id": document_id, "version_id": version_id, "status": "candidate",
             "objective": request.objective, "source": {"source_id": bundle.source_id, "filename": bundle.filename, "media_type": bundle.media_type, "sha256": bundle.sha256, "adapter": bundle.adapter, "original_path": bundle.original_path},
             "processing": {"loop1_code_version": LOOP1_CODE_VERSION, "model": request.config.model, "prompt_versions": [EXTRACTION_PROMPT_VERSION, VISUAL_CLASSIFICATION_PROMPT_VERSION, VISUAL_EXTRACTION_PROMPT_VERSION]},
             "artifacts": [x.model_dump(mode="json") for x in bundle.artifacts], "structured_assets": bundle.structured_assets, "spatial_assets": bundle.spatial_assets, "visual_assets": bundle.visual_assets,
-            "visual_classifications": classifications, "entities": [x for r in results for x in r.entities], "evidence_items": evidence_items,
-            "spatial_features": [x for r in results for x in r.spatial_features], "vertical_intervals": [x for r in results for x in r.vertical_intervals], "relationships": [x for r in results for x in r.relationships],
-            "visual_interpretations": [x for r in results for x in r.visual_interpretations], "summary": " ".join(r.summary for r in results if r.summary),
-            "limitations": list(dict.fromkeys(x for r in results for x in r.limitations)), "unresolved_items": list(dict.fromkeys(x for r in results for x in r.unresolved_items)), "coverage": coverage,
+            "visual_classifications": classifications, "entities": [x for r in normalized_results for x in r.entities], "evidence_items": evidence_items,
+            "spatial_features": [x for r in normalized_results for x in r.spatial_features], "vertical_intervals": [x for r in normalized_results for x in r.vertical_intervals], "relationships": [x for r in normalized_results for x in r.relationships],
+            "visual_interpretations": [x for r in normalized_results for x in r.visual_interpretations], "summary": " ".join(r.summary for r in normalized_results if r.summary),
+            "limitations": list(dict.fromkeys(x for r in normalized_results for x in r.limitations)), "unresolved_items": list(dict.fromkeys(x for r in normalized_results for x in r.unresolved_items)), "coverage": coverage,
         }
         write_json(root / "document_evidence_package.candidate.json", package)
-        write_json(root / "provenance_report.json", {"valid": coverage["validation_errors"] == 0, "issues": issues})
+        normalization_report = {
+            "document_id": document_id,
+            "results": len(normalized_results),
+            "rewritten": {collection: sum(stat["rewritten"].get(collection, 0) for stat in normalization_stats) for collection in ("evidence_items", "entities", "spatial_features", "vertical_intervals", "relationships")},
+            "unresolved_references": sum(stat["unresolved_references"] for stat in normalization_stats),
+            "ambiguous_references": sum(stat["ambiguous_references"] for stat in normalization_stats),
+            "duplicate_local_ids": sum(stat["duplicate_local_ids"] for stat in normalization_stats),
+            "provenance_repairs": provenance_repairs,
+            "batches": normalization_stats,
+        }
+        write_json(root / "identifier_normalization_report.json", normalization_report)
+        write_json(root / "provenance_report.json", {"valid": coverage["validation_errors"] == 0, "issues": issues, "identifier_normalization": normalization_report})
         return package
 
     def _validate_coverage(self, root: Path, package: dict[str, Any]) -> dict[str, Any]:

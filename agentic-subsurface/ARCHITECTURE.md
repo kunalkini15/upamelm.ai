@@ -43,6 +43,57 @@ The spatial synthesis call consumes the validated Evidence Package and determini
 
 Feature narratives and report synthesis are separate strict-schema calls. The final UI package embeds the report and attaches narratives by feature ID.
 
+Loop 2 is a five-stage, document-isolated state machine. It resolves active inputs
+only through the Loop 1 `corpus_manifest.json`, then creates one study per Loop 1
+document. Its first deterministic preparation stage snapshots and hashes that
+package, audits evidence references, and builds the count-audited evidence
+projection and native-asset registry. It derives a lossless semantic transport
+that stores each canonical object once and uses reversible call-local handles;
+an exact round-trip hash gate prevents evidence loss. The remaining stages generate a UI rendering package,
+generates independently checkpointed feature narratives, synthesizes the
+document-level report, and deterministically consolidates and validates the
+study. Large native datasets remain references and are never expanded into
+model prompts.
+
+Rendering uses an LLM-authored semantic plan followed by deterministic
+validation and materialization. Stage 2 projects every evidence item, linked
+scientific object and native-asset descriptor into bounded semantic batches.
+Oversized or output-exhausted batches split recursively; successful leaf
+fragments are checkpointed and reconciled hierarchically. The model decides
+whether evidence becomes a reused native layer, generated feature, profile,
+structured resource, narrative/report-only evidence, or an unsupported item.
+The host does not make those semantic decisions. It validates all identifiers,
+asset references, evidence dispositions and coordinate provenance, materializes
+truthful file-backed resources, and rejects incomplete coverage. Every Loop 1
+evidence item, spatial feature and interval must be accounted for; report-only,
+native-layer-only and vertical-only studies remain valid outcomes.
+
+Each study fingerprint includes its one Loop 1 version and package hash, Loop 2
+code and prompt versions, and semantic configuration. Operational settings do
+not alter that semantic version. Adding a new document therefore runs Loops 1
+and 2 only for that document. Existing active study packages remain immutable.
+A user-supplied objective or guidance is intentionally absent: each semantic
+stage has a fixed product contract, while factual study context is derived from
+the Loop 1 package's source identity, summary, evidence counts and asset types.
+A future Loop 3 consumes the Loop 2 study manifest for cross-study/city-level
+synthesis. A selected Loop 2 stage range loads prerequisites and never silently
+executes an earlier stage.
+
+All Loop 2 model phases share one long-context execution contract: approximately
+128K target input batches with a 10% soft operating band, exact token preflight, adaptive recursive split on input overflow
+or incomplete output, resumable leaf fragments, bounded parallel workers, and
+deterministic source-locator ordering before hierarchical reconciliation. Stage 2
+and Stage 4 receive a small preceding overlap labelled context-only; immutable owned
+unit IDs prevent duplicate dispositions while retaining boundary meaning. This applies to
+rendering plans, target narratives, and document reports. Narrative targets are
+restricted to individually selectable features with deterministically valid geometry
+and reconciled by immutable target ID because each target has an independent bounded
+evidence context. A report-only study produces an empty Stage 3 package without a
+model call. Rendering and report fragments use
+hierarchical model reconciliation with exact-counted, parallel approximately 128K
+groups. The same operating band applies to initial and reconciliation calls, with
+smaller calls only for unavoidable remainders or adaptive splits.
+
 ## Provider safety
 
 - Model is hard-locked to `muse-spark-1.3-contributor`.

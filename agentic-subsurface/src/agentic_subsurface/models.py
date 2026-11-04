@@ -155,3 +155,17 @@ class DocumentRunRequest(BaseModel):
     activate: bool = True
     context_document_ids: list[str] | None = None
 
+
+class DocumentStudyRunRequest(BaseModel):
+    """One reproducible Loop 2 study built from one Loop 1 package."""
+
+    study_id: str
+    corpus_root: Path
+    output_dir: Path
+    document_id: str
+    loop1_version_id: str
+    package_path: Path
+    expected_source_sha256: str
+    config: PipelineConfig = Field(default_factory=PipelineConfig)
+    activate: bool = True
+

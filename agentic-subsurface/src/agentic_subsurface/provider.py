@@ -4,6 +4,7 @@ import json
 import os
 import random
 import re
+import sys
 import time
 import threading
 import uuid
@@ -97,10 +98,64 @@ class MuseClient:
             countable_input = instructions + "\n\n" + json.dumps(input_content, ensure_ascii=False, default=str)
         payload: dict[str, Any] = {"model": MODEL, "input": countable_input}
         if not self.api_key: raise ValueError("MODEL_API_KEY is required for live token counting")
-        response = httpx.post(f"{self.BASE_URL}/responses/input_tokens", headers={"Authorization": f"Bearer {self.api_key}"}, json=payload, timeout=120)
-        response.raise_for_status()
-        body = response.json()
-        return int(body.get("input_tokens") or body.get("total_tokens") or 0)
+        last_error: Exception | None = None
+        for attempt in range(4):
+            try:
+                response = httpx.post(f"{self.BASE_URL}/responses/input_tokens", headers={"Authorization": f"Bearer {self.api_key}"}, json=payload, timeout=120)
+                response.raise_for_status()
+                body = response.json()
+                return int(body.get("input_tokens") or body.get("total_tokens") or 0)
+            except (httpx.TimeoutException, httpx.NetworkError, httpx.HTTPStatusError) as exc:
+                last_error = exc
+                status = exc.response.status_code if isinstance(exc, httpx.HTTPStatusError) else None
+                if status and status not in {429, 500, 502, 503, 504}:
+                    raise
+                if attempt < 3:
+                    time.sleep(min(20, (2 ** attempt) + random.random()))
+
+        # Token counting is a preflight optimization, not the model operation
+        # itself. Do not discard an extraction batch when that auxiliary Meta
+        # endpoint is temporarily unavailable. This deliberately overestimates
+        # text and images so the normal budget guard remains conservative.
+        estimated = self._estimate_input_tokens(instructions, input_content, schema)
+        print(
+            f"[provider] Meta token counter unavailable after 4 attempts; "
+            f"using conservative local estimate={estimated:,} tokens | "
+            f"{type(last_error).__name__}: {last_error}",
+            file=sys.stderr,
+            flush=True,
+        )
+        return estimated
+
+    @staticmethod
+    def _estimate_input_tokens(instructions: str, input_content: Any, schema: dict[str, Any] | None = None) -> int:
+        text_characters = len(instructions) + len(json.dumps(schema or {}, ensure_ascii=False, default=str))
+        image_count = 0
+
+        def visit(value: Any) -> None:
+            nonlocal text_characters, image_count
+            if isinstance(value, dict):
+                image_url = value.get("image_url")
+                if isinstance(image_url, str) and image_url.startswith("data:image"):
+                    image_count += 1
+                    for key, child in value.items():
+                        if key != "image_url":
+                            visit(child)
+                    return
+                for child in value.values():
+                    visit(child)
+            elif isinstance(value, list):
+                for child in value:
+                    visit(child)
+            elif isinstance(value, str):
+                text_characters += len(value)
+            elif value is not None:
+                text_characters += len(str(value))
+
+        visit(input_content)
+        # Three characters/token and 3K tokens/image are intentionally above
+        # the observed Muse usage for these document batches.
+        return max(1, (text_characters + 2) // 3 + image_count * 3_000)
 
     def complete(self, *, phase: str, instructions: str, input_content: Any, schema: dict[str, Any], max_output_tokens: int | None = None, reasoning_effort: str | None = None, cache_key: str | None = None, counted_input_tokens: int | None = None) -> dict[str, Any]:
         if not self.config.live: raise RuntimeError("live provider call attempted while live=false")

@@ -1,0 +1,40 @@
+{
+  "schema_version": "visual-capabilities.v1",
+  "note": "Staged delta for the experience-foundation run. Live registries are untouched; the showcase fixture is fictional and is never registered. Promotion is valid only after read-only browser acceptance per WORKFLOW.md.",
+  "capabilities": [
+    {
+      "id": "subsurface-surface",
+      "title": "Subsurface depth surface",
+      "description": "Validated polygon footprint rendered as a bounded matte plane at its validated depth in the anchored local-metric 3D frame, with an outlined map footprint. Optional validated dip is reported as schematic text only (strike unknown); optional validated uncertainty renders as a bounded wireframe band, clipped to the declared easting bound where one exists. Never interpolates or invents surface between control points.",
+      "renderer": "MapView:fill-outline + ThreeViewport:layered-plane",
+      "input_kinds": ["polygon-with-elevation"],
+      "interaction_kinds": ["selection", "inspection", "fit-to-study", "fit-to-selection", "clip"],
+      "verified_fixture_ids": ["experience-showcase:demo-horizon-a", "experience-showcase:demo-horizon-b", "experience-showcase:demo-horizon-c"],
+      "status": "staged",
+      "composition_failure": "point-observation renders points, not areal extents; vertical-profile renders columns at point locations; path renders lines. None can express a bounded depth surface without inventing interpolation between control points, which the truthfulness contract forbids. Extension adds no document-specific branch: it keys on polygon geometry plus finite elevationMeters, validated dipDegrees/uncertaintyMeters, and capability id only."
+    },
+    {
+      "id": "reference-surface",
+      "title": "Reference plane",
+      "description": "Validated polygon footprint carrying referenceKind water-level, rendered as a distinct translucent plane at its validated depth plus a map footprint and a one-click clip preset (Clip at water level). Visually distinct from evidence horizons (lower opacity, cool sequential tone, no categorical assignment). Disabled with a reason when no reference layer validates.",
+      "renderer": "MapView:fill-outline + ThreeViewport:reference-plane",
+      "input_kinds": ["polygon-with-elevation"],
+      "interaction_kinds": ["selection", "inspection", "clip-preset"],
+      "verified_fixture_ids": ["experience-showcase:demo-water-level"],
+      "status": "staged",
+      "composition_failure": "No composition of point-observation/path/vertical-profile can express a non-evidence datum plane with a clip preset: region fills have no 3D presence, and evidence columns cannot act as clip datums. Extension keys on layer referenceKind plus finite elevationMeters only."
+    },
+    {
+      "id": "cross-section",
+      "title": "Transect section curtain",
+      "description": "Validated transect line extruded from the ground datum to its declared base depth as a schematic translucent curtain in the anchored 3D frame, with map highlight and shared selection. Explicitly labelled schematic wherever described; never claims surveyed continuity between boreholes.",
+      "renderer": "MapView:line-layer + ThreeViewport:section-ribbon",
+      "input_kinds": ["line-with-elevation"],
+      "interaction_kinds": ["selection", "inspection", "fit-to-study", "fit-to-selection"],
+      "verified_fixture_ids": ["experience-showcase:demo-transect-1"],
+      "status": "staged",
+      "composition_failure": "path renders the transect on the map only; vertical-profile renders columns at points. Neither produces a vertical section reading under the line. The curtain is bounded strictly by the declared line vertices and declared base depth (validated finite meters), adding no interpolated geology."
+    }
+  ],
+  "packages": []
+}

@@ -3,6 +3,23 @@
 // without inventing a camera position (BASELINE.md C3, M5).
 
 import type { LonLat, SceneGeometry, ValidatedBounds } from "./types.ts";
+import { isValidDip, isValidUncertainty } from "./types.ts";
+
+function isOptionalUncertainty(value: unknown): boolean {
+  return value === null || value === undefined || isValidUncertainty(value);
+}
+
+function isOptionalDip(value: unknown): boolean {
+  return value === null || value === undefined || isValidDip(value);
+}
+
+function hasValidVerticals(g: Record<string, unknown>): boolean {
+  const e = g.elevationMeters;
+  if (!(e === null || e === undefined || (typeof e === "number" && Number.isFinite(e)))) {
+    return false;
+  }
+  return isOptionalUncertainty(g.uncertaintyMeters) && isOptionalDip(g.dipDegrees);
+}
 
 export function isValidLonLat(value: unknown): value is LonLat {
   if (!Array.isArray(value) || value.length !== 2) return false;
@@ -34,16 +51,14 @@ export function isValidGeometry(value: unknown): value is SceneGeometry {
   if (typeof value !== "object" || value === null) return false;
   const g = value as Record<string, unknown>;
   if (g.kind === "point") {
-    return (
-      isValidLonLat(g.coordinates) &&
-      (g.elevationMeters === null || typeof g.elevationMeters === "number")
-    );
+    return isValidLonLat(g.coordinates) && hasValidVerticals(g);
   }
   if (g.kind === "line") {
     return (
       Array.isArray(g.coordinates) &&
       g.coordinates.length >= 2 &&
-      g.coordinates.every(isValidLonLat)
+      g.coordinates.every(isValidLonLat) &&
+      hasValidVerticals(g)
     );
   }
   if (g.kind === "polygon") {
@@ -52,7 +67,8 @@ export function isValidGeometry(value: unknown): value is SceneGeometry {
       g.coordinates.length > 0 &&
       g.coordinates.every(
         (ring) => Array.isArray(ring) && ring.length >= 4 && ring.every(isValidLonLat),
-      )
+      ) &&
+      hasValidVerticals(g)
     );
   }
   return false;

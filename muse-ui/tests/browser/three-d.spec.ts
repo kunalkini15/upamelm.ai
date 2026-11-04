@@ -4,7 +4,7 @@ import { expect, test } from "@playwright/test";
 // with located finite heights unlocks the Three.js workspace, which renders
 // evidence-derived columns (never invented geometry) with orbit, reset,
 // orientation cue, clipping, and labelled vertical exaggeration.
-const SHOTS = "verification/bootstrap-default/screenshots";
+const SHOTS = "verification/refine-scene-first-design-foundation/screenshots";
 const SYNTHETIC_3D = "tests/fixtures/synthetic-3d-package.json";
 
 let pageErrors: string[] = [];
@@ -27,6 +27,8 @@ test.afterEach(async () => {
 });
 
 test("validated heights enable the 3D workspace with evidence geometry", async ({ page }) => {
+  await page.getByTestId("btn-import").click();
+  await expect(page.getByTestId("import-dialog")).toBeVisible();
   await page.getByTestId("import-input").setInputFiles(SYNTHETIC_3D);
   await expect(page.getByTestId("package-status")).toContainText("TEST FIXTURE");
   // Let the world map boot so the loading veil is gone before mode switching.
@@ -67,7 +69,9 @@ test("validated heights enable the 3D workspace with evidence geometry", async (
   // feature in the side panel and the 3D highlight handle.
   await page.getByTestId("mode-narrative").click();
   await page.getByTestId("evidence-syn3d-a").click();
+  await page.getByTestId("btn-spatial").click();
   await expect(page.getByTestId("selection-details")).toContainText("Synthetic mast A");
+  await page.keyboard.press("Escape");
   await page.getByTestId("mode-3d").click();
   await expect(page.getByTestId("three-canvas")).toBeVisible();
   const selected = await page.evaluate(

@@ -3,8 +3,10 @@ import { describe, expect, it } from "vitest";
 import { App } from "./App.tsx";
 import { InteractionProvider } from "../interaction/store.tsx";
 
-// Server-side composition smoke test: proves the shell, all five modes, and
-// the bootstrap empty states render without a browser or WebGL context.
+// Server-side composition smoke test: proves the shell, all five modes, the
+// compact command bar, and every on-demand trigger render without a browser
+// or WebGL context. Empty states live on demand (spatial popover, limits
+// popover, import dialog) so they are asserted through the browser suite.
 // MapLibre/Three.js effects never run here; the browser suite owns them.
 describe("application shell composition", () => {
   const html = renderToStaticMarkup(
@@ -20,11 +22,21 @@ describe("application shell composition", () => {
     expect(html).toContain("No package loaded");
   });
 
-  it("renders every bootstrap empty state", () => {
-    expect(html).toContain("No study layers yet");
-    expect(html).toContain("Nothing selected");
-    expect(html).toContain("No study evidence yet");
-    expect(html).toContain("Basemap");
+  it("exposes layers, import, limitations, and help as on-demand triggers", () => {
+    for (const trigger of ["btn-spatial", "btn-import", "btn-limits", "btn-help"]) {
+      expect(html).toContain(`data-testid="${trigger}"`);
+    }
+    // No permanently open rail, strip, or footer competes with the scene.
+    expect(html).not.toContain("mode-3d-reason-strip");
+    expect(html).not.toContain("limit-strip");
+    expect(html).not.toContain("No study layers yet");
+    expect(html).not.toContain("Nothing selected");
+  });
+
+  it("discloses the disabled-3D reason in the accessibility tree", () => {
+    expect(html).toContain('data-testid="mode-3d-reason-disclosure"');
+    expect(html).toContain("Needs located 3D evidence");
+    expect(html).toContain('data-testid="mode-3d"');
   });
 
   it("emits no executable markup from display strings", () => {

@@ -8,12 +8,13 @@ import { boundsOfFeatures, isValidGeometry } from "../scene-model/coordinates.ts
 import { isSupportedCrs, transformToWgs84 } from "../scene-model/transform.ts";
 import type {
   CoordinateProvenance,
+  ReferenceKind,
   SceneFeature,
   SceneGeometry,
   SceneLayer,
   SceneModel,
 } from "../scene-model/types.ts";
-import { createEmptyScene } from "../scene-model/types.ts";
+import { createEmptyScene, isValidDip, isValidUncertainty } from "../scene-model/types.ts";
 
 // Fixed oracle for every validation test and error message.
 export const PACKAGE_SCHEMA_VERSION = "muse-scene-package.v1";
@@ -21,6 +22,11 @@ export const MAX_PACKAGE_BYTES = 10 * 1024 * 1024;
 
 // Reusable geometric capability vocabulary. Renderers key off these ids;
 // package-declared strings outside this list become limitations, never views.
+// The three subsurface entries are generic geometric ideas (a validated depth
+// surface, a validated reference plane, a transect section curtain) justified
+// by the composition-failure record in the experience-foundation report: no
+// composition of point-observation/path/vertical-profile can express an areal
+// surface, a reference plane, or a section ribbon without inventing geometry.
 export const KNOWN_CAPABILITY_IDS = [
   "point-observation",
   "path",
@@ -28,6 +34,9 @@ export const KNOWN_CAPABILITY_IDS = [
   "vertical-profile",
   "time-series",
   "network",
+  "subsurface-surface",
+  "reference-surface",
+  "cross-section",
 ] as const;
 
 export interface ValidationSuccess {
@@ -50,17 +59,42 @@ function toDisplayText(value: unknown, fallback: string): string {
   return fallback;
 }
 
+function finiteOrNull(value: unknown): number | null {
+  if (value === null || value === undefined) return null;
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
 function adaptGeometry(raw: unknown, crs: string): SceneGeometry | null {
   if (!isRecord(raw)) return null;
   const kind = raw.kind;
   if (kind === "point" || kind === "line" || kind === "polygon") {
+    // Unit-bearing vertical evidence only: non-finite numbers can never pass
+    // validation, so they quarantine the feature instead of rendering.
+    const elevationMeters = finiteOrNull(raw.elevationMeters);
+    if (raw.elevationMeters !== null && raw.elevationMeters !== undefined && elevationMeters === null) {
+      return null;
+    }
+    const uncertaintyMeters =
+      raw.uncertaintyMeters === null || raw.uncertaintyMeters === undefined
+        ? null
+        : isValidUncertainty(raw.uncertaintyMeters)
+          ? raw.uncertaintyMeters
+          : NaN;
+    if (typeof uncertaintyMeters === "number" && Number.isNaN(uncertaintyMeters)) return null;
+    const dipDegrees =
+      raw.dipDegrees === null || raw.dipDegrees === undefined
+        ? null
+        : isValidDip(raw.dipDegrees)
+          ? raw.dipDegrees
+          : NaN;
+    if (typeof dipDegrees === "number" && Number.isNaN(dipDegrees)) return null;
+    if (kind === "point" && dipDegrees !== null) return null;
     const candidate = {
       kind,
       coordinates: raw.coordinates,
-      elevationMeters:
-        raw.elevationMeters === null || typeof raw.elevationMeters === "number"
-          ? raw.elevationMeters
-          : null,
+      elevationMeters,
+      uncertaintyMeters,
+      dipDegrees,
     };
     if (crs === "EPSG:4326" && isValidGeometry(candidate)) return candidate;
   }
@@ -83,10 +117,22 @@ function adaptGeometry(raw: unknown, crs: string): SceneGeometry | null {
       lonlats.push(ring);
     }
     if (kind === "projected-point" && lonlats[0]?.length === 1) {
-      return { kind: "point", coordinates: lonlats[0][0], elevationMeters: null };
+      return {
+        kind: "point",
+        coordinates: lonlats[0][0],
+        elevationMeters: null,
+        uncertaintyMeters: null,
+        dipDegrees: null,
+      };
     }
     if (kind === "projected-line" && lonlats[0]?.length >= 2) {
-      return { kind: "line", coordinates: lonlats[0], elevationMeters: null };
+      return {
+        kind: "line",
+        coordinates: lonlats[0],
+        elevationMeters: null,
+        uncertaintyMeters: null,
+        dipDegrees: null,
+      };
     }
   }
   return null;
@@ -135,6 +181,17 @@ export function validatePackage(raw: unknown): ValidationSuccess | ValidationFai
       );
       continue;
     }
+    let referenceKind: ReferenceKind = null;
+    const rawRef = entry.referenceKind;
+    if (rawRef !== undefined && rawRef !== null) {
+      if (rawRef === "water-level") {
+        referenceKind = "water-level";
+      } else {
+        limitations.push(
+          `Layer "${entry.id}" declares unknown referenceKind ${JSON.stringify(rawRef)}; treated as ordinary evidence.`,
+        );
+      }
+    }
     layerIds.add(entry.id);
     layers.push({
       id: entry.id,
@@ -142,6 +199,7 @@ export function validatePackage(raw: unknown): ValidationSuccess | ValidationFai
       capabilityId,
       visible: true,
       featureIds: [],
+      referenceKind,
     });
   }
 
@@ -172,11 +230,24 @@ export function validatePackage(raw: unknown): ValidationSuccess | ValidationFai
       continue;
     }
     seenFeatureIds.add(entry.id);
+    const rawEast = (entry as Record<string, unknown>).uncertaintyEastingMinMeters;
+    let uncertaintyEastingMinMeters: number | null = null;
+    if (rawEast !== undefined && rawEast !== null) {
+      if (typeof rawEast === "number" && Number.isFinite(rawEast)) {
+        uncertaintyEastingMinMeters = rawEast;
+      } else {
+        limitations.push(
+          `Skipped feature "${entry.id}": uncertaintyEastingMinMeters must be a finite number in meters.`,
+        );
+        continue;
+      }
+    }
     features.push({
       id: entry.id,
       layerId: entry.layer,
       label: toDisplayText(entry.label, entry.id),
       geometry,
+      uncertaintyEastingMinMeters,
     });
     layers.find((l) => l.id === entry.layer)?.featureIds.push(entry.id);
   }
@@ -230,6 +301,14 @@ export function validatePackage(raw: unknown): ValidationSuccess | ValidationFai
   const rawUnknown: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(raw)) {
     if (!knownKeys.has(key)) rawUnknown[key] = value;
+  }
+
+  if (isSupportedCrs(declaredCrs)) {
+    provenance.push({
+      sourceCrs: declaredCrs,
+      targetFrame: "WGS84-lonlat",
+      transformedAt: `adapter:${PACKAGE_SCHEMA_VERSION}`,
+    });
   }
 
   const geometries = features.map((f) => f.geometry);

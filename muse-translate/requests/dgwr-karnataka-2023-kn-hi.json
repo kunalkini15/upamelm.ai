@@ -1,0 +1,8 @@
+{
+  "input": "muse-document-processing/runs/dgwr-karnataka-2023-v1",
+  "output_dir": "muse-translate/runs/dgwr-karnataka-2023-v1",
+  "languages": ["Kannada", "Hindi"],
+  "scope": "full",
+  "overwrite": false,
+  "guidance": "Plain-language Kannada and Hindi for a lay reader; keep IDs, numbers, units, and proper nouns unchanged."
+}

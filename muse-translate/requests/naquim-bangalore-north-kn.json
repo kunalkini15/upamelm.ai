@@ -1,0 +1,8 @@
+{
+  "input": "muse-document-processing/runs/naquim-bangalore-north-v1",
+  "output_dir": "muse-translate/runs/naquim-bangalore-north-v1",
+  "languages": ["Kannada"],
+  "scope": "full",
+  "overwrite": false,
+  "guidance": "Plain-language Kannada for a lay reader; keep IDs, numbers, units, and proper nouns unchanged."
+}

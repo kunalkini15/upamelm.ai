@@ -50,8 +50,28 @@ yarn-error.log*
 
 # Docs ignored for now; curated docs will be added explicitly later
 docs/
-playground/
+# Root-level playground only (anchored so module playgrounds keep their own rules)
+/playground/
 .playwright-cli/
 
 # Generated example outputs (keep curated sample_*.json fixtures tracked)
 doc-intelligence/examples/cli_test_*.json
+
+# Agentic study runs (per-document outputs; can be large)
+muse-document-processing/runs/*/
+!muse-document-processing/runs/.gitkeep
+
+# Agentic ingestion runs (per-city outputs; can be large)
+muse-source-ingestion/runs/*/
+!muse-source-ingestion/runs/.gitkeep
+
+# Local, human-curated agent lessons (machine/user specific)
+/muse-source-ingestion/lessons/
+
+# Agent playground (downloads, extraction scratch, intermediate artifacts)
+muse-document-processing/playground/*/
+!muse-document-processing/playground/.gitkeep
+
+# Agent ingestion playground (search scratch, probes, failed downloads)
+muse-source-ingestion/playground/*/
+!muse-source-ingestion/playground/.gitkeep

@@ -34,7 +34,7 @@ export const ScientificHeader: React.FC<ScientificHeaderProps> = ({
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-sm font-bold tracking-tight text-slate-100">
-              SUBSURFACE <span className="text-cyan-400">v2</span>
+              Upamelm.ai
             </h1>
             <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-cyan-950 text-cyan-300 border border-cyan-800/50">
               SYNTHESIZER CONTRACT v1.0

@@ -89,9 +89,9 @@ export function CityOverview({ cities, loading, error, onSelectCity, onRetry, on
       <header className="absolute inset-x-0 top-0 z-20 h-16 border-b border-line bg-ink-950/88 px-6 flex items-center justify-between backdrop-blur-md">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center shadow-soft"><Box className="w-4 h-4 text-ink-950" /></div>
-          <div><h1 className="text-sm font-bold">SUBSURFACE</h1><p className="text-[10px] font-mono text-muted">Scientific evidence atlas</p></div>
+          <div><h1 className="text-sm font-bold">Upamelm.ai</h1><p className="text-[10px] font-mono text-muted">Maps to What's Underneath</p></div>
         </div>
-        <div className="text-[11px] font-mono text-muted">{cities.length} {cities.length === 1 ? 'city' : 'cities'} · {cities.reduce((sum, city) => sum + city.studyCount, 0)} studies</div>
+        <div className="flex items-center gap-4 text-[11px] font-mono text-muted"><a href="/about" className="transition hover:text-accent">Our story</a><span>{cities.length} {cities.length === 1 ? 'city' : 'cities'} · {cities.reduce((sum, city) => sum + city.studyCount, 0)} studies</span></div>
       </header>
       <section className="absolute left-6 top-24 z-20 w-[23rem] max-w-[calc(100vw-3rem)] rounded-2xl border border-line bg-ink-950/92 p-6 shadow-float backdrop-blur-md">
         <div className="text-[10px] uppercase tracking-[0.28em] text-accent font-mono">Study atlas</div>

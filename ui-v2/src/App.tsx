@@ -282,9 +282,9 @@ export function App() {
           </div>
           <div>
             <h1 className="text-sm font-bold tracking-tight text-text flex items-center gap-1.5">
-              SUBSURFACE
+              Upamelm.ai
             </h1>
-            <div className="text-[11px] text-muted font-mono">Powered by Muse</div>
+            <div className="text-[11px] text-muted font-mono">Maps to What's Underneath</div>
           </div>
         </div>
 
@@ -347,6 +347,7 @@ export function App() {
             <ArrowLeft className="w-3.5 h-3.5" />
             All cities
           </button>
+          <a href="/about" className="hidden xl:flex items-center px-2.5 py-1.5 text-[11px] font-mono text-muted transition hover:text-accent">Our story</a>
           {bootstrap && <StudySwitcher
             bootstrap={bootstrap}
             disabled={switching}

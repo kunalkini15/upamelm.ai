@@ -1,8 +1,8 @@
 # Kept UI Contracts
 
 The agent keeps the exact shapes the UI already consumes. The authoritative
-live sample is `../ui-v2/dist/study_package.json`
-(read by `../ui-v2/src/core/AgenticStudyAdapter.ts`).
+live sample is `../ui/dist/study_package.json`
+(read by `../ui/src/core/AgenticStudyAdapter.ts`).
 Field shapes below are summaries, not replacements — when in doubt, match the
 sample and the Loop 2 producers in
 `../agentic-subsurface/src/agentic_subsurface/loop2.py`.

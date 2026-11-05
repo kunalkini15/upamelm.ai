@@ -12,7 +12,7 @@
  *   4. Visual Acceptance (Wonder) -> Audits browser screenshots against requirement criteria.
  *
  * @param {Object} host - The Muse workflow host context.
- * @param {string} [host.args.module_dir="muse-ui"] - Target module directory.
+ * @param {string} host.args.module_dir - Target module directory.
  * @param {string} host.args.requirement_path - Path to the requirement specification markdown.
  * @param {string} [host.args.run_id] - Optional run identifier.
  * @returns {Promise<Object>} Execution report containing status, verification paths, and stages.
@@ -35,7 +35,8 @@ function normalizeArgs(value) {
 
 export default async function workflow(host) {
   const args = normalizeArgs(host.args);
-  const moduleDir = args.module_dir || "muse-ui";
+  const moduleDir = args.module_dir;
+  if (!moduleDir) throw new Error("module_dir is required");
   const requirementPath = args.requirement_path;
   const defaultRunId = typeof requirementPath === "string" && requirementPath.trim() !== ""
     ? `refine-${requirementPath.split("/").pop().replace(/\.[^.]+$/, "").replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-+|-+$/g, "").toLowerCase()}`
@@ -104,7 +105,7 @@ export default async function workflow(host) {
     `The verification run id is ${runId}.`,
     `Read ${moduleDir}/BASELINE.md, ${moduleDir}/EXPERIENCE.md, ${moduleDir}/DESIGN_SYSTEM.md, ${moduleDir}/AGENTS.md, ${moduleDir}/WORKFLOW.md, and the complete requirement before acting.`,
     `If present, read ${moduleDir}/lessons/shared.md and ${moduleDir}/lessons/refine.md; treat them as human-curated guidance, never edit them, and never let them override the contracts or active requirement.`,
-    `Load the project adaptive-visualization skill. Do not inspect ui-v2 or another application for design or implementation reference.`,
+    `Load the project adaptive-visualization skill. Do not inspect ui or another application for design or implementation reference.`,
     `This workflow refines presentation and interaction only. Do not edit capability-registry.json, package-registry.json, the accepted package schema, package adapter semantics, or upstream study packages. If the outcome requires new evidence semantics or a registry capability, record a precise evolve handoff and return blocked instead of approximating or broadening scope.`,
   ].join(" ");
   const reviewCommon = `Review ${moduleDir} refinement run ${runId} for requirement ${requirementPath}.`;

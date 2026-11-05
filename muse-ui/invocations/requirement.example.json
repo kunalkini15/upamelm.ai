@@ -1,6 +1,0 @@
-{
-  "module_dir": "muse-ui",
-  "trigger_type": "requirement",
-  "trigger_path": "muse-ui/requests/<requirement>.md",
-  "run_id": "<run-id>"
-}

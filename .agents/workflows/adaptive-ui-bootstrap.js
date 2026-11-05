@@ -17,7 +17,7 @@
  *   - Wonder: Reviews compact artifacts only; capped at 2 calls (architecture + final).
  *
  * @param {Object} host - The Muse workflow host context.
- * @param {string} [host.args.module_dir="muse-ui"] - Target module directory.
+ * @param {string} host.args.module_dir - Target module directory.
  * @param {string} [host.args.run_id="bootstrap-default"] - Identifier for verification artifacts.
  * @returns {Promise<Object>} Execution report containing status, verification paths, and stages.
  */
@@ -39,7 +39,8 @@ function normalizeArgs(value) {
 
 export default async function workflow(host) {
   const args = normalizeArgs(host.args);
-  const moduleDir = args.module_dir || "muse-ui";
+  const moduleDir = args.module_dir;
+  if (!moduleDir) throw new Error("module_dir is required");
   const runId = args.run_id || "bootstrap-default";
   const proposedRegistryPath = `${moduleDir}/verification/${runId}/proposed-registry.json`;
   const stages = [];
@@ -85,7 +86,7 @@ export default async function workflow(host) {
     `Work only on the adaptive visualization module at ${moduleDir}.`,
     `The verification run id is ${runId}.`,
     `Read ${moduleDir}/BASELINE.md, ${moduleDir}/AGENTS.md, and ${moduleDir}/WORKFLOW.md completely. If present, also read ${moduleDir}/lessons/shared.md and ${moduleDir}/lessons/bootstrap.md; treat them as human-curated guidance, never edit them, and never let them override the contracts. Load the project adaptive-visualization skill.`,
-    `Treat BASELINE.md as mandatory. This bootstrap has no study package and must not inspect ui-v2 or implement document-specific visualization.`,
+    `Treat BASELINE.md as mandatory. This bootstrap has no study package and must not inspect ui or implement document-specific visualization.`,
   ].join(" ");
   const reviewCommon = `Review the adaptive visualization module at ${moduleDir} for verification run ${runId}.`;
   const promoteRegistries = async (reportPath) => {

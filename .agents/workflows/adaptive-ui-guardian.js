@@ -13,7 +13,7 @@
  *   5. Optional Incident Review (Wonder) -> Triggered only after consecutive failures (max 1 call).
  *
  * @param {Object} host - The Muse workflow host context.
- * @param {string} host.args.module_dir - Target module directory (e.g. "muse-ui").
+ * @param {string} host.args.module_dir - Target module directory (e.g. "<module-dir>").
  * @param {string} [host.args.run_id] - Optional run identifier.
  * @param {boolean} [host.args.allow_fix=false] - Whether automatic repair by Spark is permitted.
  * @returns {Promise<Object>} Execution report containing status, diagnostics, and test results.
@@ -37,7 +37,8 @@ function normalizeArgs(value) {
 
 export default async function workflow(host) {
   const args = normalizeArgs(host.args);
-  const moduleDir = args.module_dir || "muse-ui";
+  const moduleDir = args.module_dir;
+  if (!moduleDir) throw new Error("module_dir is required");
   const runId = args.run_id || `guardian-${Date.now()}`;
   const allowFix = args.allow_fix === true;
   const incidentStatePath = `${moduleDir}/verification/guardian-incidents.json`;

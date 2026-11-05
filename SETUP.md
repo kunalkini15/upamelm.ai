@@ -25,14 +25,13 @@ You can run the **complete integrated application stack** (API + Frontend) in 3 
 ┌────────────────────────────────────────────────────────────────────────┐
 │                           BACKEND & SERVING                            │
 │  runs/                   Directory of promoted city & study packages   │
-│  subsurface-api          FastAPI service  ──► http://localhost:8010    │
+│  backend          FastAPI service  ──► http://localhost:8010    │
 └────────────────────────────────────────┬───────────────────────────────┘
                                          │  /api proxy
                                          ▼
 ┌────────────────────────────────────────────────────────────────────────┐
 │                          PRESENTATION LAYER                            │
-│  ui-v2                   Subsurface Explorer ──► http://localhost:5175 │
-│  muse-ui                Adaptive Visualizer ──► http://127.0.0.1:5200 │
+│  ui                   Subsurface Explorer ──► http://localhost:5175 │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -59,7 +58,7 @@ Experience the complete live exploration platform immediately using the pre-prom
 From the repository root:
 
 ```bash
-./subsurface-api/run.sh
+./backend/run.sh
 ```
 
 - Automatically sets up a Python virtual environment (`.venv`) and installs FastAPI and Uvicorn.
@@ -67,12 +66,12 @@ From the repository root:
 - Verify health: `curl http://localhost:8010/api/v1/health`
 - Interactive API Docs: `http://localhost:8010/docs`
 
-### Step 2: Start the Frontend Explorer (`ui-v2`)
+### Step 2: Start the Frontend Explorer (`ui`)
 
 Open a new terminal window in the repository root:
 
 ```bash
-cd ui-v2
+cd ui
 npm ci
 npm run dev
 ```
@@ -205,18 +204,18 @@ Produces culturally accurate, plain-language translations of study packages whil
 
 ---
 
-### Module 4: Subsurface API Backend (`subsurface-api/`)
+### Module 4: Backend (`backend/`)
 
 Lightweight FastAPI service that indexes and serves promoted packages directly from `runs/`.
 
 - **Start Server**:
   ```bash
-  ./subsurface-api/run.sh
+  ./backend/run.sh
   ```
 - **Environment Variables**:
-  - `SUBSURFACE_API_PORT`: Port number (default: `8010`).
-  - `SUBSURFACE_CORS_ORIGINS`: Comma-separated allowed origins (defaults to localhost and 127.0.0.1 on UI ports `5175` and `5200`). The normal `ui-v2` development path uses Vite's same-origin `/api` proxy, so it does not require CORS. Set this variable when calling the API directly from a different browser origin.
-  - `SUBSURFACE_RUNS_ROOT`: Promoted run directory (default: `../runs`, resolved from `subsurface-api/`).
+  - `BACKEND_PORT`: Port number (default: `8010`).
+  - `SUBSURFACE_CORS_ORIGINS`: Comma-separated allowed origins (defaults to localhost and 127.0.0.1 on UI port `5175`). The normal `ui` development path uses Vite's same-origin `/api` proxy, so it does not require CORS. Set this variable when calling the API directly from a different browser origin.
+  - `SUBSURFACE_RUNS_ROOT`: Promoted run directory (default: `../runs`, resolved from `backend/`).
   - `SUBSURFACE_DEFAULT_CITY`: Default bootstrap city (default: `bengaluru`).
   - `SUBSURFACE_DEFAULT_LANGUAGE`: Default package language (default: `en`).
 - **Endpoints**:
@@ -228,7 +227,7 @@ Lightweight FastAPI service that indexes and serves promoted packages directly f
   - `GET /api/v1/cities/{city_id}/studies/{study_id}/files/{asset_path}`: Serves figures and PDFs.
 - **Run Tests**:
   ```bash
-  cd subsurface-api
+  cd backend
   python3 -m venv .venv
   .venv/bin/python -m pip install -e '.[test]'
   .venv/bin/python -m pytest
@@ -236,13 +235,13 @@ Lightweight FastAPI service that indexes and serves promoted packages directly f
 
 ---
 
-### Module 5: Subsurface Explorer UI (`ui-v2/`)
+### Module 5: Subsurface Explorer UI (`ui/`)
 
 Next-generation React 19 + MapLibre GL + React Three Fiber exploration web app.
 
 - **Start Development Server**:
   ```bash
-  cd ui-v2
+  cd ui
   npm ci
   npm run dev
   ```
@@ -253,28 +252,9 @@ Next-generation React 19 + MapLibre GL + React Three Fiber exploration web app.
     `http://localhost:5175/?package=/studies/bmrcl-phase3-eia-2025/study_package.json`
 - **Verify & Build**:
   ```bash
-  cd ui-v2
+  cd ui
   npm run verify    # Executes Vitest tests + production build (tsc && vite build)
   npm run preview   # Serves the production build locally
-  ```
-
----
-
-### Module 6: Adaptive Visualizer (`muse-ui/`)
-
-Clean-room adaptive visualizer used to evaluate visual capabilities and test regression boundaries.
-
-- **Start Development Server**:
-  ```bash
-  cd muse-ui
-  npm ci
-  npm run dev
-  ```
-- **Run Tests**:
-  ```bash
-  cd muse-ui
-  npm test          # Runs 11 Vitest test suites (51 tests)
-  npm run build     # Runs tsc --noEmit && vite build
   ```
 
 ---
@@ -289,17 +269,16 @@ Execute this suite to confirm the integrity of the entire repository:
 | **Source Ingestion** | `node muse-source-ingestion/tests/ingest-workflow.test.js` | 4 tests passed |
 | **Document Processing** | `node muse-document-processing/tests/study-workflow.test.js` | 10 tests passed |
 | **Translation Engine** | `node muse-translate/tests/translate-workflow.test.js` | 7 tests passed |
-| **Subsurface API** | `cd subsurface-api && .venv/bin/python -m pytest` | 7 tests passed |
-| **UI V2 Frontend** | `cd ui-v2 && npm run verify` | 19 tests passed + clean build |
-| **Muse UI Visualizer** | `cd muse-ui && npm test && npm run build` | 51 tests passed + clean build |
+| **Backend** | `cd backend && .venv/bin/python -m pytest` | 7 tests passed |
+| **UI Frontend** | `cd ui && npm run verify` | 19 tests passed + clean build |
 
 ---
 
 ## 🔧 Troubleshooting & FAQs
 
 ### Q: Port 8010 or 5175 is already in use
-- **For API**: Set a custom port: `SUBSURFACE_API_PORT=8020 ./subsurface-api/run.sh`.
-- **For UI V2**: Port 5175 is strict, so Vite exits if it is occupied. Free that port or explicitly choose another one, for example: `npm run dev -- --port 5176`. Open the exact port you selected.
+- **For API**: Set a custom port: `BACKEND_PORT=8020 ./backend/run.sh`.
+- **For UI**: Port 5175 is strict, so Vite exits if it is occupied. Free that port or explicitly choose another one, for example: `npm run dev -- --port 5176`. Open the exact port you selected.
 
 ### Q: Map tiles appear blank
 - Map tiles stream over standard HTTPS from CartoCDN / OpenFreeMap. If working behind a corporate firewall or offline, vector basemap fallbacks remain active, and mock geometries render on the neutral coordinate grid.
@@ -307,7 +286,7 @@ Execute this suite to confirm the integrity of the entire repository:
 ### Q: pytest is missing or API tests cannot import a dependency
 - Install the API test extras inside its virtual environment, then invoke pytest through that interpreter:
   ```bash
-  cd subsurface-api
+  cd backend
   python3 -m venv .venv
   .venv/bin/python -m pip install -e '.[test]'
   .venv/bin/python -m pytest

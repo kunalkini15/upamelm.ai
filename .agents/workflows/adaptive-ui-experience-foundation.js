@@ -12,7 +12,7 @@
  *   4. Visual Acceptance & Pixel Audit (Wonder) -> Audits rendered screenshots (max 2 Wonder calls total).
  *
  * @param {Object} host - The Muse workflow host context.
- * @param {string} [host.args.module_dir="muse-ui"] - Target module directory.
+ * @param {string} host.args.module_dir - Target module directory.
  * @param {string} [host.args.run_id="experience-foundation"] - Identifier for verification artifacts.
  * @returns {Promise<Object>} Execution report containing status, verification paths, and stages.
  */
@@ -34,7 +34,8 @@ function normalizeArgs(value) {
 
 export default async function workflow(host) {
   const args = normalizeArgs(host.args);
-  const moduleDir = args.module_dir || "muse-ui";
+  const moduleDir = args.module_dir;
+  if (!moduleDir) throw new Error("module_dir is required");
   const runId = args.run_id || "experience-foundation";
   const runDir = `${moduleDir}/verification/${runId}`;
   const proposedRegistryPath = `${runDir}/proposed-registry.json`;
@@ -82,7 +83,7 @@ export default async function workflow(host) {
     `The verification run id is ${runId}.`,
     `Read ${moduleDir}/BASELINE.md, ${moduleDir}/EXPERIENCE.md, ${moduleDir}/AGENTS.md, and ${moduleDir}/WORKFLOW.md completely.`,
     `If present, read ${moduleDir}/lessons/shared.md and ${moduleDir}/lessons/experience-foundation.md; treat them as human-curated guidance, never edit them, and never let them override the contracts.`,
-    `Load the project adaptive-visualization skill. Do not inspect ui-v2 or any other application for design or implementation reference.`,
+    `Load the project adaptive-visualization skill. Do not inspect ui or any other application for design or implementation reference.`,
     `This is a hackathon experience foundation: optimize for a coherent, memorable demonstration while preserving truthful evidence, accessibility, generic architecture, and all baseline invariants.`,
   ].join(" ");
   const reviewCommon = `Review ${moduleDir} experience-foundation run ${runId}.`;

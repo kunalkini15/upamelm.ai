@@ -31,8 +31,7 @@ When contributing to Subsurface India, you must adhere to three foundational ten
 - `.agents/`: Agentic workflows and skill specifications.
 - `muse-source-ingestion/`: Ingestion and source discovery workflows.
 - `muse-document-processing/`: Multimodal parsing, extraction, and study package compiler.
-- `muse-ui/`: Adaptive visualizer testbed and capability engine.
-- `ui-v2/`: Main production Subsurface Explorer web app.
+- `ui/`: Main production Subsurface Explorer web app.
 
 ### Branching and Commits
 
@@ -51,19 +50,15 @@ When contributing to Subsurface India, you must adhere to three foundational ten
 Before opening a pull request, ensure all tests and builds pass:
 
 ```bash
-# 1. UI V2 verification (Vitest + TypeScript build)
-cd ui-v2
+# 1. UI verification (Vitest + TypeScript build)
+cd ui
 npm run verify
 
-# 2. Muse UI tests (Vitest + Playwright)
-cd ../muse-ui
-npm test
-
-# 3. Document Processing tests
+# 2. Document Processing tests
 cd ..
 node muse-document-processing/tests/study-workflow.test.js
 
-# 4. Source Ingestion tests
+# 3. Source Ingestion tests
 node muse-source-ingestion/tests/ingest-workflow.test.js
 ```
 

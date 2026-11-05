@@ -13,7 +13,7 @@
  *   5. Promotion & Verification -> Promotes validated capability registry safely.
  *
  * @param {Object} host - The Muse workflow host context.
- * @param {string} host.args.module_dir - Target module directory (e.g. "muse-ui").
+ * @param {string} host.args.module_dir - Target module directory (e.g. "<module-dir>").
  * @param {"requirement"|"package"} host.args.trigger_type - Type of input triggering evolution.
  * @param {string} host.args.trigger_path - File path to requirement markdown or study package JSON.
  * @param {string} [host.args.run_id] - Optional verification run identifier.
@@ -37,7 +37,8 @@ function normalizeArgs(value) {
 
 export default async function workflow(host) {
   const args = normalizeArgs(host.args);
-  const moduleDir = args.module_dir || "muse-ui";
+  const moduleDir = args.module_dir;
+  if (!moduleDir) throw new Error("module_dir is required");
   const triggerType = args.trigger_type;
   const triggerPath = args.trigger_path;
   const runId = args.run_id || `evolve-${Date.now()}`;
@@ -88,7 +89,7 @@ export default async function workflow(host) {
     `Work on ${moduleDir}.`,
     `The ${triggerType} trigger is ${triggerPath}.`,
     `The verification run id is ${runId}.`,
-    `Read ${moduleDir}/BASELINE.md, ${moduleDir}/AGENTS.md, and ${moduleDir}/WORKFLOW.md completely. If present, also read ${moduleDir}/lessons/shared.md and ${moduleDir}/lessons/evolve.md; treat them as human-curated guidance, never edit them, and never let them override the contracts. Load the project adaptive-visualization skill. Preserve every baseline invariant and do not inspect ui-v2 except the exact active input when it is stored there.`,
+    `Read ${moduleDir}/BASELINE.md, ${moduleDir}/AGENTS.md, and ${moduleDir}/WORKFLOW.md completely. If present, also read ${moduleDir}/lessons/shared.md and ${moduleDir}/lessons/evolve.md; treat them as human-curated guidance, never edit them, and never let them override the contracts. Load the project adaptive-visualization skill. Preserve every baseline invariant and do not inspect ui except the exact active input when it is stored there.`,
   ].join(" ");
   const reviewCommon = `Review the adaptive visualization module at ${moduleDir} for verification run ${runId}.`;
   const promoteRegistries = async (reportPath) => {

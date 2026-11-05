@@ -1,7 +1,0 @@
-{
-  "schema_version": "muse-scene-package.v0",
-  "crs": "EPSG:4326",
-  "metadata": { "title": "TEST FIXTURE — outdated schema, must be rejected" },
-  "layers": [],
-  "features": []
-}

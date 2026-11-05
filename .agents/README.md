@@ -35,9 +35,9 @@ Workflows operate with strict invocation budgets (`MAX_WONDER_CALLS`) and gracef
 ## 🔄 Workflow Catalog
 
 ### 1. `adaptive-ui-bootstrap.js`
-- **Purpose**: Creates the neutral baseline visualization foundation for a UI module (e.g., `muse-ui`).
+- **Purpose**: Creates the neutral baseline visualization foundation for a UI module (e.g., `<module-dir>`).
 - **Arguments**:
-  - `module_dir` *(optional, string)*: Target directory (default: `"muse-ui"`).
+  - `module_dir` *(optional, string)*: Target directory (default: `"<module-dir>"`).
   - `run_id` *(optional, string)*: Verification run identifier.
 - **Protocol**:
   1. Inspects baseline requirements and capability schemas.
@@ -48,7 +48,7 @@ Workflows operate with strict invocation budgets (`MAX_WONDER_CALLS`) and gracef
 ### 2. `adaptive-ui-experience-foundation.js`
 - **Purpose**: Establishes reusable design tokens, typography, visual hierarchy, spatial interaction models, and deterministic showcase scenarios.
 - **Arguments**:
-  - `module_dir` *(optional, string)*: Target directory (default: `"muse-ui"`).
+  - `module_dir` *(optional, string)*: Target directory (default: `"<module-dir>"`).
   - `run_id` *(optional, string)*: Identifier for the verification run.
 - **Protocol**:
   1. Synthesizes design tokens and channel bindings (`src/design/`).
@@ -102,7 +102,7 @@ Workflows are standard JavaScript modules exporting an asynchronous `workflow(ho
 node -e '
   import("./.agents/workflows/adaptive-ui-guardian.js")
     .then(m => m.default({
-      args: { module_dir: "muse-ui", allow_fix: false },
+      args: { module_dir: "<module-dir>", allow_fix: false },
       log: console.log,
       exec: (cmd, opts) => import("child_process").then(cp => cp.execSync(cmd, { stdio: "inherit", ...opts }))
     }));

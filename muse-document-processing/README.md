@@ -44,7 +44,7 @@ muse-document-processing/runs/<study-id>/
 
 `study_package.json` keeps the exact `document-study.v2` shape the UI consumes
 today (see [contracts.md](contracts.md) and the live sample at
-`../ui-v2/dist/study_package.json`). The other files are the inspectable
+`../ui/dist/study_package.json`). The other files are the inspectable
 intermediates that compose it. Downloads, extraction scratch, and other
 intermediate artifacts live in the git-ignored `playground/` workspace
 (see [playground/README.md](playground/README.md)), never in `runs/`.

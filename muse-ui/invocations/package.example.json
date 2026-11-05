@@ -1,6 +1,0 @@
-{
-  "module_dir": "muse-ui",
-  "trigger_type": "package",
-  "trigger_path": "muse-document-processing/runs/<study-id>/study_package.json",
-  "run_id": "<run-id>"
-}

@@ -27,12 +27,11 @@ flowchart TD
     end
 
     subgraph Serving ["Backend Service"]
-        API["subsurface-api (FastAPI)<br/>http://localhost:8010"]
+        API["backend (FastAPI)<br/>http://localhost:8010"]
     end
 
     subgraph Presentation ["Frontend Visualization"]
-        UIV2["ui-v2 (Subsurface Explorer)<br/>React 19 + MapLibre GL + R3F<br/>http://localhost:5175"]
-        MUSEUI["muse-ui (Adaptive Visualizer)<br/>Capability Testbed<br/>http://127.0.0.1:5200"]
+        UI["ui (Subsurface Explorer)<br/>React 19 + MapLibre GL + R3F<br/>http://localhost:5175"]
     end
 
     PW --> SI
@@ -40,8 +39,7 @@ flowchart TD
     DP --> TR
     TR --> RUNS
     RUNS --> API
-    API -->|/api proxy| UIV2
-    RUNS -.-> MUSEUI
+    API -->|/api proxy| UI
 ```
 
 ---
@@ -53,12 +51,11 @@ Every module can run **either as part of the unified pipeline or completely inde
 | Module | Description | Port / Path | Tech Stack |
 |---|---|---|---|
 | **[`pipeline-workflow.js`](pipeline-workflow.js)** | Top-level orchestrator chaining ingestion, study fan-out, translation, and UI promotion. | Root | Node.js, Meta Muse |
-| **[`subsurface-api/`](subsurface-api/)** | Read-only FastAPI service discovering cities, studies, and assets from `runs/`. | `http://localhost:8010` | Python 3.10+, FastAPI, Uvicorn |
-| **[`ui-v2/`](ui-v2/)** | Flagship interactive Subsurface Explorer (2D map + 3D spatial scene + executive dossier). | `http://localhost:5175` | React 19, Vite, Tailwind v4, MapLibre GL, Three.js |
+| **[`backend/`](backend/)** | Read-only FastAPI service discovering cities, studies, and assets from `runs/`. | `http://localhost:8010` | Python 3.10+, FastAPI, Uvicorn |
+| **[`ui/`](ui/)** | Flagship interactive Subsurface Explorer (2D map + 3D spatial scene + executive dossier). | `http://localhost:5175` | React 19, Vite, Tailwind v4, MapLibre GL, Three.js |
 | **[`muse-source-ingestion/`](muse-source-ingestion/)** | Municipal-scale discovery and document acquisition from public portals (CGWB, NAQUIM). | Module | Node.js, Multi-Agent Discovery |
 | **[`muse-document-processing/`](muse-document-processing/)** | Multimodal PDF/tabular extraction, evidence inventory, and `document-study.v2` packaging. | Module | Node.js, Multimodal Extraction |
 | **[`muse-translate/`](muse-translate/)** | Multilingual localization (Kannada, Hindi, etc.) preserving exact scientific grounding. | Module | Node.js, Parallel LLM Lanes |
-| **[`muse-ui/`](muse-ui/)** | Clean-room adaptive visualizer for capability negotiation and regression testing. | `http://127.0.0.1:5200` | React, TypeScript, Three.js, Playwright |
 | **[`.agents/`](.agents/)** | Reusable agent skills, workflows, and health regression sentinels (`guardian`). | Module | Node.js, Muse Agent Runtime |
 
 ---
@@ -70,14 +67,14 @@ Experience the live application right now using the pre-promoted Bengaluru hydro
 ### 1. Launch the Backend API
 ```bash
 # In repository root
-./subsurface-api/run.sh
+./backend/run.sh
 ```
 The API initializes its virtual environment and starts on **`http://localhost:8010`** (Swagger docs: `http://localhost:8010/docs`).
 
-### 2. Launch the Subsurface Explorer (`ui-v2`)
+### 2. Launch the Subsurface Explorer (`ui`)
 In a new terminal:
 ```bash
-cd ui-v2
+cd ui
 npm ci
 npm run dev
 ```
@@ -127,22 +124,17 @@ Every module operates as an independent, test-backed unit:
   node muse-translate/tests/translate-workflow.test.js
   # In Muse: Run muse-translate/translate-workflow.js with input="muse-document-processing/runs/<run>" languages=["Kannada", "Hindi"]
   ```
-- **Subsurface API Backend**:
+- **Backend**:
   ```bash
-  cd subsurface-api
+  cd backend
   python3 -m venv .venv
   .venv/bin/python -m pip install -e '.[test]'
   .venv/bin/python -m pytest
   ```
-- **UI V2 Frontend**:
+- **UI Frontend**:
   ```bash
-  cd ui-v2 && npm run verify
+  cd ui && npm run verify
   ```
-- **Adaptive Visualizer (`muse-ui`)**:
-  ```bash
-  cd muse-ui && npm test && npm run build
-  ```
-
 ---
 
 ## 📊 Scientific Data Contracts

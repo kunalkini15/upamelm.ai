@@ -1,7 +1,0 @@
-{
-  "schema_version": "visual-capabilities.v1",
-  "capabilities": [],
-  "notes": [
-    "The bootstrap workflow populates this registry only after implementation and browser verification."
-  ]
-}

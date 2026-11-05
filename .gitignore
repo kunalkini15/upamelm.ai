@@ -48,11 +48,19 @@ yarn-error.log*
 .env.*
 !.env.example
 
-# Docs ignored for now; curated docs will be added explicitly later
-docs/
+# Docs ignored for now; curated photos and documentation are explicitly tracked
+docs/*
+!docs/photos/
+!docs/photos/**
+!docs/ABOUT.md
+!docs/*.pdf
 # Root-level playground only (anchored so module playgrounds keep their own rules)
 /playground/
 .playwright-cli/
+ui/test-results/
+ui/playwright-report/
+ui/output/
+ui/runs/
 
 # Generated example outputs (keep curated sample_*.json fixtures tracked)
 doc-intelligence/examples/cli_test_*.json
@@ -78,3 +86,4 @@ muse-source-ingestion/playground/*/
 !muse-source-ingestion/playground/.gitkeep
 
 runs/
+pipeline-logs/

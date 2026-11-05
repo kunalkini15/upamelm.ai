@@ -27,7 +27,7 @@ The Upamelm.ai UI turns structured knowledge produced by the discovery and docum
 - **Node.js**: `≥ 22.22.2` (check with `node -v`); this satisfies the committed lockfile and Vite toolchain.
 - **npm**: `≥ 10.0.0` (check with `npm -v`)
 - **Modern Web Browser**: Chrome, Edge, Firefox, or Safari with WebGL2 support.
-- **Network / API Keys**: **No API keys or backend servers required.** Basemap tiles stream over standard HTTPS; local mock geometries and packages load offline.
+- **Backend**: the repository's FastAPI backend must be available for runtime study discovery and package loading. No model API key is required by the browser application.
 
 ### 2. Installation
 
@@ -49,7 +49,7 @@ npm run dev
 Once started, open your browser at:
 👉 **`http://localhost:5175`**. This is a strict port: startup fails if it is occupied. Use `npm run dev -- --port 5176` when you intentionally need another port.
 
-> **Backend API Proxy**: `ui` is preconfigured to automatically proxy `/api/*` network requests to `http://localhost:8010` (the `backend` FastAPI service). If the backend is running, `ui` dynamically discovers cities and studies from `runs/`. If running offline, it loads bundled static packages seamlessly!
+> **Backend API Proxy**: `ui` proxies `/api/*` requests to `http://localhost:8010` by default. Set `VITE_API_PROXY_TARGET` for containerized validation. Production runtime loading always uses the backend API.
 
 ### 4. Exploring Studies via URL Parameters
 
@@ -57,12 +57,8 @@ You can switch studies directly using the dropdown in the top header, or by spec
 
 - **Dynamic API Bootstrapping (City + Study + Language)**:
   `http://localhost:5175/?city=bengaluru&study=SRC-LR-01&language=kn`
-- **BMRCL Phase 3 EIA (Metro Alignment & Boreholes)**:
-  `http://localhost:5175/?package=/studies/bmrcl-phase3-eia-2025/study_package.json`
-- **Bengaluru Groundwater Outlook 2025 (Aquifer Depths & Yields)**:
-  `http://localhost:5175/?package=/studies/groundwater-outlook-bengaluru-2025/study_package.json`
-- **Capability Envelope Fixture (Benchmark & All Visual Primitives)**:
-  `http://localhost:5175/?package=/capability-envelope-fixture.json`
+
+Direct package-file query parameters are not part of the production loading contract.
 
 ### 5. Available Scripts
 
@@ -70,8 +66,10 @@ You can switch studies directly using the dropdown in the top header, or by spec
 |---|---|
 | `npm run dev` | Starts the local Vite development server with HMR. |
 | `npm test` | Executes the Vitest unit and integration test suite. |
+| `npm run test:workflow` | Executes the dedicated UI agent workflow contract tests. |
+| `npm run test:e2e` | Executes the Playwright browser matrix against running backend and UI services. |
 | `npm run build` | Runs TypeScript compilation (`tsc`) and bundles optimized production assets into `dist/`. |
-| `npm run verify` | Runs tests and executes a production build to verify regression-free code. |
+| `npm run verify` | Runs UI tests, workflow tests, and a production build. |
 | `npm run preview` | Locally serves the production build from `dist/` (e.g. `http://localhost:4173`). |
 | `npm run materialize:package` | Materializes external figures and assets for static packaging. |
 
@@ -81,6 +79,15 @@ You can switch studies directly using the dropdown in the top header, or by spec
 
 ```
 ui/
+├── ui-workflow.js                    # Independent read-only Muse validation workflow
+├── AGENTS.md                         # Agent safety and ownership rules
+├── BASELINE.md                       # Product and verification invariants
+├── WORKFLOW.md                       # Invocation and lifecycle contract
+├── contracts.md                      # Input, coverage, and finding schemas
+├── e2e/                              # Playwright matrix and validation Dockerfiles
+├── tests/                            # Workflow orchestration tests
+├── docker-compose.validation.yml     # Backend + UI + browser validation stack
+├── playwright.config.ts              # Deterministic browser configuration
 ├── src/
 │   ├── core/                          # Core data loaders, adapters, and registries
 │   │   ├── PackageIngestion.ts        # Parses and normalizes incoming study packages
@@ -117,6 +124,21 @@ ui/
 ├── GENERIC_RENDERING.md               # Detailed generic rendering engine contract
 └── vite.config.ts
 ```
+
+## Dedicated UI validation agent
+
+The validation workflow is independently invokable and never repairs source or
+generated studies:
+
+```text
+Use a workflow. Run ui/ui-workflow.js with pipeline_dir=runs/bengaluru and output_dir=ui/runs/bengaluru-validation-20261105.
+```
+
+It runs deterministic build and browser checks through Docker, delegates the
+full evidence audit to the configured workhorse model, calls the configured
+flagship reviewer only when findings exist, and returns detailed JSON and
+Markdown reports to its invoker. See [WORKFLOW.md](WORKFLOW.md) and
+[contracts.md](contracts.md) for the complete contract.
 
 ---
 

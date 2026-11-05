@@ -1,0 +1,49 @@
+services:
+  backend:
+    build:
+      context: ..
+      dockerfile: ui/e2e/backend.Dockerfile
+    environment:
+      SUBSURFACE_RUNS_ROOT: /data/runs
+      SUBSURFACE_CORS_ORIGINS: http://ui:5175
+    volumes:
+      - ${UI_VALIDATION_RUNS_ROOT:-../runs}:/data/runs:ro
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8010/api/v1/health')"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+
+  ui:
+    build:
+      context: ..
+      dockerfile: ui/e2e/ui.Dockerfile
+    environment:
+      VITE_API_PROXY_TARGET: http://backend:8010
+      VITE_ALLOWED_HOSTS: ui
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:5175').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+
+  playwright:
+    build:
+      context: ..
+      dockerfile: ui/e2e/playwright.Dockerfile
+    environment:
+      UI_BASE_URL: http://ui:5175
+      PLAYWRIGHT_WORKERS: ${PLAYWRIGHT_WORKERS:-2}
+      PLAYWRIGHT_OUTPUT_DIR: /results
+      PLAYWRIGHT_JSON_OUTPUT: /results/playwright-results.json
+    volumes:
+      - ${UI_VALIDATION_OUTPUT_DIR:-./test-results}:/results
+    depends_on:
+      backend:
+        condition: service_healthy
+      ui:
+        condition: service_healthy
+

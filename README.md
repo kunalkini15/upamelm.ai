@@ -1,8 +1,10 @@
-# Subsurface India (Upamelm.ai) — Agentic Subsurface Intelligence & Exploration
+# Upamelm.ai — Maps show the world. We help you understand what's underneath.
 
-Subsurface India (Upamelm.ai) is an open-source, agentic research and visualization platform designed to unlock decades of geological, groundwater, and environmental impact assessments locked inside complex technical reports.
+Upamelm.ai is an open-source, AI-powered multi-agent platform that transforms complex, unstructured information into interactive, explorable 2D and 3D spatial experiences.
 
-By pairing autonomous agentic discovery, multimodal document extraction, and multilingual translation with capability-negotiated 2D geospatial and 3D subsurface spatial visualization, the platform turns unstructured scientific literature into an interactive, rigorously grounded exploration experience.
+Its end-to-end architecture combines autonomous source discovery, document intelligence, multilingual translation, and adaptive visualization. Rather than assuming one report format, city, or knowledge domain, Upamelm.ai derives evidence-backed spatial experiences from the information that is actually available. The included Bengaluru subsurface studies are a reference implementation of this broader architecture.
+
+**Any city. Any domain. Any document. A world of knowledge waiting to be explored.**
 
 > 📖 **Looking for comprehensive installation and execution guides? See [SETUP.md](SETUP.md).**
 
@@ -10,14 +12,14 @@ By pairing autonomous agentic discovery, multimodal document extraction, and mul
 
 ## 🏛 How the System Works
 
-Subsurface has two connected paths: an **evidence-authoring pipeline** turns
+Upamelm.ai has two connected paths: an **evidence-authoring pipeline** turns
 public reports and datasets into grounded study packages, and the **interactive
 application** turns those packages into an explorable, multilingual evidence
 experience.
 
 ```mermaid
 flowchart TB
-    accTitle: Subsurface system architecture
+    accTitle: Upamelm.ai system architecture
     accDescr: Public scientific sources move through discovery, evidence extraction, localization, and package promotion. The backend serves those packages to a UI that supports exploration, visualization, and explanation.
 
     subgraph AUTHORING ["Evidence authoring · orchestrated by pipeline-workflow.js"]
@@ -51,6 +53,29 @@ flowchart TB
   coordinated 2D and 3D exploration; charts and structured evidence; plain-
   language feature explanations; source citations; and whole-study reports.
 
+### Muse-powered agent architecture
+
+Muse Code is used as the orchestration harness for the platform's independent
+agents—not only as a coding assistant. The workflow spans three connected
+stages:
+
+1. **Autonomous discovery:** research agents investigate a location, identify
+   relevant sources, assess their value, and ingest useful documents and data.
+2. **Document intelligence:** specialized agents plan extraction strategies,
+   analyze complex formats, identify spatial relationships, cross-reference
+   findings, and synthesize structured knowledge with traceable evidence.
+3. **Adaptive visualization:** agents translate the synthesized knowledge into
+   visualization-ready specifications, interactive geographic layers, 3D
+   representations, and UI components suited to the capabilities of each
+   study package.
+
+The Muse workflows use a multi-model contributor/reviewer pattern: Spark acts
+as the workhorse for high-volume execution, while Wonder handles planning,
+review, and deeper synthesis. Translation workflows make technical findings
+accessible in multiple languages, and the adaptive visualization harness can
+inspect and evolve both UI and supporting backend flows. Persistent lesson
+artifacts help later runs reuse successful patterns and avoid known failures.
+
 ## 📂 Modules & Workspaces
 
 Every module can run **either as part of the unified pipeline or completely independently**:
@@ -78,7 +103,7 @@ Experience the live application right now using the pre-promoted Bengaluru hydro
 ```
 The API initializes its virtual environment and starts on **`http://localhost:8010`** (Swagger docs: `http://localhost:8010/docs`).
 
-### 2. Launch the Subsurface Explorer (`ui`)
+### 2. Launch the Upamelm.ai Explorer (`ui`)
 In a new terminal:
 ```bash
 cd ui

@@ -1,8 +1,8 @@
 {
-  "name": "ui",
+  "name": "upamelm-ai-ui",
   "version": "1.0.0",
   "type": "module",
-  "description": "Adaptive Scientific Evidence Explorer",
+  "description": "Upamelm.ai adaptive spatial knowledge explorer",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -13,7 +13,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "dependencies": {
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.2",

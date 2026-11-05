@@ -59,6 +59,7 @@ export function App() {
 
   // Primary view modes: Map vs 3D Subsurface
   const [mode, setMode] = useState<'map' | 'subsurface' | 'analysis'>('map');
+  const modeRef = useRef<'map' | 'subsurface' | 'analysis'>('map');
   const [activeLayerIds, setActiveLayerIds] = useState<string[]>([]);
   const explorerOpen = mode === 'subsurface';
 
@@ -117,13 +118,24 @@ export function App() {
         setUserDismissedDossier(false);
         setMapZoom(5.5);
         const hasSpatial = parsed.capabilities.some((item) => ['point-map', 'line-map', 'polygon-map', 'raster-overlay'].includes(item.id) && item.available);
-        const requestedMode = new URLSearchParams(window.location.search).get('mode');
+        // On the initial load, honor a deep-linked view. During an in-app study or
+        // language switch, preserve the view the user is actually looking at. The
+        // URL can otherwise contain a stale 3D mode from an earlier navigation.
+        const requestedMode = hasExistingModel && historyMode !== 'none'
+          ? modeRef.current
+          : new URLSearchParams(window.location.search).get('mode');
         const has3D = parsed.capabilities.some((item) => ['surface-markers', 'vertical-profiles', 'cross-sections'].includes(item.id) && item.available);
         const hasAnalysis = Boolean(parsed.documentAnalysis || parsed.reportAnalysis);
-        if (requestedMode === 'subsurface' && has3D) setMode('subsurface');
-        else if (requestedMode === 'analysis' && hasAnalysis) setMode('analysis');
-        else if (hasSpatial) setMode('map');
-        else setMode('analysis');
+        const nextMode = requestedMode === 'subsurface' && has3D
+          ? 'subsurface'
+          : requestedMode === 'analysis' && hasAnalysis
+            ? 'analysis'
+            : hasSpatial
+              ? 'map'
+              : 'analysis';
+        modeRef.current = nextMode;
+        setMode(nextMode);
+        updateViewModeInUrl(nextMode, 'replace');
         updateSemanticUrl(overviewRequested ? {} : payload.selection, 'replace');
       } catch (err: any) {
         if (err?.name === 'AbortError') return;
@@ -171,15 +183,16 @@ export function App() {
         console.warn('Map capture failed, using fallback grid:', e);
       }
     }
+    modeRef.current = 'subsurface';
     setMode('subsurface');
-    const params = new URLSearchParams(window.location.search);
-    params.set('mode', 'subsurface');
-    window.history.pushState({}, '', `${window.location.pathname}?${params.toString()}`);
+    updateViewModeInUrl('subsurface', 'push');
   };
 
   const handleCloseExplorer = () => {
     setSubsurfaceFocusFinding(null);
+    modeRef.current = 'map';
     setMode('map');
+    updateViewModeInUrl('map', 'push');
   };
 
   const handleModeChange = (nextMode: 'map' | 'subsurface' | 'analysis') => {
@@ -187,7 +200,9 @@ export function App() {
       void handleOpenExplorer(selectedFeature || undefined);
       return;
     }
+    modeRef.current = nextMode;
     setMode(nextMode);
+    updateViewModeInUrl(nextMode, 'push');
   };
 
   const handleReportMap = (finding: ReportFindingView) => {
@@ -201,7 +216,9 @@ export function App() {
     } else {
       window.setTimeout(() => mapRef.current?.fitToFeatures(finding.resolvedFeatureIds), 0);
     }
+    modeRef.current = 'map';
     setMode('map');
+    updateViewModeInUrl('map', 'push');
   };
 
   const handleReport3D = (finding: ReportFindingView) => {
@@ -222,10 +239,9 @@ export function App() {
         console.warn('Map capture failed, using fallback grid:', e);
       }
     }
+    modeRef.current = 'subsurface';
     setMode('subsurface');
-    const params = new URLSearchParams(window.location.search);
-    params.set('mode', 'subsurface');
-    window.history.pushState({}, '', `${window.location.pathname}?${params.toString()}`);
+    updateViewModeInUrl('subsurface', 'push');
   }
 
   const handleReturnToExplore = () => {
@@ -477,14 +493,14 @@ export function App() {
                 const feature = model.featuresWithCoords.find((item) => item.id === id);
                 if (feature) {
                   setSelectedFeature(feature);
-                  setMode('map');
+                  handleModeChange('map');
                   window.setTimeout(() => mapRef.current?.flyToFeature(feature), 0);
                 } else {
-                  setMode('map');
+                  handleModeChange('map');
                   window.setTimeout(() => mapRef.current?.fitToFeatures([id]), 0);
                 }
               }}
-              onClose={() => setMode('map')}
+              onClose={() => handleModeChange('map')}
             />
           </Suspense>
         )}
@@ -495,7 +511,7 @@ export function App() {
             analysis={model.documentAnalysis}
             isOpen={isDossierOpen}
             onClose={() => setUserDismissedDossier(true)}
-            onReadMore={() => setMode('analysis')}
+            onReadMore={() => handleModeChange('analysis')}
           />
         )}
         {model.reportAnalysis && mode === 'map' && (
@@ -534,6 +550,13 @@ function updateSemanticUrl(selection: SelectionParams, mode: 'push' | 'replace')
   }
   if (!selection.city) url.searchParams.delete('mode');
   window.history[mode === 'push' ? 'pushState' : 'replaceState']({}, '', url);
+}
+
+function updateViewModeInUrl(viewMode: 'map' | 'subsurface' | 'analysis', historyMode: 'push' | 'replace') {
+  const url = new URL(window.location.href);
+  if (viewMode === 'map') url.searchParams.delete('mode');
+  else url.searchParams.set('mode', viewMode);
+  window.history[historyMode === 'push' ? 'pushState' : 'replaceState']({}, '', url);
 }
 
 export default App;

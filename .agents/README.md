@@ -1,12 +1,12 @@
 # Adaptive Visualization Agent Workflows (`.agents`)
 
-The `.agents` directory houses the agentic workflow definitions, orchestration scripts, and skill specifications that drive autonomous development, verification, and refinement of the Subsurface scientific visualization interface.
+The `.agents` directory houses the agentic workflow definitions, orchestration scripts, and skill specifications that drive autonomous development, verification, and refinement of the Upamelm.ai adaptive visualization interface.
 
 ---
 
 ## 🏛 Architecture & Philosophy
 
-The Subsurface adaptive visualization architecture separates code synthesis from visual critique using a dual-role pattern:
+The Upamelm.ai adaptive visualization architecture separates code synthesis from visual critique using a dual-role pattern:
 
 1. **Contributor / Author (`Spark`)**: Researches technical specifications, edits source code, runs build and typecheck commands, executes automated unit and browser tests, and repairs issues.
 2. **Reviewer / Art Director (`Wonder`)**: Performs bounded, read-only reviews of compact artifacts, architectural directions, rendered screenshot evidence, and design system adherence. Wonder never edits source code directly.

@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "backend"
 version = "0.1.0"
-description = "Lightweight read-only API for Subsurface pipeline outputs"
+description = "Lightweight read-only API for Upamelm.ai pipeline outputs"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [

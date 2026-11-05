@@ -1,6 +1,6 @@
 # UI Component Architecture (`ui/src/components`)
 
-This directory houses the presentation layer for the Subsurface Explorer, structured around a coordinated dual-canvas paradigm (2D GIS Map + 3D Subsurface Explorer) and an evidence-grounded executive dossier.
+This directory houses the presentation layer for the Upamelm.ai Explorer, structured around a coordinated dual-canvas paradigm (2D GIS map + 3D spatial explorer) and an evidence-grounded executive dossier.
 
 ---
 

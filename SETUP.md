@@ -1,4 +1,4 @@
-# Upamelm.ai / Subsurface India — Comprehensive Setup & Execution Guide
+# Upamelm.ai — Comprehensive Setup & Execution Guide
 
 This guide provides complete, step-by-step instructions to set up, run, test, and understand the entire platform.
 
@@ -31,7 +31,7 @@ You can run the **complete integrated application stack** (API + Frontend) in 3 
                                          ▼
 ┌────────────────────────────────────────────────────────────────────────┐
 │                          PRESENTATION LAYER                            │
-│  ui                   Subsurface Explorer ──► http://localhost:5175 │
+│  ui                   Upamelm.ai Explorer ──► http://localhost:5175 │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -235,7 +235,7 @@ Lightweight FastAPI service that indexes and serves promoted packages directly f
 
 ---
 
-### Module 5: Subsurface Explorer UI (`ui/`)
+### Module 5: Upamelm.ai Explorer UI (`ui/`)
 
 Next-generation React 19 + MapLibre GL + React Three Fiber exploration web app.
 

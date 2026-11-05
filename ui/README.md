@@ -1,6 +1,6 @@
-# Subsurface UI — Adaptive Scientific Evidence Explorer
+# Upamelm.ai UI — Adaptive Spatial Knowledge Explorer
 
-Subsurface UI is the next-generation interactive exploration interface for geological, hydrogeological, and environmental research. It renders multi-source scientific study packages produced by the automated ingestion and document-processing pipeline, enabling intuitive visualization across 2D geographic maps, 3D subsurface spatial scenes, and synthesized executive dossiers.
+The Upamelm.ai UI turns structured knowledge produced by the discovery and document-intelligence pipeline into an adaptive, evidence-backed spatial experience. It negotiates the capabilities of each study package and presents the available information through 2D geographic maps, 3D spatial scenes, charts, source evidence, and synthesized dossiers rather than requiring a rigid interface for every domain. The bundled geological and hydrogeological studies demonstrate the current reference experience.
 
 ---
 
@@ -8,7 +8,7 @@ Subsurface UI is the next-generation interactive exploration interface for geolo
 
 - **Seamless Dual-Engine Exploration**:
   - **2D Geospatial Map**: MapLibre GL integration supporting vector and raster overlays, lithological contours, boreholes, water-level observation points, and transit corridors.
-  - **3D Subsurface Explorer**: React Three Fiber (`@react-three/fiber` & `@react-three/drei`) spatial environment rendering 3D stratigraphic layers, vertical borehole logs, aquifer profiles, and depth-registered observation cones.
+  - **3D Spatial Explorer**: React Three Fiber (`@react-three/fiber` & `@react-three/drei`) spatial environment rendering 3D stratigraphic layers, vertical borehole logs, aquifer profiles, and depth-registered observation cones.
 - **Capability-Negotiated Rendering**:
   - Dynamically evaluates package evidence (geometries, vertical profiles, time series, raster overlays, narrative reports).
   - Adapts layout automatically into `map-first`, `vertical-first`, `corridor-first`, `figure-first`, `dashboard-first`, or `report-first` layouts.

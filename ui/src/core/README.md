@@ -1,6 +1,6 @@
 # UI Core Architecture & Data Engine (`ui/src/core`)
 
-The `core` directory implements the data-ingestion pipeline, schema normalization adapters, capability negotiation engine, and renderer registries that power Subsurface UI.
+The `core` directory implements the data-ingestion pipeline, schema normalization adapters, capability negotiation engine, and renderer registries that power the Upamelm.ai UI.
 
 ---
 

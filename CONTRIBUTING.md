@@ -1,6 +1,6 @@
-# Contributing to Subsurface India
+# Contributing to Upamelm.ai
 
-Thank you for your interest in contributing to Subsurface India! We welcome community contributions in hydrogeology, geoinformatics, UI/UX design, full-stack engineering, and AI document extraction.
+Thank you for your interest in contributing to Upamelm.ai! We welcome community contributions across spatial knowledge domains, document intelligence, geoinformatics, multilingual accessibility, UI/UX design, full-stack engineering, and agentic AI workflows.
 
 ---
 
@@ -12,7 +12,7 @@ All contributors and participants are expected to adhere to our [Code of Conduct
 
 ## ⚖️ Core Scientific Principles
 
-When contributing to Subsurface India, you must adhere to three foundational tenets:
+When contributing to Upamelm.ai, you must adhere to three foundational tenets:
 
 1. **Evidence-First & Zero Hallucination**:
    - Never extrapolate, fabricate, or guess spatial coordinates, depths, water levels, or lithological classifications.
@@ -31,7 +31,7 @@ When contributing to Subsurface India, you must adhere to three foundational ten
 - `.agents/`: Agentic workflows and skill specifications.
 - `muse-source-ingestion/`: Ingestion and source discovery workflows.
 - `muse-document-processing/`: Multimodal parsing, extraction, and study package compiler.
-- `ui/`: Main production Subsurface Explorer web app.
+- `ui/`: Main production Upamelm.ai adaptive spatial explorer.
 
 ### Branching and Commits
 
@@ -73,4 +73,4 @@ node muse-source-ingestion/tests/ingest-workflow.test.js
 
 ## 📄 License Agreement
 
-By contributing to Subsurface India, you agree that your contributions will be licensed under the Apache License 2.0.
+By contributing to Upamelm.ai, you agree that your contributions will be licensed under the Apache License 2.0.

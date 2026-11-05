@@ -1,4 +1,4 @@
-# Backend
+# Upamelm.ai Backend
 
 Lightweight, read-only FastAPI service over the promoted city outputs in `../runs`.
 It discovers cities, studies, and translated packages directly from the filesystem;

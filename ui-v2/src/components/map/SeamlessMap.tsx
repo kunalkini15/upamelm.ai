@@ -402,25 +402,25 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
           map.addLayer({
             id: 'package-polygons-fill', type: 'fill', source: 'package-spatial-source',
             filter: ['==', ['geometry-type'], 'Polygon'],
-            paint: { 'fill-color': ['match', ['get', 'evidenceStatus'], 'proposed', '#f59e0b', 'derived', '#a78bfa', 'figure-derived', '#38bdf8', '#22d3ee'], 'fill-opacity': ['case', ['get', 'selected'], 0.42, 0.18] },
+            paint: { 'fill-color': ['match', ['get', 'evidenceStatus'], 'proposed', '#E3B34E', 'derived', '#C2A15C', 'figure-derived', '#5FB8D6', '#35C4B5'], 'fill-opacity': ['case', ['get', 'selected'], 0.42, 0.18] },
           });
           map.addLayer({
             id: 'package-polygons-outline', type: 'line', source: 'package-spatial-source',
             filter: ['==', ['geometry-type'], 'Polygon'],
-            paint: { 'line-color': ['case', ['get', 'selected'], '#f8fafc', '#a78bfa'], 'line-width': ['case', ['get', 'selected'], 4, 2], 'line-opacity': 0.85 },
+            paint: { 'line-color': ['case', ['get', 'selected'], '#ECF2EF', '#C2A15C'], 'line-width': ['case', ['get', 'selected'], 4, 2], 'line-opacity': 0.85 },
           });
           map.addLayer({
             id: 'package-lines', type: 'line', source: 'package-spatial-source',
             filter: ['==', ['geometry-type'], 'LineString'],
-            paint: { 'line-color': ['case', ['get', 'selected'], '#f8fafc', ['match', ['get', 'evidenceStatus'], 'proposed', '#f59e0b', 'derived', '#a78bfa', 'figure-derived', '#38bdf8', '#f59e0b']], 'line-width': ['case', ['get', 'selected'], 5, 3], 'line-opacity': 0.9 },
+            paint: { 'line-color': ['case', ['get', 'selected'], '#ECF2EF', ['match', ['get', 'evidenceStatus'], 'proposed', '#E3B34E', 'derived', '#C2A15C', 'figure-derived', '#5FB8D6', '#E3B34E']], 'line-width': ['case', ['get', 'selected'], 5, 3], 'line-opacity': 0.9 },
           });
           map.addLayer({
             id: 'package-multipoints', type: 'circle', source: 'package-spatial-source',
             filter: ['==', ['geometry-type'], 'Point'],
             paint: {
               'circle-radius': 6,
-              'circle-color': '#22d3ee',
-              'circle-stroke-color': '#082f49',
+              'circle-color': '#35C4B5',
+              'circle-stroke-color': '#1F4A45',
               'circle-stroke-width': 2,
               'circle-opacity': 0.9,
             },
@@ -463,7 +463,7 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
           minzoom: 7,
           maxzoom: 14,
           paint: {
-            'fill-color': '#06b6d4',
+            'fill-color': '#35C4B5',
             'fill-opacity': [
               'interpolate',
               ['linear'],
@@ -484,7 +484,7 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
           minzoom: 7,
           maxzoom: 16,
           paint: {
-            'line-color': '#22d3ee',
+            'line-color': '#35C4B5',
             'line-width': [
               'interpolate',
               ['linear'],
@@ -560,12 +560,12 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
       macroEl.className = 'group cursor-pointer relative';
       macroEl.innerHTML = `
         <div class="relative flex items-center justify-center">
-          <div class="absolute w-20 h-20 rounded-full bg-cyan-400/25 animate-ping"></div>
-          <div class="absolute w-12 h-12 rounded-full bg-cyan-500/35 animate-pulse"></div>
-          <div class="w-8 h-8 rounded-full bg-cyan-500 text-slate-950 ring-4 ring-cyan-300 shadow-[0_0_30px_rgba(6,182,212,1)] flex items-center justify-center">
-            <div class="w-3.5 h-3.5 rounded-full bg-slate-950"></div>
+          <div class="absolute w-20 h-20 rounded-full bg-accent/25 animate-ping"></div>
+          <div class="absolute w-12 h-12 rounded-full bg-accent/35 animate-pulse"></div>
+          <div class="w-8 h-8 rounded-full bg-accent text-ink-950 ring-4 ring-accent-strong flex items-center justify-center">
+            <div class="w-3.5 h-3.5 rounded-full bg-ink-950"></div>
           </div>
-          <div class="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap px-3 py-1 rounded-full bg-slate-900/95 border border-cyan-500/60 text-xs font-mono font-bold text-cyan-300 shadow-2xl">
+          <div class="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap px-3 py-1 rounded-full bg-ink-900/95 border border-accent/60 text-xs font-mono font-bold text-accent-strong shadow-2xl">
             ${escapeHtml(studyAreaName)} • ${spatialFeatures.filter((feature) => feature.geometry).length} Mapped objects
           </div>
         </div>
@@ -610,21 +610,21 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
           <div class="relative flex items-center justify-center">
             ${
               hasDeepData
-                ? `<div class="absolute w-8 h-8 rounded-full bg-cyan-500/20 beacon-ring"></div>`
+                ? `<div class="absolute w-8 h-8 rounded-full bg-accent/20 beacon-ring"></div>`
                 : ''
             }
             <div class="w-5 h-5 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-130 ${
               isSelected
-                ? 'bg-amber-400 text-slate-950 ring-4 ring-amber-400/40 shadow-[0_0_25px_rgba(251,191,36,0.9)]'
+                ? 'bg-amber text-ink-950 ring-4 ring-amber/40 shadow-[0_0_18px_rgba(227,179,78,0.45)]'
                 : isHighlighted
-                ? 'bg-violet-400 text-slate-950 ring-4 ring-violet-300/50 shadow-[0_0_25px_rgba(167,139,250,0.85)]'
+                ? 'bg-[#C2A15C] text-ink-950 ring-4 ring-[#C2A15C]/50 shadow-[0_0_18px_rgba(194,161,92,0.45)]'
                 : hasDeepData
-                ? 'bg-cyan-500 text-slate-950 ring-2 ring-cyan-300 shadow-[0_0_18px_rgba(6,182,212,0.7)]'
-                : 'bg-slate-700 text-slate-300 border border-slate-500'
+                ? 'bg-accent text-ink-950 ring-2 ring-accent-strong'
+                : 'bg-ink-800 text-muted border border-line'
             }">
-              <div class="w-2 h-2 rounded-full ${isSelected || isHighlighted ? 'bg-slate-950' : 'bg-slate-950/80'}"></div>
+              <div class="w-2 h-2 rounded-full ${isSelected || isHighlighted ? 'bg-ink-950' : 'bg-ink-950/80'}"></div>
             </div>
-            <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-0.5 rounded bg-slate-900/90 border border-slate-700/80 text-[10px] font-mono text-slate-300 shadow-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-40">
+            <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-0.5 rounded bg-ink-900/90 border border-line/80 text-[10px] font-mono text-muted shadow-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-40">
               ${escapeHtml(feature.name)} ${feature.totalDepthMeters ? `(${feature.totalDepthMeters}m)` : ''}
             </div>
           </div>
@@ -658,8 +658,8 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
         <div ref={mapContainer} className="w-full h-full" />
         {!selectedFeatureId && (
           <div className="pointer-events-none absolute bottom-6 left-1/2 z-20 -translate-x-1/2">
-            <div className="flex items-center gap-2 rounded-full border border-slate-600/70 bg-slate-950/88 px-3.5 py-2 text-[11px] font-mono text-slate-200 shadow-[0_8px_30px_rgba(0,0,0,0.45)] backdrop-blur-md animate-in fade-in duration-300">
-              <MousePointerClick className="h-3.5 w-3.5 flex-none text-cyan-400" />
+            <div className="flex items-center gap-2 rounded-full border border-line/70 bg-ink-950/88 px-3.5 py-2 text-[11px] font-mono text-text shadow-[0_8px_30px_rgba(0,0,0,0.45)] backdrop-blur-md animate-in fade-in duration-300">
+              <MousePointerClick className="h-3.5 w-3.5 flex-none text-accent" />
               {instructionStage === 'district' && (
                 <span>Select the pulsing study marker to explore the evidence footprint</span>
               )}
@@ -667,7 +667,11 @@ export const SeamlessMap = forwardRef<SeamlessMapHandle, SeamlessMapProps>(
                 <span>Explore the highlighted coverage area · Continue zooming to reveal objects</span>
               )}
               {instructionStage === 'stations' && (
-                <span>Select an object for details</span>
+                <span>
+                  {onEnterSubsurface
+                    ? 'Select an object for details · Click the highlighted area or zoom into the ground to open the 3D view'
+                    : 'Select an object for details'}
+                </span>
               )}
             </div>
           </div>

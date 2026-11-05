@@ -49,12 +49,12 @@ interface ReportInsightsProps {
 type ReportView = 'executive' | 'theme' | 'finding' | 'all-findings';
 
 const THEME_ACCENTS = [
-  { border: 'hover:border-cyan-500/60', badge: 'bg-cyan-500/10 text-cyan-300 border-cyan-500/30', bar: '#06b6d4' },
-  { border: 'hover:border-violet-500/60', badge: 'bg-violet-500/10 text-violet-300 border-violet-500/30', bar: '#8b5cf6' },
-  { border: 'hover:border-sky-500/60', badge: 'bg-sky-500/10 text-sky-300 border-sky-500/30', bar: '#0284c7' },
-  { border: 'hover:border-rose-500/60', badge: 'bg-rose-500/10 text-rose-300 border-rose-500/30', bar: '#f43f5e' },
-  { border: 'hover:border-amber-500/60', badge: 'bg-amber-500/10 text-amber-300 border-amber-500/30', bar: '#f59e0b' },
-  { border: 'hover:border-emerald-500/60', badge: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30', bar: '#10b981' },
+  { border: 'hover:border-accent/60', badge: 'bg-accent/10 text-accent border-accent/30', bar: '#35C4B5' },
+  { border: 'hover:border-violet-500/60', badge: 'bg-violet-500/10 text-violet-300 border-violet-500/30', bar: '#C2A15C' },
+  { border: 'hover:border-sky-500/60', badge: 'bg-sky-500/10 text-sky-300 border-sky-500/30', bar: '#2F82AD' },
+  { border: 'hover:border-danger/60', badge: 'bg-danger/10 text-danger border-danger/30', bar: '#E06C5F' },
+  { border: 'hover:border-amber/60', badge: 'bg-amber/10 text-amber border-amber/30', bar: '#E3B34E' },
+  { border: 'hover:border-success/60', badge: 'bg-success/10 text-success border-success/30', bar: '#4CC38A' },
 ];
 
 function formatValue(value: number | null | undefined, unit?: string | null) {
@@ -119,14 +119,14 @@ export const ReportInsights: React.FC<ReportInsightsProps> = ({
   };
 
   return (
-    <div className="absolute inset-0 z-30 overflow-y-auto bg-slate-950 text-slate-100 flex flex-col">
+    <div className="absolute inset-0 z-30 overflow-y-auto bg-ink-950 text-text flex flex-col">
       {/* Ambient gradient top glow for investor-grade polish */}
-      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(99,102,241,0.18),rgba(2,6,23,0))] z-0" />
+      <div className="pointer-events-none fixed inset-0 bg-transparent z-0" />
 
       {/* Main container */}
       <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-8 flex-1 flex flex-col">
         {/* Navigation Breadcrumb & Back bar */}
-        <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-800/80">
+        <div className="flex items-center justify-between mb-6 pb-4 border-b border-line/80">
           <div className="flex items-center gap-3">
             <button
               onClick={() => {
@@ -134,7 +134,7 @@ export const ReportInsights: React.FC<ReportInsightsProps> = ({
                 else if (view === 'theme' || view === 'all-findings') setView('executive');
                 else onReturnToExplore();
               }}
-              className="text-xs font-mono font-medium text-slate-400 hover:text-cyan-300 transition flex items-center gap-1.5"
+              className="text-xs font-mono font-medium text-muted hover:text-accent transition flex items-center gap-1.5"
             >
               <span>←</span>
               <span>
@@ -148,8 +148,8 @@ export const ReportInsights: React.FC<ReportInsightsProps> = ({
 
             {selectedTheme && view !== 'executive' && (
               <>
-                <span className="text-slate-600 font-mono">/</span>
-                <span className="text-xs font-mono text-cyan-400 font-bold truncate max-w-xs">
+                <span className="text-muted font-mono">/</span>
+                <span className="text-xs font-mono text-accent font-bold truncate max-w-xs">
                   {selectedTheme.title}
                 </span>
               </>
@@ -159,14 +159,14 @@ export const ReportInsights: React.FC<ReportInsightsProps> = ({
           <div className="flex items-center gap-3">
             <button
               onClick={() => setShowCaveatsDrawer(true)}
-              className="flex items-center gap-1.5 text-xs font-mono text-slate-400 hover:text-amber-300 bg-slate-900/80 hover:bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg transition"
+              className="flex items-center gap-1.5 text-xs font-mono text-muted hover:text-amber bg-ink-900/80 hover:bg-ink-900 border border-line px-3 py-1.5 rounded-lg transition"
             >
-              <Info className="w-3.5 h-3.5 text-amber-400" />
+              <Info className="w-3.5 h-3.5 text-amber" />
               <span>Scientific Caveats ({analysis.uncertainties.length})</span>
             </button>
             <button
               onClick={onReturnToExplore}
-              className="flex items-center gap-1.5 text-xs font-mono font-bold text-slate-950 bg-cyan-400 hover:bg-cyan-300 px-3.5 py-1.5 rounded-lg transition shadow-md shadow-cyan-400/20"
+              className="flex items-center gap-1.5 text-xs font-mono font-bold text-ink-950 bg-accent hover:bg-accent px-3.5 py-1.5 rounded-lg transition shadow-soft"
             >
               <ExternalLink className="w-3.5 h-3.5" />
               <span>Explore Geospatial Map</span>
@@ -178,27 +178,27 @@ export const ReportInsights: React.FC<ReportInsightsProps> = ({
         {view === 'executive' && (
           <div className="space-y-8 flex-1">
             {/* HERO BRIEFING BANNER */}
-            <div className="relative rounded-3xl border border-slate-800 bg-gradient-to-b from-slate-900/90 to-slate-950/95 p-8 sm:p-10 shadow-2xl backdrop-blur-xl overflow-hidden">
-              <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="relative rounded-3xl border border-line bg-ink-900 p-8 sm:p-10 shadow-float backdrop-blur-xl overflow-hidden">
+              <div className="hidden" />
 
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-indigo-400/30 bg-indigo-500/10 text-indigo-300 text-xs font-mono font-bold tracking-wide uppercase mb-4">
                 <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
                 <span>Executive Synthesis • Gandhinagar NAQUIM</span>
               </div>
 
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-50 tracking-tight leading-tight max-w-4xl">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text tracking-tight leading-tight max-w-4xl">
                 {analysis.raw.executive_overview.headline}
               </h1>
 
-              <p className="mt-4 text-base sm:text-lg text-slate-300 font-sans leading-relaxed max-w-4xl">
+              <p className="mt-4 text-base sm:text-lg text-text font-sans leading-relaxed max-w-4xl">
                 {analysis.raw.executive_overview.abstract}
               </p>
             </div>
 
             {/* 4 HIGH-IMPACT METRIC TILES */}
             <div>
-              <div className="text-xs font-mono uppercase tracking-widest text-slate-400 mb-3 flex items-center gap-2">
-                <Activity className="w-4 h-4 text-cyan-400" />
+              <div className="text-xs font-mono uppercase tracking-widest text-muted mb-3 flex items-center gap-2">
+                <Activity className="w-4 h-4 text-accent" />
                 <span>Critical District Water Stress Indicators</span>
               </div>
 
@@ -210,9 +210,9 @@ export const ReportInsights: React.FC<ReportInsightsProps> = ({
                   return (
                     <div
                       key={stat.id || i}
-                      className="rounded-2xl border border-slate-800/90 bg-slate-900/80 p-5 shadow-lg backdrop-blur-md flex flex-col justify-between"
+                      className="rounded-xl border border-line/90 bg-ink-900/80 p-5 shadow-soft flex flex-col justify-between"
                     >
-                      <div className="text-[11px] font-mono text-slate-400 font-semibold uppercase tracking-wider line-clamp-2">
+                      <div className="text-[11px] font-mono text-muted font-semibold uppercase tracking-wider line-clamp-2">
                         {stat.label}
                       </div>
 
@@ -220,17 +220,17 @@ export const ReportInsights: React.FC<ReportInsightsProps> = ({
                         <div
                           className={`text-3xl sm:text-4xl font-extrabold font-mono tracking-tight ${
                             isCritical
-                              ? 'text-rose-400'
+                              ? 'text-danger'
                               : isSolution
-                              ? 'text-emerald-400'
-                              : 'text-cyan-300'
+                              ? 'text-success'
+                              : 'text-accent'
                           }`}
                         >
                           {formatValue(stat.value, stat.unit)}
                         </div>
                       </div>
 
-                      <div className="text-[11px] font-sans text-slate-400 leading-snug">
+                      <div className="text-[11px] font-sans text-muted leading-snug">
                         {stat.qualifier || (isCritical ? 'Exceeds sustainable extraction threshold' : 'Authoritative NAQUIM benchmark')}
                       </div>
                     </div>
@@ -242,13 +242,13 @@ export const ReportInsights: React.FC<ReportInsightsProps> = ({
             {/* 6 THEMATIC WORKSPACE DOSSIERS */}
             <div>
               <div className="flex items-center justify-between mb-4">
-                <div className="text-xs font-mono uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                <div className="text-xs font-mono uppercase tracking-widest text-muted flex items-center gap-2">
                   <Compass className="w-4 h-4 text-indigo-400" />
                   <span>Thematic Investigation Chapters (Select to Inspect)</span>
                 </div>
                 <button
                   onClick={() => setView('all-findings')}
-                  className="text-xs font-mono text-cyan-400 hover:text-cyan-300 transition flex items-center gap-1"
+                  className="text-xs font-mono text-accent hover:text-accent transition flex items-center gap-1"
                 >
                   <span>Search All 121 Findings</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -268,23 +268,23 @@ export const ReportInsights: React.FC<ReportInsightsProps> = ({
                     <button
                       key={theme.id}
                       onClick={() => selectTheme(theme)}
-                      className={`group rounded-2xl border border-slate-800/90 bg-slate-900/60 hover:bg-slate-900/95 p-6 text-left transition-all duration-200 hover:-translate-y-1 shadow-md ${style.border}`}
+                      className={`group rounded-xl border border-line/90 bg-ink-900/60 hover:bg-ink-900/95 p-6 text-left transition-all duration-200 hover:-translate-y-1 shadow-soft ${style.border}`}
                     >
                       <div className="flex items-center justify-between mb-3">
                         <span className={`text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border ${style.badge}`}>
                           Chapter {idx + 1}
                         </span>
-                        <div className="text-xs font-mono text-slate-400 group-hover:text-cyan-300 transition flex items-center gap-1">
+                        <div className="text-xs font-mono text-muted group-hover:text-accent transition flex items-center gap-1">
                           <span>{findingCount} Insights</span>
                           <ChevronRight className="w-4 h-4" />
                         </div>
                       </div>
 
-                      <h3 className="text-base font-bold text-slate-100 group-hover:text-cyan-200 transition line-clamp-2">
+                      <h3 className="text-base font-bold text-text group-hover:text-accent transition line-clamp-2">
                         {theme.title}
                       </h3>
 
-                      <p className="mt-2.5 text-xs text-slate-400 font-sans leading-relaxed line-clamp-3">
+                      <p className="mt-2.5 text-xs text-muted font-sans leading-relaxed line-clamp-3">
                         {theme.summary}
                       </p>
                     </button>
@@ -301,22 +301,22 @@ export const ReportInsights: React.FC<ReportInsightsProps> = ({
             {/* LEFT 55%: NARRATIVE & PRIORITIZED FINDINGS */}
             <div className="lg:col-span-7 space-y-6">
               {/* Chapter Header Card */}
-              <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-6 shadow-xl backdrop-blur-md">
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-[10px] font-mono font-bold uppercase tracking-wider mb-2">
+              <div className="rounded-xl border border-line bg-ink-900/90 p-6 shadow-panel">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-accent/10 border border-accent/20 text-accent text-[10px] font-mono font-bold uppercase tracking-wider mb-2">
                   Theme Investigation
                 </div>
-                <h2 className="text-2xl font-bold text-slate-50">{selectedTheme.title}</h2>
-                <p className="mt-3 text-sm text-slate-300 font-sans leading-relaxed">
+                <h2 className="text-2xl font-bold text-text">{selectedTheme.title}</h2>
+                <p className="mt-3 text-sm text-text font-sans leading-relaxed">
                   {selectedChapter?.summary || selectedTheme.summary}
                 </p>
 
                 {selectedChapter?.narrative && (
-                  <details className="mt-4 rounded-xl border border-slate-800/80 bg-slate-950/60 p-3.5 group">
-                    <summary className="cursor-pointer text-xs font-mono font-bold text-slate-300 hover:text-cyan-300 transition flex items-center justify-between">
+                  <details className="mt-4 rounded-xl border border-line/80 bg-ink-950/60 p-3.5 group">
+                    <summary className="cursor-pointer text-xs font-mono font-bold text-text hover:text-accent transition flex items-center justify-between">
                       <span>Detailed Scientific Narrative</span>
-                      <span className="text-[10px] text-slate-500 group-open:rotate-90 transition">▶</span>
+                      <span className="text-[10px] text-muted group-open:rotate-90 transition">▶</span>
                     </summary>
-                    <p className="mt-3 text-xs text-slate-400 font-sans leading-relaxed whitespace-pre-line border-t border-slate-800/60 pt-3">
+                    <p className="mt-3 text-xs text-muted font-sans leading-relaxed whitespace-pre-line border-t border-line/60 pt-3">
                       {selectedChapter.narrative}
                     </p>
                   </details>
@@ -325,12 +325,12 @@ export const ReportInsights: React.FC<ReportInsightsProps> = ({
 
               {/* Finding Cards Header */}
               <div className="flex items-center justify-between pt-2">
-                <div className="text-xs font-mono uppercase tracking-wider text-slate-400 font-bold">
+                <div className="text-xs font-mono uppercase tracking-wider text-muted font-bold">
                   Core Scientific Findings ({themeFindings.length})
                 </div>
                 <button
                   onClick={() => setView('all-findings')}
-                  className="text-xs font-mono text-cyan-400 hover:underline"
+                  className="text-xs font-mono text-accent hover:underline"
                 >
                   View in search table →
                 </button>
@@ -349,18 +349,18 @@ export const ReportInsights: React.FC<ReportInsightsProps> = ({
                     <div
                       key={finding.id}
                       onClick={() => openFinding(finding)}
-                      className={`rounded-2xl border p-5 text-left transition-all cursor-pointer ${
+                      className={`rounded-xl border p-5 text-left transition-all cursor-pointer ${
                         isSel
-                          ? 'border-cyan-400 bg-slate-900 shadow-lg shadow-cyan-500/10 ring-1 ring-cyan-400/30'
-                          : 'border-slate-800 bg-slate-900/60 hover:bg-slate-900/90 hover:border-slate-700'
+                          ? 'border-accent bg-ink-900 shadow-soft ring-1 ring-accent/30'
+                          : 'border-line bg-ink-900/60 hover:bg-ink-900/90 hover:border-line'
                       }`}
                     >
                       <div className="flex items-start justify-between gap-3">
-                        <h4 className="text-base font-bold text-slate-100 leading-snug">{finding.title}</h4>
-                        <ChevronRight className="w-4 h-4 text-slate-500 flex-shrink-0 mt-1" />
+                        <h4 className="text-base font-bold text-text leading-snug">{finding.title}</h4>
+                        <ChevronRight className="w-4 h-4 text-muted flex-shrink-0 mt-1" />
                       </div>
 
-                      <p className="mt-2 text-xs text-slate-300 font-sans leading-relaxed line-clamp-2">
+                      <p className="mt-2 text-xs text-text font-sans leading-relaxed line-clamp-2">
                         {finding.statement}
                       </p>
 
@@ -370,10 +370,10 @@ export const ReportInsights: React.FC<ReportInsightsProps> = ({
                           {statCallouts.map((sc) => (
                             <div
                               key={sc!.id}
-                              className="px-2.5 py-1 rounded-lg bg-slate-950/80 border border-slate-800 text-[11px] font-mono flex items-center gap-1.5"
+                              className="px-2.5 py-1 rounded-lg bg-ink-950/80 border border-line text-[11px] font-mono flex items-center gap-1.5"
                             >
-                              <span className="text-slate-400">{sc!.label}:</span>
-                              <span className="font-bold text-cyan-300">
+                              <span className="text-muted">{sc!.label}:</span>
+                              <span className="font-bold text-accent">
                                 {formatValue(sc!.value, sc!.unit)}
                               </span>
                             </div>
@@ -382,13 +382,13 @@ export const ReportInsights: React.FC<ReportInsightsProps> = ({
                       )}
 
                       {/* Action buttons */}
-                      <div className="mt-4 pt-3 border-t border-slate-800/60 flex items-center justify-between text-xs font-mono">
-                        <span className="text-[10px] text-slate-500 capitalize">{finding.basis.replace('_', ' ')}</span>
+                      <div className="mt-4 pt-3 border-t border-line/60 flex items-center justify-between text-xs font-mono">
+                        <span className="text-[10px] text-muted capitalize">{finding.basis.replace('_', ' ')}</span>
                         <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                           {finding.resolvedFeatureIds.length > 0 && (
                             <button
                               onClick={() => onShowMap(finding)}
-                              className="px-2.5 py-1 rounded-md bg-slate-800 hover:bg-cyan-500 hover:text-slate-950 text-slate-300 text-[11px] font-mono font-medium transition flex items-center gap-1"
+                              className="px-2.5 py-1 rounded-md bg-ink-800 hover:bg-accent hover:text-ink-950 text-text text-[11px] font-mono font-medium transition flex items-center gap-1"
                             >
                               <MapPinned className="w-3 h-3" />
                               <span>Map ({finding.resolvedFeatureIds.length})</span>
@@ -397,7 +397,7 @@ export const ReportInsights: React.FC<ReportInsightsProps> = ({
                           {finding.resolvedIntervalIds.length > 0 && (
                             <button
                               onClick={() => onShow3D(finding)}
-                              className="px-2.5 py-1 rounded-md bg-slate-800 hover:bg-amber-400 hover:text-slate-950 text-slate-300 text-[11px] font-mono font-medium transition flex items-center gap-1"
+                              className="px-2.5 py-1 rounded-md bg-ink-800 hover:bg-amber hover:text-ink-950 text-text text-[11px] font-mono font-medium transition flex items-center gap-1"
                             >
                               <Layers3 className="w-3 h-3" />
                               <span>3D Depth</span>
@@ -431,20 +431,20 @@ export const ReportInsights: React.FC<ReportInsightsProps> = ({
         {view === 'finding' && selectedFinding && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 flex-1">
             <div className="lg:col-span-7 space-y-6">
-              <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-7 shadow-xl backdrop-blur-md">
-                <div className="flex items-center gap-2 text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 mb-3">
-                  <span className="px-2.5 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300">
+              <div className="rounded-xl border border-line bg-ink-900/90 p-7 shadow-panel">
+                <div className="flex items-center gap-2 text-[10px] font-mono font-bold uppercase tracking-wider text-muted mb-3">
+                  <span className="px-2.5 py-0.5 rounded-full bg-accent/10 border border-accent/20 text-accent">
                     {selectedFinding.basis.replace('_', ' ')}
                   </span>
                   <span>•</span>
                   <span>{selectedFinding.confidence} confidence</span>
                 </div>
 
-                <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-50 tracking-tight leading-snug">
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-text tracking-tight leading-snug">
                   {selectedFinding.title}
                 </h2>
 
-                <p className="mt-4 text-base text-slate-200 font-sans leading-relaxed">
+                <p className="mt-4 text-base text-text font-sans leading-relaxed">
                   {selectedFinding.statement}
                 </p>
 
@@ -455,7 +455,7 @@ export const ReportInsights: React.FC<ReportInsightsProps> = ({
                       <Sparkles className="w-3.5 h-3.5" />
                       <span>Executive Significance & Impact</span>
                     </div>
-                    <p className="text-xs sm:text-sm text-slate-300 font-sans leading-relaxed">
+                    <p className="text-xs sm:text-sm text-text font-sans leading-relaxed">
                       {selectedFinding.why_it_matters}
                     </p>
                   </div>
@@ -464,7 +464,7 @@ export const ReportInsights: React.FC<ReportInsightsProps> = ({
                 {/* Quantitative statistics linked to this finding */}
                 {selectedFinding.stat_callout_ids && selectedFinding.stat_callout_ids.length > 0 && (
                   <div className="mt-6 space-y-2">
-                    <div className="text-xs font-mono uppercase tracking-wider text-slate-400 font-bold">
+                    <div className="text-xs font-mono uppercase tracking-wider text-muted font-bold">
                       Supporting Quantitative Metrics
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -474,16 +474,16 @@ export const ReportInsights: React.FC<ReportInsightsProps> = ({
                         return (
                           <div
                             key={id}
-                            className="rounded-xl border border-slate-800 bg-slate-950/80 p-4 flex flex-col justify-between"
+                            className="rounded-xl border border-line bg-ink-950/80 p-4 flex flex-col justify-between"
                           >
-                            <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider font-semibold">
+                            <div className="text-[10px] font-mono text-muted uppercase tracking-wider font-semibold">
                               {callout.label}
                             </div>
-                            <div className="text-xl font-bold font-mono text-cyan-300 my-1">
+                            <div className="text-xl font-bold font-mono text-accent my-1">
                               {formatValue(callout.value, callout.unit)}
                             </div>
                             {callout.qualifier && (
-                              <div className="text-[10px] text-slate-500">{callout.qualifier}</div>
+                              <div className="text-[10px] text-muted">{callout.qualifier}</div>
                             )}
                           </div>
                         );
@@ -493,11 +493,11 @@ export const ReportInsights: React.FC<ReportInsightsProps> = ({
                 )}
 
                 {/* Direct Action Handoffs */}
-                <div className="mt-8 pt-5 border-t border-slate-800 flex flex-wrap gap-3">
+                <div className="mt-8 pt-5 border-t border-line flex flex-wrap gap-3">
                   {selectedFinding.resolvedFeatureIds.length > 0 && (
                     <button
                       onClick={() => onShowMap(selectedFinding)}
-                      className="px-4 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-mono font-bold transition flex items-center gap-2 shadow-md shadow-cyan-500/20"
+                      className="px-4 py-2.5 rounded-xl bg-accent hover:bg-accent text-ink-950 text-xs font-mono font-bold transition flex items-center gap-2 shadow-soft"
                     >
                       <MapPinned className="w-4 h-4" />
                       <span>Isolate On Map ({selectedFinding.resolvedFeatureIds.length} Stations)</span>
@@ -506,7 +506,7 @@ export const ReportInsights: React.FC<ReportInsightsProps> = ({
                   {selectedFinding.resolvedIntervalIds.length > 0 && (
                     <button
                       onClick={() => onShow3D(selectedFinding)}
-                      className="px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-mono font-bold transition flex items-center gap-2 shadow-md shadow-amber-400/20"
+                      className="px-4 py-2.5 rounded-xl bg-amber hover:bg-amber text-ink-950 text-xs font-mono font-bold transition flex items-center gap-2 shadow-soft"
                     >
                       <Layers3 className="w-4 h-4" />
                       <span>Inspect 3D Underground Horizon</span>
@@ -532,23 +532,23 @@ export const ReportInsights: React.FC<ReportInsightsProps> = ({
 
         {/* VIEW 4: SEARCHABLE ALL-FINDINGS MATRIX */}
         {view === 'all-findings' && (
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-6 shadow-xl backdrop-blur-md flex-1">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-slate-800">
+          <div className="rounded-xl border border-line bg-ink-900/90 p-6 shadow-panel flex-1">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-line">
               <div>
-                <h3 className="text-xl font-bold text-slate-100">All 121 Report Findings & Evidence Matrix</h3>
-                <p className="text-xs text-slate-400 mt-1">
+                <h3 className="text-xl font-bold text-text">All 121 Report Findings & Evidence Matrix</h3>
+                <p className="text-xs text-muted mt-1">
                   Searchable, filterable scientific database with direct cross-references.
                 </p>
               </div>
 
               <div className="w-full sm:w-72 relative">
-                <Search className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
+                <Search className="w-4 h-4 text-muted absolute left-3 top-2.5" />
                 <input
                   type="text"
                   placeholder="Filter findings by text..."
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-lg pl-9 pr-3 py-1.5 text-xs text-slate-200 outline-none focus:border-cyan-400 font-mono"
+                  className="w-full bg-ink-950 border border-line rounded-lg pl-9 pr-3 py-1.5 text-xs text-text outline-none focus:border-accent font-mono"
                 />
               </div>
             </div>
@@ -568,15 +568,15 @@ export const ReportInsights: React.FC<ReportInsightsProps> = ({
                   <div
                     key={f.id}
                     onClick={() => openFinding(f)}
-                    className="rounded-xl border border-slate-800/80 bg-slate-950/60 hover:bg-slate-950 p-4 text-left transition cursor-pointer hover:border-slate-700"
+                    className="rounded-xl border border-line/80 bg-ink-950/60 hover:bg-ink-950 p-4 text-left transition cursor-pointer hover:border-line"
                   >
-                    <div className="text-sm font-bold text-slate-100 line-clamp-1">{f.title}</div>
-                    <div className="text-xs text-slate-400 line-clamp-2 mt-1.5 font-sans leading-relaxed">
+                    <div className="text-sm font-bold text-text line-clamp-1">{f.title}</div>
+                    <div className="text-xs text-muted line-clamp-2 mt-1.5 font-sans leading-relaxed">
                       {f.statement}
                     </div>
-                    <div className="mt-3 flex items-center justify-between text-[11px] font-mono text-slate-500">
+                    <div className="mt-3 flex items-center justify-between text-[11px] font-mono text-muted">
                       <span className="capitalize">{f.basis.replace('_', ' ')}</span>
-                      <span className="text-cyan-400 hover:underline">Inspect →</span>
+                      <span className="text-accent hover:underline">Inspect →</span>
                     </div>
                   </div>
                 ))}
@@ -588,29 +588,29 @@ export const ReportInsights: React.FC<ReportInsightsProps> = ({
       {/* SCIENTIFIC CAVEATS & ASSUMPTIONS DRAWER */}
       {showCaveatsDrawer && (
         <div
-          className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex justify-end"
+          className="fixed inset-0 z-50 bg-ink-950/70 backdrop-blur-sm flex justify-end"
           onClick={() => setShowCaveatsDrawer(false)}
         >
           <div
-            className="w-full max-w-lg bg-slate-900 border-l border-slate-800 h-full p-6 overflow-y-auto shadow-2xl flex flex-col"
+            className="w-full max-w-lg bg-ink-900 border-l border-line h-full p-6 overflow-y-auto shadow-float flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+            <div className="flex items-center justify-between pb-4 border-b border-line">
               <div className="flex items-center gap-2">
-                <Info className="w-4 h-4 text-amber-400" />
-                <h3 className="text-sm font-mono font-bold text-slate-100 uppercase tracking-wider">
+                <Info className="w-4 h-4 text-amber" />
+                <h3 className="text-sm font-mono font-bold text-text uppercase tracking-wider">
                   Scientific Assumptions & Caveats
                 </h3>
               </div>
               <button
                 onClick={() => setShowCaveatsDrawer(false)}
-                className="p-1 rounded text-slate-400 hover:text-slate-100"
+                className="p-1 rounded text-muted hover:text-text"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <p className="mt-4 text-xs text-slate-400 font-sans leading-relaxed">
+            <p className="mt-4 text-xs text-muted font-sans leading-relaxed">
               In hydrogeology, field observations rely on boundary conditions, unmonitored extraction estimates, and
               geological modeling approximations. Below are the {analysis.uncertainties.length} explicit caveats
               identified across the NAQUIM report.
@@ -620,9 +620,9 @@ export const ReportInsights: React.FC<ReportInsightsProps> = ({
               {analysis.uncertainties.map((u) => (
                 <div
                   key={u.id}
-                  className="rounded-xl border border-slate-800 bg-slate-950/70 p-3.5 text-xs text-slate-300 font-sans leading-relaxed"
+                  className="rounded-xl border border-line bg-ink-950/70 p-3.5 text-xs text-text font-sans leading-relaxed"
                 >
-                  <div className="font-semibold text-amber-300/90 mb-1 flex items-center gap-1.5 font-mono text-[11px]">
+                  <div className="font-semibold text-amber/90 mb-1 flex items-center gap-1.5 font-mono text-[11px]">
                     <span>•</span>
                     <span>Domain Caveat</span>
                   </div>
@@ -668,20 +668,20 @@ function ThemeVisualStage({
     ];
 
     return (
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-6 shadow-xl backdrop-blur-md space-y-4">
-        <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+      <div className="rounded-xl border border-line bg-ink-900/90 p-6 shadow-panel space-y-4">
+        <div className="flex items-center justify-between pb-3 border-b border-line">
           <div>
-            <div className="text-[10px] font-mono uppercase tracking-widest text-amber-400 font-bold">
+            <div className="text-[10px] font-mono uppercase tracking-widest text-amber font-bold">
               Quantitative Water Ledger
             </div>
-            <h4 className="text-base font-bold text-slate-100 mt-1">Groundwater Draft vs Recharge Stress</h4>
+            <h4 className="text-base font-bold text-text mt-1">Groundwater Draft vs Recharge Stress</h4>
           </div>
-          <span className="px-2 py-0.5 rounded bg-rose-500/10 border border-rose-500/30 text-rose-300 text-[10px] font-mono font-bold">
+          <span className="px-2 py-0.5 rounded bg-danger/10 border border-danger/30 text-danger text-[10px] font-mono font-bold">
             113.5% Over-Draft
           </span>
         </div>
 
-        <p className="text-xs text-slate-400 font-sans leading-relaxed">
+        <p className="text-xs text-muted font-sans leading-relaxed">
           Agricultural irrigation represents ~96% of total draft. Micro-irrigation on 46,726 ha is the single viable
           lever to bring extraction down to sustainable levels.
         </p>
@@ -689,18 +689,18 @@ function ThemeVisualStage({
         <div className="h-60 w-full pt-2">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={budgetData} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="name" tick={{ fill: '#94a3b8', fontSize: 10 }} />
-              <YAxis tick={{ fill: '#94a3b8', fontSize: 10 }} unit=" MCM" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#1C262C" />
+              <XAxis dataKey="name" tick={{ fill: '#7E8F89', fontSize: 10 }} />
+              <YAxis tick={{ fill: '#7E8F89', fontSize: 10 }} unit=" MCM" />
               <Tooltip
-                contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: 8 }}
-                itemStyle={{ color: '#38bdf8' }}
+                contentStyle={{ backgroundColor: '#0C1114', borderColor: '#1C262C', borderRadius: 8 }}
+                itemStyle={{ color: '#5FB8D6' }}
               />
               <Bar dataKey="value" radius={[6, 6, 0, 0]}>
                 {budgetData.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
-                    fill={entry.type === 'drain' ? '#f43f5e' : entry.type === 'saving' ? '#10b981' : '#0284c7'}
+                    fill={entry.type === 'drain' ? '#E06C5F' : entry.type === 'saving' ? '#4CC38A' : '#2F82AD'}
                   />
                 ))}
               </Bar>
@@ -709,13 +709,13 @@ function ThemeVisualStage({
         </div>
 
         <div className="grid grid-cols-2 gap-2 text-center text-xs font-mono pt-2">
-          <div className="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800">
-            <div className="text-[10px] text-slate-500">Current Stage</div>
-            <div className="text-sm font-bold text-rose-400">113.55%</div>
+          <div className="p-2.5 rounded-xl bg-ink-950/70 border border-line">
+            <div className="text-[10px] text-muted">Current Stage</div>
+            <div className="text-sm font-bold text-danger">113.55%</div>
           </div>
-          <div className="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800">
-            <div className="text-[10px] text-slate-500">Projected Post-MIS</div>
-            <div className="text-sm font-bold text-emerald-400">97.29%</div>
+          <div className="p-2.5 rounded-xl bg-ink-950/70 border border-line">
+            <div className="text-[10px] text-muted">Projected Post-MIS</div>
+            <div className="text-sm font-bold text-success">97.29%</div>
           </div>
         </div>
       </div>
@@ -725,32 +725,32 @@ function ThemeVisualStage({
   // 2. UNDERGROUND & STRATIGRAPHY (Interactive Depth Stack)
   if (title.includes('underground') || title.includes('layers') || title.includes('aquifer')) {
     const strata = [
-      { name: 'Unconfined Aquifer (0–90m)', depth: '0–90m', color: 'border-cyan-500/50 bg-cyan-500/10 text-cyan-300' },
-      { name: 'Regional Aquitard I (Clay Seal)', depth: '90–120m', color: 'border-amber-700/50 bg-amber-950/30 text-amber-400' },
+      { name: 'Unconfined Aquifer (0–90m)', depth: '0–90m', color: 'border-accent/50 bg-accent/10 text-accent' },
+      { name: 'Regional Aquitard I (Clay Seal)', depth: '90–120m', color: 'border-amber/50 bg-ink-850/30 text-amber' },
       { name: 'Confined Aquifer Group I', depth: '120–180m', color: 'border-blue-500/50 bg-blue-500/10 text-blue-300' },
-      { name: 'Regional Aquitard II', depth: '180–210m', color: 'border-amber-700/50 bg-amber-950/30 text-amber-400' },
+      { name: 'Regional Aquitard II', depth: '180–210m', color: 'border-amber/50 bg-ink-850/30 text-amber' },
       { name: 'Deep Confined Aquifer Group II', depth: '210–300m+', color: 'border-indigo-500/50 bg-indigo-500/10 text-indigo-300' },
     ];
 
     return (
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-6 shadow-xl backdrop-blur-md space-y-4">
-        <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+      <div className="rounded-xl border border-line bg-ink-900/90 p-6 shadow-panel space-y-4">
+        <div className="flex items-center justify-between pb-3 border-b border-line">
           <div>
             <div className="text-[10px] font-mono uppercase tracking-widest text-indigo-400 font-bold">
               Subterranean Architecture
             </div>
-            <h4 className="text-base font-bold text-slate-100 mt-1">Stratigraphic Hydrogeological Profile</h4>
+            <h4 className="text-base font-bold text-text mt-1">Stratigraphic Hydrogeological Profile</h4>
           </div>
           <button
             onClick={() => finding && onShow3D(finding)}
-            className="px-3 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 font-mono text-xs font-bold transition flex items-center gap-1.5"
+            className="px-3 py-1.5 rounded-lg bg-amber hover:bg-amber text-ink-950 font-mono text-xs font-bold transition flex items-center gap-1.5"
           >
             <Layers3 className="w-3.5 h-3.5" />
             <span>Launch 3D</span>
           </button>
         </div>
 
-        <p className="text-xs text-slate-400 font-sans leading-relaxed">
+        <p className="text-xs text-muted font-sans leading-relaxed">
           Deep sedimentary alluvium thickening westward from 50m to over 400m, yielding major confined water below the
           protective regional clay caps.
         </p>
@@ -773,34 +773,34 @@ function ThemeVisualStage({
   // 3. WATER QUALITY & STRESS (Fluoride & Salinity Thresholds)
   if (title.includes('quality') || title.includes('usability')) {
     return (
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-6 shadow-xl backdrop-blur-md space-y-4">
-        <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+      <div className="rounded-xl border border-line bg-ink-900/90 p-6 shadow-panel space-y-4">
+        <div className="flex items-center justify-between pb-3 border-b border-line">
           <div>
-            <div className="text-[10px] font-mono uppercase tracking-widest text-rose-400 font-bold">
+            <div className="text-[10px] font-mono uppercase tracking-widest text-danger font-bold">
               Chemical & Potability Profiling
             </div>
-            <h4 className="text-base font-bold text-slate-100 mt-1">Water Usability Constraints</h4>
+            <h4 className="text-base font-bold text-text mt-1">Water Usability Constraints</h4>
           </div>
         </div>
 
         <div className="space-y-3 pt-2">
-          <div className="p-4 rounded-xl border border-slate-800 bg-slate-950/70 space-y-1.5">
+          <div className="p-4 rounded-xl border border-line bg-ink-950/70 space-y-1.5">
             <div className="flex items-center justify-between text-xs font-mono font-bold">
-              <span className="text-slate-200">Fluoride Stress (High in localized pockets)</span>
-              <span className="text-rose-400">&gt; 1.5 mg/L</span>
+              <span className="text-text">Fluoride Stress (High in localized pockets)</span>
+              <span className="text-danger">&gt; 1.5 mg/L</span>
             </div>
-            <p className="text-xs text-slate-400 font-sans leading-relaxed">
+            <p className="text-xs text-muted font-sans leading-relaxed">
               Specific villages in northern and eastern belts exceed permissible drinking limits, requiring deep
               casing isolation.
             </p>
           </div>
 
-          <div className="p-4 rounded-xl border border-slate-800 bg-slate-950/70 space-y-1.5">
+          <div className="p-4 rounded-xl border border-line bg-ink-950/70 space-y-1.5">
             <div className="flex items-center justify-between text-xs font-mono font-bold">
-              <span className="text-slate-200">Salinity Gradient (Westward Increase)</span>
-              <span className="text-amber-400">EC &gt; 2000 µS/cm</span>
+              <span className="text-text">Salinity Gradient (Westward Increase)</span>
+              <span className="text-amber">EC &gt; 2000 µS/cm</span>
             </div>
-            <p className="text-xs text-slate-400 font-sans leading-relaxed">
+            <p className="text-xs text-muted font-sans leading-relaxed">
               Electrical conductivity rises towards the western alluvial margins, constraining irrigation for
               salt-sensitive crops.
             </p>
@@ -816,18 +816,18 @@ function ThemeVisualStage({
     : [];
 
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-6 shadow-xl backdrop-blur-md space-y-4">
-      <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+    <div className="rounded-xl border border-line bg-ink-900/90 p-6 shadow-panel space-y-4">
+      <div className="flex items-center justify-between pb-3 border-b border-line">
         <div>
-          <div className="text-[10px] font-mono uppercase tracking-widest text-cyan-400 font-bold">
+          <div className="text-[10px] font-mono uppercase tracking-widest text-accent font-bold">
             Geographic Evidence
           </div>
-          <h4 className="text-base font-bold text-slate-100 mt-1">Connected Field Stations</h4>
+          <h4 className="text-base font-bold text-text mt-1">Connected Field Stations</h4>
         </div>
         {features.length > 0 && finding && (
           <button
             onClick={() => onShowMap(finding)}
-            className="px-3 py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-mono text-xs font-bold transition flex items-center gap-1.5"
+            className="px-3 py-1.5 rounded-lg bg-accent hover:bg-accent text-ink-950 font-mono text-xs font-bold transition flex items-center gap-1.5"
           >
             <MapPinned className="w-3.5 h-3.5" />
             <span>Map View</span>
@@ -840,21 +840,21 @@ function ThemeVisualStage({
           {features.map((f) => (
             <div
               key={f!.id}
-              className="p-3 rounded-xl border border-slate-800 bg-slate-950/80 flex items-center justify-between text-xs font-mono"
+              className="p-3 rounded-xl border border-line bg-ink-950/80 flex items-center justify-between text-xs font-mono"
             >
               <div className="truncate mr-2">
-                <div className="font-bold text-slate-200 truncate">{f!.name}</div>
-                <div className="text-[10px] text-slate-400 capitalize">{f!.type.replace('_', ' ')}</div>
+                <div className="font-bold text-text truncate">{f!.name}</div>
+                <div className="text-[10px] text-muted capitalize">{f!.type.replace('_', ' ')}</div>
               </div>
-              <span className="text-cyan-400 font-bold">{f!.totalDepthMeters ? `${f!.totalDepthMeters}m` : ''}</span>
+              <span className="text-accent font-bold">{f!.totalDepthMeters ? `${f!.totalDepthMeters}m` : ''}</span>
             </div>
           ))}
         </div>
       ) : (
-        <div className="p-6 rounded-xl border border-slate-800/80 bg-slate-950/50 text-center space-y-2">
-          <BookOpen className="w-6 h-6 text-slate-500 mx-auto" />
-          <div className="text-xs text-slate-300 font-bold">District-Wide Synthesis Finding</div>
-          <p className="text-[11px] text-slate-500 font-sans leading-relaxed">
+        <div className="p-6 rounded-xl border border-line/80 bg-ink-950/50 text-center space-y-2">
+          <BookOpen className="w-6 h-6 text-muted mx-auto" />
+          <div className="text-xs text-text font-bold">District-Wide Synthesis Finding</div>
+          <p className="text-[11px] text-muted font-sans leading-relaxed">
             This finding represents a regional synthesis across all 4 talukas rather than a single borehole station.
           </p>
         </div>

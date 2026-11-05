@@ -35,9 +35,9 @@ interface SubsurfaceExplorerProps {
 }
 
 const WELL_PALETTE = [
-  '#fb7185', // coral
-  '#a78bfa', // violet
-  '#34d399', // emerald
+  '#E06C5F', // coral
+  '#C2A15C', // violet
+  '#4CC38A', // emerald
   '#fb923c', // orange
   '#e2e8f0', // mineral white
 ];
@@ -84,8 +84,8 @@ function featureColor(feature: RenderablePointFeature): string {
 
 function createTextSprite(
   text: string,
-  color = '#38bdf8',
-  bgColor = '#090d16',
+  color = '#5FB8D6',
+  bgColor = '#0C1114',
   fontSize = 28,
   fixedHeight = 4.0
 ) {
@@ -166,7 +166,7 @@ function createExcavatedWorldTerrain(
   if (surfaceCanvas) {
     ctx.drawImage(surfaceCanvas, 0, 0, size, size);
   } else {
-    ctx.fillStyle = '#0f172a';
+    ctx.fillStyle = '#0C1114';
     ctx.fillRect(0, 0, size, size);
   }
 
@@ -195,9 +195,9 @@ function createExcavatedWorldTerrain(
 
     // 3. Draw a glowing excavation boundary rim around the district aperture
     ctx.save();
-    ctx.strokeStyle = '#06b6d4';
+    ctx.strokeStyle = '#35C4B5';
     ctx.lineWidth = 4;
-    ctx.shadowColor = '#06b6d4';
+    ctx.shadowColor = '#35C4B5';
     ctx.shadowBlur = 12;
     ctx.beginPath();
     ctx.moveTo(canvasPoly[0][0], canvasPoly[0][1]);
@@ -298,8 +298,8 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
 
     // 1. Scene Setup
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color('#030712'); // Sky/Void atmosphere
-    scene.fog = new THREE.FogExp2('#030712', 0.0007);
+    scene.background = new THREE.Color('#07090B'); // Sky/Void atmosphere
+    scene.fog = new THREE.FogExp2('#07090B', 0.0007);
 
     const camera = new THREE.PerspectiveCamera(
       42,
@@ -317,14 +317,14 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
     controls.dampingFactor = 0.05;
 
     // 2. Lighting
-    const hemiLight = new THREE.HemisphereLight('#67e8f9', '#0f172a', 1.7);
+    const hemiLight = new THREE.HemisphereLight('#5ED6C6', '#0C1114', 1.7);
     scene.add(hemiLight);
 
     const sunLight = new THREE.DirectionalLight('#ffffff', 1.8);
     sunLight.position.set(180, 260, 200);
     scene.add(sunLight);
 
-    const ambientSubsurface = new THREE.DirectionalLight('#0ea5e9', 0.85);
+    const ambientSubsurface = new THREE.DirectionalLight('#35C4B5', 0.85);
     ambientSubsurface.position.set(-160, -100, -140);
     scene.add(ambientSubsurface);
 
@@ -407,7 +407,7 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
     scene.add(terrainMesh);
 
     // Coordinate orientation grid extending across the subcontinent
-    const gridHelper = new THREE.GridHelper(worldSpan, 40, '#06b6d4', '#111827');
+    const gridHelper = new THREE.GridHelper(worldSpan, 40, '#35C4B5', '#1C262C');
     gridHelper.position.y = -0.2;
     scene.add(gridHelper);
 
@@ -424,7 +424,7 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
         const bottomDepth = Math.max(...focusedIntervals.map((interval) => interval.end));
         const focusBand = new THREE.Mesh(
           new THREE.BoxGeometry(330, Math.max(1.5, (bottomDepth - topDepth) * scaleY), 330),
-          new THREE.MeshBasicMaterial({ color: '#fbbf24', transparent: true, opacity: 0.07, side: THREE.DoubleSide, depthWrite: false })
+          new THREE.MeshBasicMaterial({ color: '#E3B34E', transparent: true, opacity: 0.07, side: THREE.DoubleSide, depthWrite: false })
         );
         focusBand.position.y = -((topDepth + bottomDepth) / 2) * scaleY;
         rootSubsurface.add(focusBand);
@@ -484,10 +484,10 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
           24
         ),
         new THREE.MeshStandardMaterial({
-          color: isSelected ? '#fbbf24' : stationColor,
+          color: isSelected ? '#E3B34E' : stationColor,
           roughness: 0.2,
           metalness: 0.8,
-          emissive: isSelected ? '#d97706' : stationColor,
+          emissive: isSelected ? '#E3B34E' : stationColor,
           emissiveIntensity: isSelected ? 0.9 : 0.4,
           transparent: true,
           opacity: 1.0,
@@ -502,7 +502,7 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
         const outlinePipe = new THREE.Mesh(
           new THREE.CylinderGeometry(radius * 1.28, radius * 1.28, totalH, 16),
           new THREE.MeshBasicMaterial({
-            color: '#020617',
+            color: '#07090B',
             side: THREE.BackSide,
             transparent: true,
             opacity: 0.9,
@@ -515,8 +515,8 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
         const continuousPipe = new THREE.Mesh(
           new THREE.CylinderGeometry(radius * 0.92, radius * 0.92, totalH, 16),
           new THREE.MeshStandardMaterial({
-            color: isSelected ? '#fde047' : stationColor,
-            emissive: isSelected ? '#d97706' : stationColor,
+            color: isSelected ? '#E3B34E' : stationColor,
+            emissive: isSelected ? '#E3B34E' : stationColor,
             emissiveIntensity: isSelected ? 0.75 : 0.42,
             transparent: true,
             opacity: 0.98,
@@ -557,7 +557,7 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
         const symbolicHalo = new THREE.Mesh(
           new THREE.TorusGeometry(radius * 2.2, isSelected ? 0.34 : 0.22, 8, 32),
           new THREE.MeshBasicMaterial({
-            color: isSelected ? '#fbbf24' : stationColor,
+            color: isSelected ? '#E3B34E' : stationColor,
             transparent: true,
             opacity: isSelected ? 1 : 0.72,
           })
@@ -581,8 +581,8 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
           const seg = new THREE.Mesh(
             new THREE.CylinderGeometry(radius * 1.08, radius * 1.08, h, 16),
             new THREE.MeshStandardMaterial({
-              color: isSelected ? '#fde047' : stationColor,
-              emissive: isSelected ? '#d97706' : stationColor,
+              color: isSelected ? '#E3B34E' : stationColor,
+              emissive: isSelected ? '#E3B34E' : stationColor,
               emissiveIntensity: isSelected ? 0.7 : 0.25,
               roughness: 0.18,
               metalness: 0.45,
@@ -630,7 +630,7 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
           10
         ),
         new THREE.MeshBasicMaterial({
-          color: isSelected ? '#fde047' : stationColor,
+          color: isSelected ? '#E3B34E' : stationColor,
           transparent: true,
           opacity: isSelected ? 0.95 : 0.5,
         })
@@ -643,8 +643,8 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
       // Station Name Callout Sprite (positioned just above wellhead beacon)
       const sprite = createTextSprite(
         depthReady ? `${feat.name} (${fDepth}m)` : `${feat.name} · surface`,
-        isSelected ? '#f59e0b' : stationColor,
-        '#090d16',
+        isSelected ? '#E3B34E' : stationColor,
+        '#0C1114',
         28,
         4.0
       );
@@ -660,7 +660,7 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
               new THREE.Vector3(0, laserH + 1.5, 0),
             ]),
             new THREE.LineBasicMaterial({
-              color: isSelected ? '#fbbf24' : stationColor,
+              color: isSelected ? '#E3B34E' : stationColor,
               transparent: true,
               opacity: isSelected ? 0.95 : 0.5,
             })
@@ -732,7 +732,7 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
             const curtain = new THREE.Mesh(
               new THREE.PlaneGeometry(dist, curtainH),
               new THREE.MeshStandardMaterial({
-                color: '#38bdf8',
+                color: '#5FB8D6',
                 side: THREE.DoubleSide,
                 transparent: true,
                 opacity: 0.22,
@@ -749,7 +749,7 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
                 new THREE.Vector3(a.x, 0.2, a.z),
                 new THREE.Vector3(b.x, 0.2, b.z),
               ]),
-              new THREE.LineBasicMaterial({ color: '#22d3ee', transparent: true, opacity: 0.7 })
+              new THREE.LineBasicMaterial({ color: '#35C4B5', transparent: true, opacity: 0.7 })
             );
             curtainsGroup.add(rail);
           }
@@ -778,7 +778,7 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
         slabGeom.rotateX(Math.PI / 2);
 
         const slabMat = new THREE.MeshStandardMaterial({
-          color: slab.colorHex || '#0ea5e9',
+          color: slab.colorHex || '#35C4B5',
           transparent: true,
           opacity: 0.075,
           side: THREE.DoubleSide,
@@ -794,7 +794,7 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
         const edges = new THREE.LineSegments(
           new THREE.EdgesGeometry(slabGeom),
           new THREE.LineBasicMaterial({
-            color: slab.colorHex || '#0ea5e9',
+            color: slab.colorHex || '#35C4B5',
             transparent: true,
             opacity: 0.18,
           })
@@ -815,8 +815,8 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
     const rulerMast = new THREE.Mesh(
       new THREE.CylinderGeometry(0.75, 0.75, totalRulerH, 16),
       new THREE.MeshStandardMaterial({
-        color: '#fbbf24',
-        emissive: '#d97706',
+        color: '#E3B34E',
+        emissive: '#E3B34E',
         emissiveIntensity: 0.6,
         roughness: 0.2,
         metalness: 0.8,
@@ -832,8 +832,8 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
       const tick = new THREE.Mesh(
         new THREE.CylinderGeometry(0.4, 0.4, 8, 12),
         new THREE.MeshStandardMaterial({
-          color: '#fbbf24',
-          emissive: '#d97706',
+          color: '#E3B34E',
+          emissive: '#E3B34E',
           emissiveIntensity: 0.8,
         })
       );
@@ -844,8 +844,8 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
       // Large, crystal-clear depth number badge
       const dSprite = createTextSprite(
         `${d}m`,
-        '#f59e0b',
-        '#030712',
+        '#E3B34E',
+        '#07090B',
         36,
         4.0
       );
@@ -958,8 +958,8 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
           if (isSel) {
             // Wellhead collar
             const collarMat = item.collar.material as THREE.MeshStandardMaterial;
-            collarMat.color.set('#fbbf24');
-            collarMat.emissive.set('#d97706');
+            collarMat.color.set('#E3B34E');
+            collarMat.emissive.set('#E3B34E');
             collarMat.emissiveIntensity = 1.0;
             collarMat.opacity = 1.0;
             item.collar.scale.setScalar(item.fDepth === 0 ? 2.15 : 1.15);
@@ -967,8 +967,8 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
             // Casing intervals & water rings
             item.casingMeshes.forEach((mesh) => {
               const mat = mesh.material as THREE.MeshStandardMaterial;
-              mat.color.set('#fde047');
-              mat.emissive.set('#d97706');
+              mat.color.set('#E3B34E');
+              mat.emissive.set('#E3B34E');
               mat.emissiveIntensity = 0.75;
               mat.opacity = 1.0;
               mesh.scale.setScalar(item.fDepth === 0 ? 1.85 : 1);
@@ -981,7 +981,7 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
 
             // Skyward laser
             const laserMat = item.laser.material as THREE.MeshBasicMaterial;
-            laserMat.color.set('#fde047');
+            laserMat.color.set('#E3B34E');
             laserMat.opacity = 1.0;
             const targetLaserH = item.fDepth > 0 ? 24 : 8;
             item.laser.scale.set(1.4, targetLaserH / item.laserH, 1.4);
@@ -992,8 +992,8 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
             item.sprite.position.y = targetLaserH + 4;
             const newSprite = createTextSprite(
               item.fDepth > 0 ? `${item.featName} (${item.fDepth}m)` : `${item.featName} · surface`,
-              '#f59e0b',
-              '#090d16',
+              '#E3B34E',
+              '#0C1114',
               28,
               4.0
             );
@@ -1005,7 +1005,7 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
             if (item.leaderLine) {
               item.leaderLine.visible = true;
               const leaderMat = item.leaderLine.material as THREE.LineBasicMaterial;
-              leaderMat.color.set('#fbbf24');
+              leaderMat.color.set('#E3B34E');
               leaderMat.opacity = 0.95;
             }
           } else if (isSurfaceOnlyScene) {
@@ -1036,16 +1036,16 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
           item.group.visible = true;
 
           const collarMat = item.collar.material as THREE.MeshStandardMaterial;
-          collarMat.color.set(isSel ? '#fbbf24' : item.baseColor);
-          collarMat.emissive.set(isSel ? '#d97706' : item.baseColor);
+          collarMat.color.set(isSel ? '#E3B34E' : item.baseColor);
+          collarMat.emissive.set(isSel ? '#E3B34E' : item.baseColor);
           collarMat.emissiveIntensity = isSel ? 0.9 : 0.4;
           collarMat.opacity = 1.0;
           item.collar.scale.setScalar(1);
 
           item.casingMeshes.forEach((mesh) => {
             const mat = mesh.material as THREE.MeshStandardMaterial;
-            mat.color.set(isSel ? '#fde047' : mesh.userData.wellBaseColor || '#e2f7ff');
-            mat.emissive.set(isSel ? '#d97706' : mesh.userData.wellBaseEmissive || '#0891b2');
+            mat.color.set(isSel ? '#E3B34E' : mesh.userData.wellBaseColor || '#ECF2EF');
+            mat.emissive.set(isSel ? '#E3B34E' : mesh.userData.wellBaseEmissive || '#1F4A45');
             mat.emissiveIntensity = isSel ? 0.75 : 0.32;
             mat.opacity = 0.85;
             mesh.scale.setScalar(1);
@@ -1058,7 +1058,7 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
           if (item.leaderLine) item.leaderLine.visible = false;
 
           const laserMat = item.laser.material as THREE.MeshBasicMaterial;
-          laserMat.color.set(isSel ? '#fde047' : item.baseColor);
+          laserMat.color.set(isSel ? '#E3B34E' : item.baseColor);
           laserMat.opacity = isSel ? 0.95 : 0.45;
           const targetLaserH = isSel
             ? (item.fDepth > 0 ? 24 : 8)
@@ -1070,8 +1070,8 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
           item.sprite.position.y = targetLaserH + (item.fDepth > 0 ? 4 : 2.5);
           const newSprite = createTextSprite(
             item.fDepth > 0 ? `${item.featName} (${item.fDepth}m)` : `${item.featName} · surface`,
-            isSel ? '#f59e0b' : item.baseColor,
-            '#090d16',
+            isSel ? '#E3B34E' : item.baseColor,
+            '#0C1114',
             28,
             4.0
           );
@@ -1309,32 +1309,32 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
   ]);
 
   return (
-    <div className="absolute inset-0 z-40 bg-slate-950 text-slate-100 flex flex-col overflow-hidden select-none animate-in fade-in duration-300">
+    <div className="absolute inset-0 z-40 bg-ink-950 text-text flex flex-col overflow-hidden select-none animate-in fade-in duration-300">
       {/* 3D Canvas Host */}
       <div ref={mountRef} className="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing" />
 
       {focusFinding && (
-        <div className="absolute top-16 left-1/2 z-50 -translate-x-1/2 rounded-full border border-amber-400/60 bg-slate-950/90 px-4 py-2 text-[11px] font-mono text-amber-200 shadow-xl backdrop-blur-md">
+        <div className="absolute top-16 left-1/2 z-50 -translate-x-1/2 rounded-full border border-amber/60 bg-ink-950/90 px-4 py-2 text-[11px] font-mono text-amber shadow-xl backdrop-blur-md">
           Finding focus: {focusFinding.title}{focusFinding.intervalIds.length > 0 ? ` · ${focusFinding.intervalIds.length} depth interval${focusFinding.intervalIds.length === 1 ? '' : 's'}` : ''}
         </div>
       )}
 
       {isSurfaceOnlyScene && !focusFinding && (
-        <div className="absolute top-16 left-1/2 z-50 -translate-x-1/2 rounded-full border border-cyan-400/30 bg-slate-950/82 px-4 py-2 text-[10px] font-mono uppercase tracking-[0.16em] text-cyan-100 shadow-xl backdrop-blur-md">
+        <div className="absolute top-16 left-1/2 z-50 -translate-x-1/2 rounded-full border border-accent/30 bg-ink-950/82 px-4 py-2 text-[10px] font-mono uppercase tracking-[0.16em] text-accent-strong shadow-xl backdrop-blur-md">
           Surface evidence scene · no depth geometry reported
         </div>
       )}
 
       {/* Floating Left Station Navigator */}
-      <div className="absolute top-16 bottom-5 left-5 z-50 w-76 bg-slate-900/95 backdrop-blur-xl border border-slate-700/70 rounded-xl shadow-[0_16px_50px_rgba(0,0,0,0.8)] p-3 pointer-events-auto flex min-h-0 flex-col">
+      <div className="absolute top-16 bottom-5 left-5 z-50 w-76 bg-ink-900/95 backdrop-blur-xl border border-line/70 rounded-xl shadow-[0_16px_50px_rgba(0,0,0,0.8)] p-3 pointer-events-auto flex min-h-0 flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between pb-2 border-b border-slate-800 text-xs font-mono">
-          <span className="text-slate-200 font-bold tracking-wide">LOCATED STUDY OBJECTS</span>
-          <span className="text-cyan-400 font-semibold">{sceneFeatures.length} Located · {depthReadyCount} Depth</span>
+        <div className="flex items-center justify-between pb-2 border-b border-line text-xs font-mono">
+          <span className="text-text font-bold tracking-wide">LOCATED STUDY OBJECTS</span>
+          <span className="text-accent font-semibold">{sceneFeatures.length} Located · {depthReadyCount} Depth</span>
         </div>
 
         {/* Distinct Mode Segmented Action Banner */}
-        <div className="my-2.5 bg-slate-950/80 p-1 rounded-lg border border-slate-800 flex gap-1">
+        <div className="my-2.5 bg-ink-950/80 p-1 rounded-lg border border-line flex gap-1">
           <button
             onClick={() => {
               if (!sceneFeatures.some((feature) => feature.id === currentFeature?.id) && sceneFeatures.length > 0) {
@@ -1344,8 +1344,8 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
             }}
             className={`flex-1 py-1.5 px-2 rounded-md text-[11px] font-mono font-bold transition flex items-center justify-center gap-1.5 ${
               focusMode
-                ? 'bg-amber-400 text-slate-950 shadow-md shadow-amber-400/20'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-amber text-ink-950 shadow-md shadow-amber/20'
+                : 'text-muted hover:text-text'
             }`}
           >
             <Focus className="w-3.5 h-3.5" />
@@ -1358,8 +1358,8 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
             }}
             className={`flex-1 py-1.5 px-2 rounded-md text-[11px] font-mono font-bold transition flex items-center justify-center gap-1.5 ${
               !focusMode
-                ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-accent text-ink-950 shadow-md '
+                : 'text-muted hover:text-text'
             }`}
           >
             <Eye className="w-3.5 h-3.5" />
@@ -1367,9 +1367,9 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
           </button>
         </div>
 
-        <div className="text-[10px] font-mono text-slate-400 px-1 pb-1 flex items-center justify-between">
+        <div className="text-[10px] font-mono text-muted px-1 pb-1 flex items-center justify-between">
           <span>OBJECT LIST</span>
-          <span className="text-slate-500">
+          <span className="text-muted">
             {focusMode
               ? (isSurfaceOnlyScene ? 'Focused with context' : 'Showing active point')
               : 'Showing all points'}
@@ -1386,17 +1386,17 @@ export const SubsurfaceExplorer: React.FC<SubsurfaceExplorerProps> = ({
                 onClick={() => selectAndIsolateRef.current(feat)}
                 className={`w-full text-left p-2.5 rounded-lg text-xs font-mono transition flex items-center justify-between ${
                   isSel
-                    ? 'bg-amber-400/25 border border-amber-400 text-amber-300 ring-2 ring-amber-400/40 shadow-[0_0_15px_rgba(251,191,36,0.25)]'
-                    : 'bg-slate-800/40 hover:bg-slate-800/80 text-slate-300 border border-slate-800/60'
+                    ? 'bg-amber/25 border border-amber text-amber ring-2 ring-amber/40 shadow-[0_0_15px_rgba(227,179,78,0.25)]'
+                    : 'bg-ink-800/40 hover:bg-ink-800/80 text-muted border border-line/60'
                 }`}
               >
                 <div className="truncate mr-2">
-                  <div className={`font-bold truncate ${isSel ? 'text-amber-200' : 'text-slate-200'}`}>
+                  <div className={`font-bold truncate ${isSel ? 'text-amber' : 'text-text'}`}>
                     {feat.name}
                   </div>
-                  <div className="text-[10px] text-slate-400 capitalize">{feat.type.replace('_', ' ')}</div>
+                  <div className="text-[10px] text-muted capitalize">{feat.type.replace('_', ' ')}</div>
                 </div>
-                <span className={`text-[10px] font-bold whitespace-nowrap ${isDepthReady(feat) ? 'text-cyan-400' : 'text-violet-300'}`}>
+                <span className={`text-[10px] font-bold whitespace-nowrap ${isDepthReady(feat) ? 'text-accent' : 'text-[#C2A15C]'}`}>
                   {isDepthReady(feat)
                     ? `${feat.totalDepthMeters || feat.intervals[feat.intervals.length - 1]?.end || 0}m`
                     : 'SURFACE'}

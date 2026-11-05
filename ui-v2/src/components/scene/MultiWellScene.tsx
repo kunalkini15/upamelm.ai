@@ -76,8 +76,8 @@ const BoreholeStationMesh: React.FC<{
       >
         <cylinderGeometry args={[0.35, 0.45, 0.6, 16]} />
         <meshStandardMaterial
-          color={isSelected ? '#fbbf24' : '#06b6d4'}
-          emissive={isSelected ? '#f59e0b' : '#0891b2'}
+          color={isSelected ? '#E3B34E' : '#35C4B5'}
+          emissive={isSelected ? '#E3B34E' : '#1F4A45'}
           emissiveIntensity={isSelected ? 0.8 : 0.2}
           roughness={0.2}
           metalness={0.8}
@@ -88,7 +88,7 @@ const BoreholeStationMesh: React.FC<{
       <mesh position={[0, 3, 0]}>
         <cylinderGeometry args={[0.02, 0.08, 6, 8]} />
         <meshBasicMaterial
-          color={isSelected ? '#fbbf24' : '#38bdf8'}
+          color={isSelected ? '#E3B34E' : '#5FB8D6'}
           transparent
           opacity={isSelected ? 0.7 : 0.25}
         />
@@ -146,7 +146,7 @@ const BoreholeStationMesh: React.FC<{
           rotation={[Math.PI / 2, 0, 0]}
         >
           <ringGeometry args={[0.4, 0.9, 24]} />
-          <meshBasicMaterial color="#00f0ff" side={THREE.DoubleSide} transparent opacity={0.85} />
+          <meshBasicMaterial color="#3FD2C8" side={THREE.DoubleSide} transparent opacity={0.85} />
         </mesh>
       )}
 
@@ -156,14 +156,14 @@ const BoreholeStationMesh: React.FC<{
           <mesh position={[0, 0, -0.02]}>
             <planeGeometry args={[feature.name.length * 0.18 + 0.6, 0.45]} />
             <meshBasicMaterial
-              color={isSelected ? '#0f172a' : '#020617'}
+              color={isSelected ? '#0C1114' : '#07090B'}
               transparent
               opacity={0.85}
             />
           </mesh>
           <Text
             fontSize={0.24}
-            color={isSelected ? '#fbbf24' : '#f8fafc'}
+            color={isSelected ? '#E3B34E' : '#ECF2EF'}
             anchorX="center"
             anchorY="middle"
           >
@@ -205,7 +205,7 @@ const TransectCurtainRibbon: React.FC<{
       <mesh>
         <planeGeometry args={[distance, curtainHeight]} />
         <meshStandardMaterial
-          color="#38bdf8"
+          color="#5FB8D6"
           side={THREE.DoubleSide}
           transparent
           opacity={0.18}
@@ -216,7 +216,7 @@ const TransectCurtainRibbon: React.FC<{
       {/* Top Surface Baseline Ribbon */}
       <mesh position={[0, curtainHeight / 2, 0]}>
         <planeGeometry args={[distance, 0.08]} />
-        <meshBasicMaterial color="#06b6d4" side={THREE.DoubleSide} />
+        <meshBasicMaterial color="#35C4B5" side={THREE.DoubleSide} />
       </mesh>
     </group>
   );
@@ -272,7 +272,7 @@ export const MultiWellScene: React.FC<MultiWellSceneProps> = ({
     <>
       <ambientLight intensity={0.8} />
       <directionalLight position={[25, 40, 30]} intensity={1.6} castShadow />
-      <pointLight position={[-20, -15, -20]} intensity={0.6} color="#06b6d4" />
+      <pointLight position={[-20, -15, -20]} intensity={0.6} color="#35C4B5" />
 
       {/* Orbit Controls with generous bounds for district exploration */}
       <OrbitControls
@@ -288,14 +288,14 @@ export const MultiWellScene: React.FC<MultiWellSceneProps> = ({
         <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
           <planeGeometry args={[46, 46, 32, 32]} />
           <meshStandardMaterial
-            color="#090d16"
+            color="#0C1114"
             roughness={0.9}
             metalness={0.1}
             transparent
             opacity={0.8}
           />
         </mesh>
-        <gridHelper args={[46, 46, '#06b6d4', '#1e293b']} position={[0, 0.02, 0]} />
+        <gridHelper args={[46, 46, '#35C4B5', '#1C262C']} position={[0, 0.02, 0]} />
       </group>
 
       {/* All 33 Geocoded Boreholes / Stations Rendered in True Relative 3D Space */}

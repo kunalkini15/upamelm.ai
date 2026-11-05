@@ -1,14 +1,49 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: Manrope, ui-sans-serif, system-ui;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --color-ink-950: #07090b;
+  --color-ink-900: #0c1114;
+  --color-ink-850: #10171b;
+  --color-ink-800: #162027;
+  --color-line: rgba(226, 238, 234, 0.09);
+  --color-text: #ecf2ef;
+  --color-muted: #a7b5b0;
+  --color-accent: #35c4b5;
+  --color-accent-strong: #5ed6c6;
+  --color-amber: #e3b34e;
+  --color-danger: #e06c5f;
+  --color-success: #4cc38a;
+
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+  --radius-2xl: 18px;
+
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.35), 0 4px 16px rgba(0, 0, 0, 0.22);
+  --shadow-panel: 0 2px 6px rgba(0, 0, 0, 0.35), 0 12px 32px rgba(0, 0, 0, 0.22);
+  --shadow-float: 0 4px 12px rgba(0, 0, 0, 0.35), 0 20px 48px rgba(0, 0, 0, 0.22);
+}
+
 @layer base {
   * {
-    border-color: rgba(255, 255, 255, 0.08);
+    border-color: rgba(226, 238, 234, 0.09);
+  }
+  html {
+    background-color: #07090b;
   }
   body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #07090b;
+    color: #ecf2ef;
+    font-family: Manrope, ui-sans-serif, system-ui;
   }
   code, pre, .font-mono {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+  }
+  ::selection {
+    background-color: rgba(53, 196, 181, 0.25);
   }
 }
 
@@ -18,32 +53,81 @@
   height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.6);
+  background: rgba(12, 17, 20, 0.6);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.2);
+  background: rgba(167, 181, 176, 0.22);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(6, 182, 212, 0.5);
+  background: rgba(53, 196, 181, 0.5);
 }
 
 /* Pulse animation for 3D data beacons on 2D map */
 @keyframes beacon-pulse {
   0% {
     transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7);
+    box-shadow: 0 0 0 0 rgba(53, 196, 181, 0.55);
   }
   70% {
     transform: scale(1.15);
-    box-shadow: 0 0 0 16px rgba(6, 182, 212, 0);
+    box-shadow: 0 0 0 16px rgba(53, 196, 181, 0);
   }
   100% {
     transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(6, 182, 212, 0);
+    box-shadow: 0 0 0 0 rgba(53, 196, 181, 0);
   }
 }
 
 .beacon-ring {
   animation: beacon-pulse 2.2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+.city-beacon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 0;
+  background: transparent;
+  color: #ecf2ef;
+  cursor: pointer;
+  font-family: Manrope, ui-sans-serif, system-ui;
+}
+.city-beacon__dot {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  border: 5px solid #35c4b5;
+  border-radius: 999px;
+  background: #07181a;
+  box-shadow: 0 0 0 8px rgba(53, 196, 181, 0.18), 0 0 32px rgba(53, 196, 181, 0.68);
+  animation: beacon-pulse 2.2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}
+.city-beacon__card {
+  display: flex;
+  min-width: 150px;
+  margin-left: 14px;
+  padding: 9px 12px;
+  flex-direction: column;
+  align-items: flex-start;
+  border: 1px solid rgba(94, 214, 198, 0.38);
+  border-radius: 10px;
+  background: rgba(7, 9, 11, 0.92);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.38);
+  backdrop-filter: blur(10px);
+  transition: transform 160ms ease, border-color 160ms ease;
+}
+.city-beacon__card strong { font-size: 13px; line-height: 1.2; }
+.city-beacon__card small { margin-top: 3px; color: #a7b5b0; font-size: 10px; }
+.city-beacon:hover .city-beacon__card,
+.city-beacon:focus-visible .city-beacon__card { transform: translateX(3px); border-color: #5ed6c6; }
+.city-beacon:focus-visible { outline: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .beacon-ring {
+    animation: none;
+  }
+  .city-beacon__dot {
+    animation: none;
+  }
 }

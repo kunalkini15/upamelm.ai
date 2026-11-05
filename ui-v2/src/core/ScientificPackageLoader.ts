@@ -277,7 +277,7 @@ export class ScientificPackageLoader {
               thickness: iv.thickness || iv.end! - iv.start!,
               unit: iv.unit || 'm',
               material: iv.material || undefined,
-              colorHex: isRock ? '#0f172a' : isClay ? '#475569' : '#0284c7',
+              colorHex: isRock ? '#131B21' : isClay ? '#71807B' : '#2F82AD',
               transparency: isClay ? 0.8 : 0.6,
               fidelity: iv.fidelity,
             };
@@ -425,7 +425,7 @@ export class ScientificPackageLoader {
           start: iv.start!,
           end: iv.end!,
           thickness: iv.thickness || iv.end! - iv.start!,
-          colorHex: isUnc ? '#38bdf8' : isClay ? '#475569' : idx === 1 ? '#0284c7' : '#0369a1',
+          colorHex: isUnc ? '#5FB8D6' : isClay ? '#71807B' : idx === 1 ? '#2F82AD' : '#276E94',
           transparency: isClay ? 0.35 : 0.22,
           studyAreaId: iv.study_area_id || 'regional',
           studyAreaName: iv.study_area_id ? studyAreasById.get(iv.study_area_id) || studyAreaName : studyAreaName,

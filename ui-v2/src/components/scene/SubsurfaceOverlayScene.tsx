@@ -77,8 +77,8 @@ const ExtrudedBoreholeMesh: React.FC<{
       >
         <cylinderGeometry args={[0.35, 0.45, 0.6, 16]} />
         <meshStandardMaterial
-          color={isSelected ? '#fbbf24' : '#06b6d4'}
-          emissive={isSelected ? '#f59e0b' : '#0891b2'}
+          color={isSelected ? '#E3B34E' : '#35C4B5'}
+          emissive={isSelected ? '#E3B34E' : '#1F4A45'}
           emissiveIntensity={isSelected ? 0.9 : 0.3}
           roughness={0.2}
           metalness={0.8}
@@ -91,7 +91,7 @@ const ExtrudedBoreholeMesh: React.FC<{
       <mesh position={[0, 3, 0]}>
         <cylinderGeometry args={[0.02, 0.08, 6, 8]} />
         <meshBasicMaterial
-          color={isSelected ? '#fbbf24' : '#38bdf8'}
+          color={isSelected ? '#E3B34E' : '#5FB8D6'}
           transparent
           opacity={opacity * (isSelected ? 0.8 : 0.3)}
         />
@@ -150,7 +150,7 @@ const ExtrudedBoreholeMesh: React.FC<{
         >
           <ringGeometry args={[0.4, 0.9, 24]} />
           <meshBasicMaterial
-            color="#00f0ff"
+            color="#3FD2C8"
             side={THREE.DoubleSide}
             transparent
             opacity={opacity * 0.85}
@@ -164,14 +164,14 @@ const ExtrudedBoreholeMesh: React.FC<{
           <mesh position={[0, 0, -0.02]}>
             <planeGeometry args={[feature.name.length * 0.18 + 0.6, 0.45]} />
             <meshBasicMaterial
-              color={isSelected ? '#0f172a' : '#020617'}
+              color={isSelected ? '#0C1114' : '#07090B'}
               transparent
               opacity={opacity * 0.85}
             />
           </mesh>
           <Text
             fontSize={0.24}
-            color={isSelected ? '#fbbf24' : '#f8fafc'}
+            color={isSelected ? '#E3B34E' : '#ECF2EF'}
             anchorX="center"
             anchorY="middle"
             fillOpacity={opacity}
@@ -241,12 +241,12 @@ export const SubsurfaceOverlayScene: React.FC<SubsurfaceOverlaySceneProps> = ({
     <>
       <ambientLight intensity={0.9} />
       <directionalLight position={[20, 35, 25]} intensity={1.5} />
-      <pointLight position={[-15, -15, -15]} intensity={0.6} color="#06b6d4" />
+      <pointLight position={[-15, -15, -15]} intensity={0.6} color="#35C4B5" />
 
       {/* Ground Subsurface Grid */}
       <group position={[0, 0, 0]}>
         <gridHelper
-          args={[48, 48, '#06b6d4', '#1e293b']}
+          args={[48, 48, '#35C4B5', '#1C262C']}
           position={[0, 0.02, 0]}
         />
       </group>
@@ -282,7 +282,7 @@ export const SubsurfaceOverlayScene: React.FC<SubsurfaceOverlaySceneProps> = ({
             <mesh>
               <planeGeometry args={[distance, curtainHeight]} />
               <meshStandardMaterial
-                color="#38bdf8"
+                color="#5FB8D6"
                 side={THREE.DoubleSide}
                 transparent
                 opacity={transitionProgress * 0.22}
@@ -292,7 +292,7 @@ export const SubsurfaceOverlayScene: React.FC<SubsurfaceOverlaySceneProps> = ({
             <mesh position={[0, curtainHeight / 2, 0]}>
               <planeGeometry args={[distance, 0.08]} />
               <meshBasicMaterial
-                color="#06b6d4"
+                color="#35C4B5"
                 side={THREE.DoubleSide}
                 transparent
                 opacity={transitionProgress * 0.7}

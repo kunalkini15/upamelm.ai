@@ -11,7 +11,7 @@ src/components/
 ├── hud/                      # Heads-Up Display controls & chrome
 │   ├── ScientificHeader.tsx  # Title bar, location metadata, study switcher
 │   ├── FloatingHUD.tsx       # Bottom HUD: viewport modes, layer badges, borehole cards
-│   └── StudySwitcher.tsx     # Dropdown to hot-switch between active studies
+│   └── StudySwitcher.tsx     # API-driven city, study, and language selectors
 ├── map/                      # 2D Geospatial GIS engine
 │   ├── SeamlessMap.tsx       # MapLibre GL map wrapper with responsive framing
 │   └── LayerControl.tsx      # Multi-layer toggle & opacity menu

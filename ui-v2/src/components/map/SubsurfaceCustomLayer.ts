@@ -59,7 +59,7 @@ export class SubsurfaceCustomLayer implements maplibregl.CustomLayerInterface {
     dirLight1.position.set(1, -1, 2).normalize();
     this.scene.add(dirLight1);
 
-    const dirLight2 = new THREE.DirectionalLight(0x06b6d4, 1.0);
+    const dirLight2 = new THREE.DirectionalLight(0x35C4B5, 1.0);
     dirLight2.position.set(-1, 1, -2).normalize();
     this.scene.add(dirLight2);
   }
@@ -193,10 +193,10 @@ export class SubsurfaceCustomLayer implements maplibregl.CustomLayerInterface {
       );
       collarGeom.rotateX(Math.PI / 2); // MapLibre Z is up/down in matrix orientation
       const collarMat = new THREE.MeshStandardMaterial({
-        color: isSelected ? 0xfbbf24 : 0x06b6d4,
+        color: isSelected ? 0xE3B34E : 0x35C4B5,
         roughness: 0.2,
         metalness: 0.8,
-        emissive: isSelected ? 0xd97706 : 0x0891b2,
+        emissive: isSelected ? 0xE3B34E : 0x1F4A45,
         emissiveIntensity: 0.6,
       });
       const collarMesh = new THREE.Mesh(collarGeom, collarMat);
@@ -240,7 +240,7 @@ export class SubsurfaceCustomLayer implements maplibregl.CustomLayerInterface {
         );
         cylGeom.rotateX(Math.PI / 2);
         const cylMat = new THREE.MeshStandardMaterial({
-          color: isSelected ? 0x38bdf8 : 0x0284c7,
+          color: isSelected ? 0x5FB8D6 : 0x2F82AD,
           roughness: 0.3,
           metalness: 0.4,
           transparent: true,
@@ -256,7 +256,7 @@ export class SubsurfaceCustomLayer implements maplibregl.CustomLayerInterface {
         const wtMercator = -feature.waterLevelMeters * verticalExaggeration * mercatorMeter;
         const ringGeom = new THREE.TorusGeometry(radiusMercator * 2.8, radiusMercator * 0.45, 8, 24);
         const ringMat = new THREE.MeshBasicMaterial({
-          color: 0x38bdf8,
+          color: 0x5FB8D6,
           transparent: true,
           opacity: 0.9,
         });
@@ -275,7 +275,7 @@ export class SubsurfaceCustomLayer implements maplibregl.CustomLayerInterface {
       );
       beaconGeom.rotateX(Math.PI / 2);
       const beaconMat = new THREE.MeshBasicMaterial({
-        color: isSelected ? 0xfef08a : 0x67e8f9,
+        color: isSelected ? 0xE3B34E : 0x5ED6C6,
         transparent: true,
         opacity: isSelected ? 0.95 : 0.65,
       });
@@ -290,14 +290,14 @@ export class SubsurfaceCustomLayer implements maplibregl.CustomLayerInterface {
     // 2. Transect Curtains connecting neighboring stations
     if (showTransects && featureMercators.length > 1) {
       const transectMat = new THREE.MeshStandardMaterial({
-        color: 0x38bdf8,
+        color: 0x5FB8D6,
         side: THREE.DoubleSide,
         transparent: true,
         opacity: 0.28,
         wireframe: true,
       });
       const topRailMat = new THREE.MeshBasicMaterial({
-        color: 0x06b6d4,
+        color: 0x35C4B5,
         transparent: true,
         opacity: 0.85,
       });
@@ -345,7 +345,7 @@ export class SubsurfaceCustomLayer implements maplibregl.CustomLayerInterface {
             ]);
             const line = new THREE.Line(
               lineGeom,
-              new THREE.LineBasicMaterial({ color: 0x22d3ee, transparent: true, opacity: 0.7 })
+              new THREE.LineBasicMaterial({ color: 0x35C4B5, transparent: true, opacity: 0.7 })
             );
             this.rootGroup.add(line);
           }

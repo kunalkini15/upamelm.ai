@@ -37,13 +37,13 @@ const BoreholeCore: React.FC<{
       {/* Surface Head Rig Marker */}
       <mesh position={[0, 0.4, 0]}>
         <cylinderGeometry args={[0.3, 0.4, 0.8, 16]} />
-        <meshStandardMaterial color="#fbbf24" metalness={0.8} roughness={0.2} />
+        <meshStandardMaterial color="#E3B34E" metalness={0.8} roughness={0.2} />
       </mesh>
 
       {/* Surface Pin Light Beam */}
       <mesh position={[0, 4, 0]}>
         <cylinderGeometry args={[0.02, 0.2, 8, 16]} />
-        <meshBasicMaterial color="#38bdf8" transparent opacity={0.4} />
+        <meshBasicMaterial color="#5FB8D6" transparent opacity={0.4} />
       </mesh>
 
       {/* Extruded Strata Segments */}
@@ -80,7 +80,7 @@ const BoreholeCore: React.FC<{
             {/* Glowing Ring Collar at Strata Junctions */}
             <mesh position={[0, height / 2, 0]} rotation={[Math.PI / 2, 0, 0]}>
               <ringGeometry args={[0.72, 0.82, 32]} />
-              <meshBasicMaterial color="#38bdf8" side={THREE.DoubleSide} />
+              <meshBasicMaterial color="#5FB8D6" side={THREE.DoubleSide} />
             </mesh>
 
       {/* In-scene 3D Depth Callout */}
@@ -88,12 +88,12 @@ const BoreholeCore: React.FC<{
       <group position={[1.8, 0, 0]}>
         <mesh position={[0.8, 0, -0.05]}>
           <planeGeometry args={[3.2, 0.6]} />
-          <meshBasicMaterial color="#020617" transparent opacity={0.7} />
+          <meshBasicMaterial color="#07090B" transparent opacity={0.7} />
         </mesh>
         <Text
           position={[0, 0, 0]}
           fontSize={0.28}
-          color="#f8fafc"
+          color="#ECF2EF"
           anchorX="left"
           anchorY="middle"
         >
@@ -109,15 +109,15 @@ const BoreholeCore: React.FC<{
         <group position={[0, -(point.standingWaterLevelMeters * 0.04 * (verticalExaggeration / 10)), 0]}>
           <mesh rotation={[Math.PI / 2, 0, 0]}>
             <ringGeometry args={[0.85, 1.6, 32]} />
-            <meshBasicMaterial color="#00f0ff" side={THREE.DoubleSide} transparent opacity={0.8} />
+            <meshBasicMaterial color="#3FD2C8" side={THREE.DoubleSide} transparent opacity={0.8} />
           </mesh>
           <Text
             position={[-1.8, 0, 0]}
             fontSize={0.4}
-            color="#00f0ff"
+            color="#3FD2C8"
             anchorX="right"
             outlineWidth={0.04}
-            outlineColor="#090d16"
+            outlineColor="#0C1114"
           >
             {`Water Level: ${point.standingWaterLevelMeters} mbgl`}
           </Text>
@@ -180,7 +180,7 @@ const GroundSurface: React.FC<{ size?: number }> = ({ size = 20 }) => {
       <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
         <planeGeometry args={[size, size, 32, 32]} />
         <meshStandardMaterial
-          color="#0f172a"
+          color="#0C1114"
           roughness={0.8}
           metalness={0.2}
           transparent
@@ -190,7 +190,7 @@ const GroundSurface: React.FC<{ size?: number }> = ({ size = 20 }) => {
 
       {/* Precision Engineering Coordinate Grid */}
       <gridHelper
-        args={[size, 20, '#06b6d4', '#1e293b']}
+        args={[size, 20, '#35C4B5', '#1C262C']}
         position={[0, 0.02, 0]}
       />
     </group>
@@ -213,7 +213,7 @@ const TransectCurtain: React.FC<{
       <mesh ref={meshRef}>
         <planeGeometry args={[14, depth]} />
         <meshStandardMaterial
-          color="#38bdf8"
+          color="#5FB8D6"
           side={THREE.DoubleSide}
           transparent
           opacity={0.25}
@@ -223,9 +223,9 @@ const TransectCurtain: React.FC<{
       <group position={[0, depth / 2 + 0.4, 0]}>
         <mesh position={[0, 0, -0.05]}>
           <planeGeometry args={[5.5, 0.6]} />
-          <meshBasicMaterial color="#020617" transparent opacity={0.8} />
+          <meshBasicMaterial color="#07090B" transparent opacity={0.8} />
         </mesh>
-        <Text fontSize={0.3} color="#38bdf8">
+        <Text fontSize={0.3} color="#5FB8D6">
           {transect.name}
         </Text>
       </group>
@@ -247,7 +247,7 @@ export const SubsurfaceScene3D: React.FC<Scene3DProps> = ({
     <>
       <ambientLight intensity={0.7} />
       <directionalLight position={[10, 20, 15]} intensity={1.5} castShadow />
-      <pointLight position={[-10, -10, -10]} intensity={0.5} color="#06b6d4" />
+      <pointLight position={[-10, -10, -10]} intensity={0.5} color="#35C4B5" />
 
       {/* Orbit & Camera Controls */}
       <OrbitControls
@@ -298,7 +298,7 @@ export const SubsurfaceScene3D: React.FC<Scene3DProps> = ({
         >
           <planeGeometry args={[18, 18, 16, 16]} />
           <meshStandardMaterial
-            color="#00f0ff"
+            color="#3FD2C8"
             transparent
             opacity={0.3}
             roughness={0.1}

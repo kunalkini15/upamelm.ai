@@ -1,5 +1,11 @@
-import React, { Suspense, lazy, useState, useEffect, useRef } from 'react';
+import React, { Suspense, lazy, useState, useEffect, useRef, useCallback } from 'react';
 import { PackageIngestion } from './core/PackageIngestion';
+import {
+  BootstrapResponse,
+  SelectionParams,
+  fetchBootstrap,
+  resolveApiUrl,
+} from './api/subsurfaceApi';
 import {
   ScientificUIModel,
   RenderablePointFeature,
@@ -7,6 +13,7 @@ import {
   ReportFindingView,
 } from './types/scientific';
 import { SeamlessMap, SeamlessMapHandle } from './components/map/SeamlessMap';
+import { CityOverview } from './components/map/CityOverview';
 import { FloatingHUD } from './components/hud/FloatingHUD';
 import { ExecutiveDossierDrawer } from './components/report/ExecutiveDossierDrawer';
 import { DocumentAnalysisDrawer } from './components/report/DocumentAnalysisDrawer';
@@ -18,6 +25,7 @@ import {
   Map as MapIcon,
   Compass,
   BookOpen,
+  ArrowLeft,
 } from 'lucide-react';
 
 const SubsurfaceExplorer = lazy(() =>
@@ -33,9 +41,15 @@ const EvidenceWorkspace = lazy(() =>
 
 export function App() {
   const [model, setModel] = useState<ScientificUIModel | null>(null);
+  const modelRef = useRef<ScientificUIModel | null>(null);
+  const [bootstrap, setBootstrap] = useState<BootstrapResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [switching, setSwitching] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [activePackage, setActivePackage] = useState('');
+  const [switchError, setSwitchError] = useState<string | null>(null);
+  const [cityOverview, setCityOverview] = useState(() => !new URLSearchParams(window.location.search).has('city'));
+  const requestController = useRef<AbortController | null>(null);
+  const retrySelection = useRef<SelectionParams>({});
 
   // Selection state
   const [selectedFeature, setSelectedFeature] = useState<RenderablePointFeature | null>(null);
@@ -68,44 +82,77 @@ export function App() {
 
   const mapRef = useRef<SeamlessMapHandle>(null);
 
-  // Load Consolidated UI Package (single source of truth)
-  useEffect(() => {
-    async function load() {
+  const loadSelection = useCallback(async (
+    requested: SelectionParams,
+    historyMode: 'push' | 'replace' | 'none' = 'none',
+  ) => {
+      const overviewRequested = !requested.city;
+      requestController.current?.abort();
+      const controller = new AbortController();
+      requestController.current = controller;
+      retrySelection.current = requested;
+      const hasExistingModel = Boolean(modelRef.current);
+      if (historyMode !== 'none') updateSemanticUrl(requested, historyMode);
       try {
-        setLoading(true);
-        const requestedPackage = new URLSearchParams(window.location.search).get('package');
-        const candidates = uniquePackageCandidates([
-          requestedPackage,
-          '/studies/naquim-bangalore-north-v1/study_package.json',
-        ]);
-        let json: unknown;
-        let loadedFrom = '';
-        for (const candidate of candidates) {
-          const response = await fetch(candidate);
-          if (!response.ok) continue;
-          json = await response.json();
-          loadedFrom = candidate;
-          break;
-        }
-        if (!json) throw new Error(`Failed to load a supported package from: ${candidates.join(', ')}`);
-        const sourceBaseUrl = new URL('.', new URL(loadedFrom, window.location.href)).href;
-        const parsed = PackageIngestion.parse(json, { sourceBaseUrl });
-        console.info(`Loaded ${parsed.packageFamily} package from ${loadedFrom}`);
+        if (hasExistingModel) setSwitching(true);
+        else setLoading(true);
+        setSwitchError(null);
+        setError(null);
+        const payload = await fetchBootstrap(requested, controller.signal);
+        const parsed = PackageIngestion.parse(payload.package, {
+          sourceBaseUrl: resolveApiUrl(payload.assetBaseUrl),
+        });
+        if (controller.signal.aborted) return;
+        console.info(`Loaded ${parsed.packageFamily} package for ${payload.selection.study} (${payload.selection.language})`);
+        modelRef.current = parsed;
         setModel(parsed);
-        setActivePackage(loadedFrom);
+        setBootstrap(payload);
+        setCityOverview(overviewRequested);
         setActiveLayerIds((parsed.agentic?.layers || []).filter((layer) => layer.default_visible !== false).map((layer) => layer.id));
+        setSelectedFeature(null);
+        setSelectedInterval(null);
+        setReportHighlightedFeatureIds([]);
+        setSubsurfaceFocusFinding(null);
+        setCapturedSurfaceCanvas(null);
+        setUserDismissedDossier(false);
+        setMapZoom(5.5);
         const hasSpatial = parsed.capabilities.some((item) => ['point-map', 'line-map', 'polygon-map', 'raster-overlay'].includes(item.id) && item.available);
-        if (hasSpatial) setMode('map');
+        const requestedMode = new URLSearchParams(window.location.search).get('mode');
+        const has3D = parsed.capabilities.some((item) => ['surface-markers', 'vertical-profiles', 'cross-sections'].includes(item.id) && item.available);
+        const hasAnalysis = Boolean(parsed.documentAnalysis || parsed.reportAnalysis);
+        if (requestedMode === 'subsurface' && has3D) setMode('subsurface');
+        else if (requestedMode === 'analysis' && hasAnalysis) setMode('analysis');
+        else if (hasSpatial) setMode('map');
         else setMode('analysis');
+        updateSemanticUrl(overviewRequested ? {} : payload.selection, 'replace');
       } catch (err: any) {
+        if (err?.name === 'AbortError') return;
         console.error('Failed to parse scientific package:', err);
-        setError(err.message || 'Unknown error');
+        const message = err?.message || 'Unknown backend error';
+        if (modelRef.current) setSwitchError(message);
+        else setError(message);
       } finally {
-        setLoading(false);
+        if (requestController.current === controller) {
+          setLoading(false);
+          setSwitching(false);
+        }
       }
-    }
-    load();
   }, []);
+
+  const handleSelectCity = useCallback((city: string) => {
+    void loadSelection({ city }, 'push');
+  }, [loadSelection]);
+
+  // The API is the single runtime source for catalog metadata and scientific packages.
+  useEffect(() => {
+    void loadSelection(selectionFromUrl(), 'none');
+    const handlePopState = () => void loadSelection(selectionFromUrl(), 'none');
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      requestController.current?.abort();
+    };
+  }, [loadSelection]);
 
   // Captured map canvas for continuous 3D world terrain
   const [capturedSurfaceCanvas, setCapturedSurfaceCanvas] = useState<HTMLCanvasElement | null>(null);
@@ -190,20 +237,33 @@ export function App() {
 
   if (loading) {
     return (
-      <div className="w-screen h-screen flex flex-col items-center justify-center bg-slate-950 text-slate-200">
-        <div className="w-10 h-10 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin mb-4" />
+      <div className="w-screen h-screen flex flex-col items-center justify-center bg-ink-950 text-text">
+        <div className="w-10 h-10 border-4 border-accent border-t-transparent rounded-full animate-spin mb-4" />
         <h2 className="text-base font-semibold tracking-wide font-mono">INITIALIZING EVIDENCE WORKSPACE</h2>
-        <p className="text-xs text-slate-500 font-mono mt-1">Negotiating package capabilities...</p>
+        <p className="text-xs text-muted font-mono mt-1">Negotiating package capabilities...</p>
       </div>
     );
   }
 
   if (error || !model) {
     return (
-      <div className="w-screen h-screen flex flex-col items-center justify-center bg-slate-950 text-rose-400 p-8">
+      <div className="w-screen h-screen flex flex-col items-center justify-center bg-ink-950 text-danger p-8">
         <h2 className="text-xl font-bold">Failed to load scientific model</h2>
-        <p className="text-xs font-mono mt-2 text-slate-400">{error}</p>
+        <p className="text-xs font-mono mt-2 text-muted">{error}</p>
       </div>
+    );
+  }
+
+  if (cityOverview && bootstrap) {
+    return (
+      <CityOverview
+        cities={bootstrap.cities}
+        loading={switching}
+        error={switchError}
+        onSelectCity={handleSelectCity}
+        onRetry={() => void loadSelection(retrySelection.current, 'none')}
+        onDismissError={() => setSwitchError(null)}
+      />
     );
   }
 
@@ -212,33 +272,33 @@ export function App() {
   const hasAnalysis = Boolean(model.documentAnalysis || model.reportAnalysis);
 
   return (
-    <div className="w-screen h-screen flex flex-col bg-slate-950 overflow-hidden select-none relative">
+    <div className="w-screen h-screen flex flex-col bg-ink-950 overflow-hidden select-none relative">
       {/* Clean & Minimal Top Bar */}
-      <header className="h-14 bg-slate-950/90 backdrop-blur-md border-b border-slate-800/80 px-5 flex items-center justify-between z-50">
+      <header className="h-14 bg-ink-950/90 backdrop-blur-md border-b border-line px-5 flex items-center justify-between z-50">
         {/* Left: Branding & Report Title */}
         <div className="flex items-center gap-3">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-[0_0_15px_rgba(6,182,212,0.4)]">
-            <Box className="w-4 h-4 text-slate-950 stroke-[2.5]" />
+          <div className="w-7 h-7 rounded-lg bg-accent flex items-center justify-center shadow-soft">
+            <Box className="w-4 h-4 text-ink-950 stroke-[2.5]" />
           </div>
           <div>
-            <h1 className="text-sm font-bold tracking-tight text-slate-100 flex items-center gap-1.5">
+            <h1 className="text-sm font-bold tracking-tight text-text flex items-center gap-1.5">
               SUBSURFACE
             </h1>
-            <div className="text-[11px] text-slate-400 font-mono">Powered by Muse</div>
+            <div className="text-[11px] text-muted font-mono">Powered by Muse</div>
           </div>
         </div>
 
         {/* Center: Primary 2-Way View Switcher + Dossier Button */}
         <div className="flex items-center gap-3">
-          <div className="flex items-center bg-slate-950/90 p-1 rounded-xl border border-slate-800 shadow-inner">
+          <div className="flex items-center bg-ink-950/90 p-1 rounded-xl border border-line shadow-inner">
             <button
               disabled={!hasSpatial}
               title={!hasSpatial ? 'No validated spatial evidence is available in this package.' : undefined}
               onClick={() => handleModeChange('map')}
               className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-mono font-bold transition ${
                 mode === 'map'
-                  ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
-                  : hasSpatial ? 'text-slate-400 hover:text-slate-200' : 'text-slate-700 cursor-not-allowed'
+                  ? 'bg-accent text-ink-950 shadow-soft'
+                  : hasSpatial ? 'text-muted hover:text-text' : 'text-slate-700 cursor-not-allowed'
               }`}
             >
               <MapIcon className="w-3.5 h-3.5" />
@@ -249,8 +309,8 @@ export function App() {
               onClick={() => handleModeChange('subsurface')}
               className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-mono font-bold transition ${
                 mode === 'subsurface'
-                  ? 'bg-amber-400 text-slate-950 shadow-md shadow-amber-400/20'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-amber text-ink-950 shadow-soft'
+                  : 'text-muted hover:text-text'
               }`}
             >
               <Sparkles className="w-3.5 h-3.5" />
@@ -263,8 +323,8 @@ export function App() {
               onClick={() => handleModeChange('analysis')}
               className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-mono font-bold transition ${
                 mode === 'analysis'
-                  ? 'bg-violet-400 text-slate-950 shadow-md shadow-violet-400/20'
-                  : hasAnalysis ? 'text-slate-400 hover:text-slate-200' : 'text-slate-700 cursor-not-allowed'
+                  ? 'bg-accent-strong text-ink-950 shadow-soft'
+                  : hasAnalysis ? 'text-muted hover:text-text' : 'text-slate-700 cursor-not-allowed'
               }`}
             >
               <BookOpen className="w-3.5 h-3.5" />
@@ -276,7 +336,22 @@ export function App() {
 
         {/* Right: Quick actions & Reset */}
         <div className="flex items-center gap-2.5">
-          <StudySwitcher activePackage={activePackage} />
+          <button
+            onClick={() => {
+              setCityOverview(true);
+              setSwitchError(null);
+              updateSemanticUrl({}, 'push');
+            }}
+            className="hidden xl:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-line bg-ink-900 text-[11px] font-mono text-muted transition hover:text-text"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            All cities
+          </button>
+          {bootstrap && <StudySwitcher
+            bootstrap={bootstrap}
+            disabled={switching}
+            onChange={(selection) => void loadSelection(selection, 'push')}
+          />}
           {mode === 'map' && (
             <button
               onClick={() => {
@@ -286,7 +361,7 @@ export function App() {
                 setUserDismissedDossier(false);
                 setMapZoom(5.5);
               }}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-slate-400 hover:text-slate-200 transition text-xs font-mono"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-ink-900 hover:bg-ink-800 border border-line text-muted hover:text-text transition text-xs font-mono"
               title="Reset Map View"
             >
               <RotateCcw className="w-3.5 h-3.5" />
@@ -298,6 +373,24 @@ export function App() {
 
       {/* Main Viewport */}
       <div className="flex-1 w-full h-full relative overflow-hidden">
+        {switching && (
+          <div className="absolute inset-x-0 top-0 z-[70] flex justify-center pointer-events-none">
+            <div className="mt-3 flex items-center gap-2 rounded-full border border-accent/30 bg-ink-950/90 px-4 py-2 text-[11px] font-mono text-accent shadow-soft backdrop-blur-md">
+              <span className="w-3 h-3 rounded-full border-2 border-accent border-t-transparent animate-spin" />
+              Loading selected study…
+            </div>
+          </div>
+        )}
+        {switchError && !switching && (
+          <div className="absolute right-4 top-4 z-[70] max-w-md rounded-xl border border-danger/40 bg-ink-950/95 p-4 shadow-soft backdrop-blur-md">
+            <div className="text-xs font-semibold text-danger">Unable to load the selected study</div>
+            <p className="mt-1 text-[11px] leading-relaxed text-muted">{switchError}</p>
+            <div className="mt-3 flex gap-2">
+              <button onClick={() => void loadSelection(retrySelection.current, 'none')} className="rounded-lg bg-accent px-3 py-1.5 text-[11px] font-semibold text-ink-950">Retry</button>
+              <button onClick={() => setSwitchError(null)} className="rounded-lg border border-line px-3 py-1.5 text-[11px] text-muted">Dismiss</button>
+            </div>
+          </div>
+        )}
         {/* Layer 1: Seamless Geographic Basemap */}
         <SeamlessMap
           ref={mapRef}
@@ -353,9 +446,9 @@ export function App() {
         {explorerOpen && (
           <Suspense
             fallback={
-              <div className="absolute inset-0 z-40 grid place-items-center bg-slate-950 text-cyan-300 font-mono text-xs">
+              <div className="absolute inset-0 z-40 grid place-items-center bg-ink-950 text-accent font-mono text-xs">
                 <div className="flex items-center gap-3">
-                  <span className="w-5 h-5 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin" />
+                  <span className="w-5 h-5 rounded-full border-2 border-accent border-t-transparent animate-spin" />
                   Preparing 3D cutaway…
                 </div>
               </div>
@@ -373,7 +466,7 @@ export function App() {
         )}
 
         {mode === 'analysis' && (
-          <Suspense fallback={<div className="absolute inset-0 z-40 grid place-items-center bg-slate-950 text-cyan-300 font-mono text-xs">Preparing evidence workspace…</div>}>
+          <Suspense fallback={<div className="absolute inset-0 z-40 grid place-items-center bg-ink-950 text-accent font-mono text-xs">Preparing evidence workspace…</div>}>
             <EvidenceWorkspace
               model={model}
               initialTab={(model.documentAnalysis || model.reportAnalysis) ? 'report' : model.quantitativeSeries.length ? 'quantitative' : model.preservedDatasets.length ? 'resources' : model.nativeAssets.length ? 'assets' : 'extensions'}
@@ -421,8 +514,25 @@ export function App() {
   );
 }
 
-function uniquePackageCandidates(values: Array<string | null>): string[] {
-  return Array.from(new Set(values.filter((value): value is string => Boolean(value))));
+function selectionFromUrl(): SelectionParams {
+  const params = new URLSearchParams(window.location.search);
+  return {
+    city: params.get('city') || undefined,
+    study: params.get('study') || undefined,
+    language: params.get('language') || undefined,
+  };
+}
+
+function updateSemanticUrl(selection: SelectionParams, mode: 'push' | 'replace') {
+  const url = new URL(window.location.href);
+  url.searchParams.delete('package');
+  for (const key of ['city', 'study', 'language'] as const) {
+    const value = selection[key];
+    if (value) url.searchParams.set(key, value);
+    else url.searchParams.delete(key);
+  }
+  if (!selection.city) url.searchParams.delete('mode');
+  window.history[mode === 'push' ? 'pushState' : 'replaceState']({}, '', url);
 }
 
 export default App;

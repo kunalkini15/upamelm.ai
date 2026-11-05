@@ -24,7 +24,7 @@ Subsurface UI V2 is the next-generation interactive exploration interface for ge
 ## 🚀 Setup & Execution Guide
 
 ### 1. Prerequisites
-- **Node.js**: `≥ 20.0.0` (check with `node -v`)
+- **Node.js**: `≥ 22.22.2` (check with `node -v`); this satisfies the committed lockfile and Vite toolchain.
 - **npm**: `≥ 10.0.0` (check with `npm -v`)
 - **Modern Web Browser**: Chrome, Edge, Firefox, or Safari with WebGL2 support.
 - **Network / API Keys**: **No API keys or backend servers required.** Basemap tiles stream over standard HTTPS; local mock geometries and packages load offline.
@@ -35,7 +35,7 @@ Navigate to the `ui-v2` directory and install dependencies:
 
 ```bash
 cd ui-v2
-npm install
+npm ci
 ```
 
 ### 3. Running Development Server
@@ -47,18 +47,22 @@ npm run dev
 ```
 
 Once started, open your browser at:
-👉 **`http://localhost:5173`** (or the port indicated in your terminal)
+👉 **`http://localhost:5175`**. This is a strict port: startup fails if it is occupied. Use `npm run dev -- --port 5176` when you intentionally need another port.
+
+> **Backend API Proxy**: `ui-v2` is preconfigured to automatically proxy `/api/*` network requests to `http://localhost:8010` (the `subsurface-api` FastAPI service). If the backend is running, `ui-v2` dynamically discovers cities and studies from `runs/`. If running offline, it loads bundled static packages seamlessly!
 
 ### 4. Exploring Studies via URL Parameters
 
-You can switch studies directly using the dropdown in the top header, or by specifying the `?package=` query parameter in your browser URL:
+You can switch studies directly using the dropdown in the top header, or by specifying query parameters in your browser URL:
 
+- **Dynamic API Bootstrapping (City + Study + Language)**:
+  `http://localhost:5175/?city=bengaluru&study=SRC-LR-01&language=kn`
 - **BMRCL Phase 3 EIA (Metro Alignment & Boreholes)**:
-  `http://localhost:5173/?package=/studies/bmrcl-phase3-eia-2025/study_package.json`
+  `http://localhost:5175/?package=/studies/bmrcl-phase3-eia-2025/study_package.json`
 - **Bengaluru Groundwater Outlook 2025 (Aquifer Depths & Yields)**:
-  `http://localhost:5173/?package=/studies/groundwater-outlook-bengaluru-2025/study_package.json`
+  `http://localhost:5175/?package=/studies/groundwater-outlook-bengaluru-2025/study_package.json`
 - **Capability Envelope Fixture (Benchmark & All Visual Primitives)**:
-  `http://localhost:5173/?package=/capability-envelope-fixture.json`
+  `http://localhost:5175/?package=/capability-envelope-fixture.json`
 
 ### 5. Available Scripts
 

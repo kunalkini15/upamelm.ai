@@ -102,19 +102,19 @@ export const MacroMap: React.FC<MacroMapProps> = ({
         <div class="relative flex items-center justify-center">
           ${
             hasDeepData
-              ? `<div class="absolute w-9 h-9 rounded-full bg-cyan-500/20 beacon-ring"></div>`
+              ? `<div class="absolute w-9 h-9 rounded-full bg-accent/20 beacon-ring"></div>`
               : ''
           }
           <div class="w-6 h-6 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-125 ${
             isSelected
-              ? 'bg-amber-400 text-slate-950 ring-4 ring-amber-400/30 shadow-[0_0_20px_rgba(251,191,36,0.8)]'
+              ? 'bg-amber text-ink-950 ring-4 ring-amber/30 shadow-[0_0_18px_rgba(227,179,78,0.45)]'
               : hasDeepData
-              ? 'bg-cyan-500 text-slate-950 ring-2 ring-cyan-300 shadow-[0_0_15px_rgba(6,182,212,0.6)]'
-              : 'bg-slate-700 text-slate-300 border border-slate-500'
+              ? 'bg-accent text-ink-950 ring-2 ring-accent-strong'
+              : 'bg-ink-800 text-muted border border-line'
           }">
-            <div class="w-2.5 h-2.5 rounded-full ${isSelected ? 'bg-slate-950' : 'bg-slate-950/80'}"></div>
+            <div class="w-2.5 h-2.5 rounded-full ${isSelected ? 'bg-ink-950' : 'bg-ink-950/80'}"></div>
           </div>
-          <div class="absolute -bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-0.5 rounded bg-slate-900/90 border border-slate-700/80 text-[10px] font-mono text-slate-300 shadow-lg pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
+          <div class="absolute -bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-0.5 rounded bg-ink-900/90 border border-line/80 text-[10px] font-mono text-muted shadow-lg pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
             ${point.name} ${point.totalDepthMeters ? `(${point.totalDepthMeters}m)` : ''}
           </div>
         </div>
@@ -143,32 +143,32 @@ export const MacroMap: React.FC<MacroMapProps> = ({
   }, [points, selectedPointId, onSelectPoint]);
 
   return (
-    <div className="relative w-full h-full overflow-hidden bg-slate-950">
+    <div className="relative w-full h-full overflow-hidden bg-ink-950">
       <div ref={mapContainer} className="w-full h-full" />
 
       {/* Cartographic Overlays HUD */}
       <div className="absolute top-4 left-4 z-10 flex items-center gap-3 pointer-events-none">
-        <div className="bg-slate-900/85 backdrop-blur-md px-3.5 py-2 rounded-lg border border-slate-700/70 shadow-xl flex items-center gap-2.5 text-xs">
-          <div className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
-          <span className="font-medium text-slate-200">Macro Cartography Canvas</span>
-          <span className="text-slate-500 font-mono">EPSG:4326</span>
+        <div className="bg-ink-900/85 backdrop-blur-md px-3.5 py-2 rounded-lg border border-line/70 shadow-xl flex items-center gap-2.5 text-xs">
+          <div className="w-2.5 h-2.5 rounded-full bg-accent animate-pulse" />
+          <span className="font-medium text-text">Macro Cartography Canvas</span>
+          <span className="text-muted font-mono">EPSG:4326</span>
         </div>
 
-        <div className="bg-slate-900/85 backdrop-blur-md px-3.5 py-2 rounded-lg border border-slate-700/70 shadow-xl flex items-center gap-4 text-xs font-mono text-slate-300">
+        <div className="bg-ink-900/85 backdrop-blur-md px-3.5 py-2 rounded-lg border border-line/70 shadow-xl flex items-center gap-4 text-xs font-mono text-muted">
           <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
+            <span className="w-2 h-2 rounded-full bg-accent"></span>
             <span>Verified 3D Drill-Sites ({points.filter((p) => p.totalDepthMeters).length})</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-slate-500"></span>
+            <span className="w-2 h-2 rounded-full bg-muted"></span>
             <span>Surface Controls ({points.filter((p) => !p.totalDepthMeters).length})</span>
           </div>
         </div>
       </div>
 
       {/* Quick Navigation Help Floating Bar */}
-      <div className="absolute bottom-4 left-4 z-10 bg-slate-900/90 backdrop-blur-md px-4 py-2 rounded-lg border border-slate-700/60 text-xs text-slate-400 shadow-2xl flex items-center gap-2">
-        <Compass className="w-4 h-4 text-cyan-400 animate-spin-slow" />
+      <div className="absolute bottom-4 left-4 z-10 bg-ink-900/90 backdrop-blur-md px-4 py-2 rounded-lg border border-line/60 text-xs text-muted shadow-2xl flex items-center gap-2">
+        <Compass className="w-4 h-4 text-accent animate-spin-slow" />
         <span>Click any pulsing cyan beacon to initiate the <strong>Subsurface 3D Dive</strong></span>
       </div>
     </div>

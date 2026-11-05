@@ -145,12 +145,12 @@ export class UniversalPackageLoader {
 
     // Distinct palette for geological / soil / urban layers
     const stratumStyles: Record<string, { color: string; type: NormalizedStrataInterval['materialType'] }> = {
-      unc: { color: '#38bdf8', type: 'permeable_aquifer' }, // Sky cyan
-      c1: { color: '#0284c7', type: 'permeable_aquifer' }, // Cobalt
-      c2: { color: '#0369a1', type: 'permeable_aquifer' }, // Deep blue
-      c3: { color: '#1d4ed8', type: 'permeable_aquifer' }, // Royal blue
-      clay: { color: '#475569', type: 'impermeable_clay' }, // Slate gray
-      bedrock: { color: '#0f172a', type: 'consolidated_rock' }, // Obsidian
+      unc: { color: '#5FB8D6', type: 'permeable_aquifer' }, // Sky cyan
+      c1: { color: '#2F82AD', type: 'permeable_aquifer' }, // Cobalt
+      c2: { color: '#276E94', type: 'permeable_aquifer' }, // Deep blue
+      c3: { color: '#335E8C', type: 'permeable_aquifer' }, // Royal blue
+      clay: { color: '#71807B', type: 'impermeable_clay' }, // Slate gray
+      bedrock: { color: '#131B21', type: 'consolidated_rock' }, // Obsidian
     };
 
     // Check observations for stratum/layer definitions
@@ -228,7 +228,7 @@ export class UniversalPackageLoader {
           depthBottomMeters: 55,
           thicknessMeters: 55,
           materialType: 'permeable_aquifer',
-          colorHex: '#38bdf8', // bright sky cyan
+          colorHex: '#5FB8D6', // bright sky cyan
           transparency: 0.5,
           fidelity: 'reported',
           notes: 'Active water table 3-71 mbgl',
@@ -240,7 +240,7 @@ export class UniversalPackageLoader {
           depthBottomMeters: 90,
           thicknessMeters: 35,
           materialType: 'impermeable_clay',
-          colorHex: '#475569', // slate
+          colorHex: '#71807B', // slate
           transparency: 0.75,
           fidelity: 'derived',
           notes: 'Aquitard separating Phreatic from Confined I',
@@ -252,7 +252,7 @@ export class UniversalPackageLoader {
           depthBottomMeters: 150,
           thicknessMeters: 60,
           materialType: 'permeable_aquifer',
-          colorHex: '#0284c7', // deep cyan-blue
+          colorHex: '#2F82AD', // deep water blue
           transparency: 0.55,
           fidelity: 'reported',
         },
@@ -275,7 +275,7 @@ export class UniversalPackageLoader {
           depthBottomMeters: 260,
           thicknessMeters: 70,
           materialType: 'permeable_aquifer',
-          colorHex: '#0369a1',
+          colorHex: '#276E94',
           transparency: 0.55,
           fidelity: 'reported',
           notes: 'Over-exploited regional zone',
@@ -287,7 +287,7 @@ export class UniversalPackageLoader {
           depthBottomMeters: 320,
           thicknessMeters: 60,
           materialType: 'consolidated_rock',
-          colorHex: '#0f172a',
+          colorHex: '#131B21',
           transparency: 0.9,
           fidelity: 'derived',
         }

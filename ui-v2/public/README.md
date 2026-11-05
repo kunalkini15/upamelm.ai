@@ -7,29 +7,11 @@ This directory houses static assets, web workers, test fixtures, and pre-package
 ## 📁 Key Files & Directories
 
 - **`study-catalog.json`**:
-  The active catalog manifest consumed by `StudySwitcher.tsx`. Declares all available studies, titles, and relative paths to their `study_package.json`:
-  ```json
-  {
-    "studies": [
-      {
-        "id": "naquim-bangalore-north-v1",
-        "title": "Bangalore North Aquifer Plan",
-        "package": "/studies/naquim-bangalore-north-v1/study_package.json",
-        "family": "NAQUIM aquifer management plan"
-      },
-      {
-        "id": "naquim-bangalore-east-v1",
-        "title": "Bangalore East Aquifer Plan",
-        "package": "/studies/naquim-bangalore-east-v1/study_package.json",
-        "family": "NAQUIM aquifer management plan"
-      }
-    ]
-  }
-  ```
+  Legacy static fixture retained for regression and offline development only. Production application loading now discovers studies through `/api/v1/bootstrap`.
 - **`studies/`**:
-  Contains self-contained study directories with their respective `study_package.json` and materialized figures/assets.
+  Legacy materialized study fixtures. Runtime packages and referenced assets are served by `subsurface-api`.
 - **`study_package.json`**:
-  The default fallback study package loaded when no `?package=` URL parameter is specified.
+  Legacy package fixture; it is not used by production application loading.
 - **`capability-envelope-fixture.json`**:
   Synthetic benchmark package that exercises every supported visual primitive (points, corridors, polygons, raster overlays, 3D lithological slabs, borehole logs, time-series, and quantitative distributions) to test rendering resilience.
 - **`maplibre-gl-worker.mjs`**:
@@ -37,12 +19,6 @@ This directory houses static assets, web workers, test fixtures, and pre-package
 
 ---
 
-## 🚀 Adding a New Study to the Catalog
+## 🚀 Adding a New Runtime Study
 
-To register a new study:
-1. Export the study package from `muse-document-processing` or materialize it using:
-   ```bash
-   npm run materialize:package -- <path/to/extracted/study_package.json> public/studies/<my-new-study>
-   ```
-2. Add an entry to `public/study-catalog.json` with a unique `id`, human-readable `title`, and relative path to `study_package.json`.
-3. The new study will automatically appear in the `StudySwitcher` dropdown in the application header.
+Promote the study into the central city bundle consumed by `subsurface-api`. The UI discovers the study, its translations, and its package-relative assets from the bootstrap response; no frontend catalog edit is required.

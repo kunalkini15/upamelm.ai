@@ -48,12 +48,6 @@ yarn-error.log*
 .env.*
 !.env.example
 
-# Docs ignored for now; curated photos and documentation are explicitly tracked
-docs/*
-!docs/photos/
-!docs/photos/**
-!docs/ABOUT.md
-!docs/*.pdf
 # Root-level playground only (anchored so module playgrounds keep their own rules)
 /playground/
 .playwright-cli/

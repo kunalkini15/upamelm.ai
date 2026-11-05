@@ -1,0 +1,38 @@
+{
+  "schema_version": "synthesis.v1",
+  "research_id": "gandhinagar-aquifer-mapping",
+  "status": "partial",
+  "objective": "Build an evidence-grounded subsurface understanding of Gandhinagar for UI exploration and future 3D generation.",
+  "summary": {
+    "headline": "The source is an aquifer mapping and groundwater management report for Gandhinagar district.",
+    "abstract": "The report covers geology and hydrogeology, aquifer mapping, hydrochemistry, groundwater resources, groundwater-related issues, management recommendations, taluka reports, and supporting well, piezometer, exploration, water-level, water-quality, and litholog annexures. The supplied Atlas artifact establishes document structure and page-level discovery signals; executor evidence is still required before numeric subsurface claims or continuous geometry can be published.",
+    "confidence": { "level": "measured", "rationale": "Document metadata and section/page discovery are present in the supplied Atlas artifact." }
+  },
+  "sources": [{
+    "id": "doc_0208c59ec9d778fe",
+    "title": "16849256461403930555file.pdf",
+    "agency": "CGWB",
+    "page_count": 125,
+    "processing_status": "published"
+  }],
+  "observations": [
+    { "id": "obs_doc_scope", "kind": "document_scope", "statement": "The document contains dedicated sections for geology and hydrogeology, aquifer mapping, hydrochemistry, groundwater resources, groundwater issues, management, conclusions, and taluka reports.", "location_id": "gandhinagar-gj", "domain_id": "groundwater", "confidence": { "level": "measured", "rationale": "Table of contents in Atlas metadata." }, "citations": [{ "document_id": "doc_0208c59ec9d778fe", "page": 5, "anchor": "Contents", "excerpt": "Geology and Hydrogeology; Data integration, interpretation & Aquifer mapping; Hydrochemistry; Ground Water Resources" }] },
+    { "id": "obs_annexure_inventory", "kind": "data_inventory", "statement": "The report includes annexures for unconfined and confined water levels, confined and unconfined TDS, CGWB exploration details, piezometers, well inventory, and litholog data.", "location_id": "gandhinagar-gj", "domain_id": "groundwater", "confidence": { "level": "measured", "rationale": "Annexure titles in Atlas metadata." }, "citations": [{ "document_id": "doc_0208c59ec9d778fe", "page": 6, "anchor": "Annexures", "excerpt": "Pre-Post WL; Confined Aquifer; water quality TDS; Exploration; Piezometers; Well inventory; Litholog" }] },
+    { "id": "obs_quaternary_candidate", "kind": "host_formation", "statement": "Quaternary alluvium is identified in the district-at-a-glance hydrogeology material as a major water-bearing formation.", "location_id": "gandhinagar-gj", "domain_id": "geology", "confidence": { "level": "interpreted", "rationale": "The Atlas keyphrases identify this material, but the executor must capture the exact statement and its supporting table/row." }, "citations": [{ "document_id": "doc_0208c59ec9d778fe", "page": 8, "anchor": "Hydrogeology", "excerpt": "Major Water Bearing Formation: Quaternary alluvium" }] }
+  ],
+  "entities": {
+    "aquifers": [{ "id": "aquifer_quaternary_alluvium", "name": "Quaternary alluvium aquifer system", "location_id": "gandhinagar-gj", "aquifer_type": "unknown", "host_formation": "Quaternary alluvium", "observation_ids": ["obs_quaternary_candidate"], "confidence": { "level": "interpreted", "rationale": "Aquifer type, extent, and depth require executor extraction." } }],
+    "geological_units": [{ "id": "unit_quaternary_alluvium", "name": "Quaternary alluvium", "location_id": "gandhinagar-gj", "lithology": "unknown", "observation_ids": ["obs_quaternary_candidate"], "confidence": { "level": "interpreted" } }],
+    "wells": [],
+    "water_conditions": []
+  },
+  "relationships": [{ "subject_id": "aquifer_quaternary_alluvium", "predicate": "hosted_by", "object_id": "unit_quaternary_alluvium", "observation_ids": ["obs_quaternary_candidate"] }],
+  "visualisations": [
+    { "id": "viz_gandhinagar_evidence_map", "kind": "diagram", "title": "Gandhinagar evidence coverage", "status": "candidate", "input_observation_ids": ["obs_doc_scope", "obs_annexure_inventory"], "input_entity_ids": [], "geometry_spec": { "coordinate_reference": "EPSG:4326", "vertical_datum": "unknown", "layers": ["document coverage", "future well points"] }, "rendering_notes": ["Show evidence coverage and report sections only; do not imply aquifer boundaries."], "blocked_by": ["executor page/table extraction"] },
+    { "id": "viz_gandhinagar_3d_subsurface", "kind": "model-3d", "title": "Gandhinagar subsurface model", "status": "blocked", "input_observation_ids": [], "input_entity_ids": ["aquifer_quaternary_alluvium", "unit_quaternary_alluvium"], "geometry_spec": { "coordinate_reference": "EPSG:4326", "vertical_datum": "unknown", "layers": [] }, "rendering_notes": ["Generate only after validated well locations, litholog intervals, depth datum, and confidence-aware interpolation rules are available."], "blocked_by": ["validated litholog intervals", "well/piezometer coordinates", "vertical datum", "geometry validation"] }
+  ],
+  "evidence": ["obs_doc_scope", "obs_annexure_inventory", "obs_quaternary_candidate"],
+  "limitations": ["The supplied Atlas artifact contains discovery metadata and keyphrases, not complete extracted tables.", "No continuous aquifer boundary, 3D surface, depth interval, water-level value, or chemistry value is published by this example.", "The report's page numbering may include printed-page numbers distinct from PDF page numbers; citations must retain both when executor evidence exposes them."],
+  "unresolved_questions": ["What are the validated aquifer top/bottom intervals and thicknesses?", "Which wells and piezometers have coordinates, litholog intervals, and source page/table citations?", "What vertical datum and horizontal coordinate reference should the 3D scene use?", "Which boundaries are directly mapped and which may be interpolated, and at what confidence?"],
+  "provenance": { "plan_version": 1, "execution_manifest_version": 1, "synthesizer_version": "proposed-synthesis.v1", "input_atlas_file": "atlas_output_16849256461403930555file.json" }
+}

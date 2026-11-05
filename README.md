@@ -6,6 +6,7 @@ Its end-to-end architecture combines autonomous source discovery, document intel
 
 **Any city. Any domain. Any document. A world of knowledge waiting to be explored.**
 
+> 🌟 **[Explore Our Story & Visual Tour (ABOUT.md)](ABOUT.md)** — A complete visual walkthrough of the platform, the Meta Muse pipeline, and the live 2D/3D product.  
 > 📖 **Looking for comprehensive installation and execution guides? See [SETUP.md](SETUP.md).**
 
 ---
@@ -72,9 +73,8 @@ stages:
 The Muse workflows use a multi-model contributor/reviewer pattern: Spark acts
 as the workhorse for high-volume execution, while Wonder handles planning,
 review, and deeper synthesis. Translation workflows make technical findings
-accessible in multiple languages, and the adaptive visualization harness can
-inspect and evolve both UI and supporting backend flows. Persistent lesson
-artifacts help later runs reuse successful patterns and avoid known failures.
+accessible in multiple languages. UI validation automation is owned by the UI
+module and integrates with the root orchestrator through an explicit handoff.
 
 ## 📂 Modules & Workspaces
 
@@ -88,7 +88,7 @@ Every module can run **either as part of the unified pipeline or completely inde
 | **[`muse-source-ingestion/`](muse-source-ingestion/)** | Municipal-scale discovery and document acquisition from public portals (CGWB, NAQUIM). | Module | Node.js, Multi-Agent Discovery |
 | **[`muse-document-processing/`](muse-document-processing/)** | Multimodal PDF/tabular extraction, evidence inventory, and `document-study.v2` packaging. | Module | Node.js, Multimodal Extraction |
 | **[`muse-translate/`](muse-translate/)** | Multilingual localization (Kannada, Hindi, etc.) preserving exact scientific grounding. | Module | Node.js, Parallel LLM Lanes |
-| **[`.agents/`](.agents/)** | Reusable agent skills, workflows, and health regression sentinels (`guardian`). | Module | Node.js, Muse Agent Runtime |
+| **[`.agents/`](.agents/)** | Shared agent skills and repository-wide verification guardrails. | Module | Muse Agent Runtime |
 
 ---
 

@@ -1,107 +1,151 @@
-# Subsurface India — Agentic Subsurface Intelligence & Exploration
+# Subsurface India (Upamelm.ai) — Agentic Subsurface Intelligence & Exploration
 
-Subsurface India is an open-source, agentic research and visualization platform designed to unlock decades of geological, groundwater, and environmental impact assessments locked inside complex technical reports.
+Subsurface India (Upamelm.ai) is an open-source, agentic research and visualization platform designed to unlock decades of geological, groundwater, and environmental impact assessments locked inside complex technical reports.
 
-By pairing autonomous agentic extraction workflows with capability-negotiated 2D geospatial and 3D subsurface spatial visualization, Subsurface turns unstructured scientific literature into an interactive, rigorously grounded exploration experience.
+By pairing autonomous agentic discovery, multimodal document extraction, and multilingual translation with capability-negotiated 2D geospatial and 3D subsurface spatial visualization, the platform turns unstructured scientific literature into an interactive, rigorously grounded exploration experience.
+
+> 📖 **Looking for comprehensive installation and execution guides? See [SETUP.md](SETUP.md).**
 
 ---
 
-## 🏛 System Architecture & Pipeline Flow
-
-The platform is structured into five core, decoupled modules operating along a continuous evidence pipeline:
+## 🏛 System Architecture & End-to-End Pipeline
 
 ```mermaid
-flowchart LR
-    A["Raw Portals & Publications<br/>(CGWB, NAQUIM, EIA, MoEFCC)"] --> B["muse-source-ingestion<br/>(City-Scale Discovery & Manifests)"]
-    B --> C["muse-document-processing<br/>(Extraction, Evidence & Grounding)"]
-    C --> D["Scientific Study Package<br/>(document-study.v2 Contract)"]
-    D --> E["muse-ui<br/>(Adaptive Visualizer)"]
-    D --> F["ui-v2<br/>(Subsurface Explorer)"]
-    G[".agents<br/>(Autonomous UI Workflows)"] -.-> E
+flowchart TD
+    subgraph Orchestration ["Orchestration & Workflow Layer"]
+        PW["pipeline-workflow.js<br/>(Deterministic Top-Level Pipeline)"]
+    end
+
+    subgraph Stages ["Autonomous Scientific Modules (Independent Runs)"]
+        SI["muse-source-ingestion<br/>(City Discovery & Source Manifests)"]
+        DP["muse-document-processing<br/>(Multimodal Extraction & Grounding)"]
+        TR["muse-translate<br/>(Multilingual Localization · KN, HI)"]
+    end
+
+    subgraph Storage ["Consolidated Runs"]
+        RUNS["runs/<city>/<br/>(Promoted Packages, City Metadata & Assets)"]
+    end
+
+    subgraph Serving ["Backend Service"]
+        API["subsurface-api (FastAPI)<br/>http://localhost:8010"]
+    end
+
+    subgraph Presentation ["Frontend Visualization"]
+        UIV2["ui-v2 (Subsurface Explorer)<br/>React 19 + MapLibre GL + R3F<br/>http://localhost:5175"]
+        MUSEUI["muse-ui (Adaptive Visualizer)<br/>Capability Testbed<br/>http://127.0.0.1:5200"]
+    end
+
+    PW --> SI
+    SI --> DP
+    DP --> TR
+    TR --> RUNS
+    RUNS --> API
+    API -->|/api proxy| UIV2
+    RUNS -.-> MUSEUI
 ```
 
-1. **Source Discovery (`muse-source-ingestion`)**: Resolves municipal/regional bounds, inventories local holdings, searches public government portals, audits candidate relevance, and compiles a validated source manifest.
-2. **Document Extraction & Grounding (`muse-document-processing`)**: Ingests multimodal documents (PDFs, tables, maps, annexures), extracts measurements and coordinates, validates citations, and compiles structured study packages (`document-study.v2`).
-3. **Adaptive Visual Agents (`.agents`)**: Autonomous workflows (`bootstrap`, `experience-foundation`, `evolve`, `refine`, `guardian`) driven by dual-agent roles (`Spark` for authoring, `Wonder` for critique) to evolve rendering capabilities safely.
-4. **Adaptive Visualization Engine (`muse-ui`)**: Clean-room, capability-negotiated application shell that dynamically adapts visual layouts (2D map, 3D viewport, narrative panels) to match dataset features.
-5. **Production Subsurface Explorer (`ui-v2`)**: Full-featured React 19 + MapLibre GL + React Three Fiber application providing dual-engine spatial exploration, executive dossiers, study catalog switching, and multi-layered evidence inspection.
+---
+
+## 📂 Core Modules & Workspaces
+
+Every module can run **either as part of the unified pipeline or completely independently**:
+
+| Module | Description | Port / Path | Tech Stack |
+|---|---|---|---|
+| **[`pipeline-workflow.js`](pipeline-workflow.js)** | Top-level orchestrator chaining ingestion, study fan-out, translation, and UI promotion. | Root | Node.js, Meta Muse |
+| **[`subsurface-api/`](subsurface-api/)** | Read-only FastAPI service discovering cities, studies, and assets from `runs/`. | `http://localhost:8010` | Python 3.10+, FastAPI, Uvicorn |
+| **[`ui-v2/`](ui-v2/)** | Flagship interactive Subsurface Explorer (2D map + 3D spatial scene + executive dossier). | `http://localhost:5175` | React 19, Vite, Tailwind v4, MapLibre GL, Three.js |
+| **[`muse-source-ingestion/`](muse-source-ingestion/)** | Municipal-scale discovery and document acquisition from public portals (CGWB, NAQUIM). | Module | Node.js, Multi-Agent Discovery |
+| **[`muse-document-processing/`](muse-document-processing/)** | Multimodal PDF/tabular extraction, evidence inventory, and `document-study.v2` packaging. | Module | Node.js, Multimodal Extraction |
+| **[`muse-translate/`](muse-translate/)** | Multilingual localization (Kannada, Hindi, etc.) preserving exact scientific grounding. | Module | Node.js, Parallel LLM Lanes |
+| **[`muse-ui/`](muse-ui/)** | Clean-room adaptive visualizer for capability negotiation and regression testing. | `http://127.0.0.1:5200` | React, TypeScript, Three.js, Playwright |
+| **[`.agents/`](.agents/)** | Reusable agent skills, workflows, and health regression sentinels (`guardian`). | Module | Node.js, Muse Agent Runtime |
 
 ---
 
-## 📂 Core Modules Overview
+## 🚀 3-Minute Quickstart (Run Full App Today)
 
-| Module | Description | Key Tech Stack |
-|---|---|---|
-| **[`subsurface/.agents`](.agents/)** | Autonomous agentic workflow definitions, regression sentinels, and skill specs. | Node.js, Muse Agent Runtime |
-| **[`subsurface/muse-source-ingestion`](muse-source-ingestion/)** | Automated city-scale source discovery, document acquisition, and manifest creation. | Node.js, Multi-Agent Orchestration |
-| **[`subsurface/muse-document-processing`](muse-document-processing/)** | Deep multimodal extraction, table parsing, evidence inventory, and study packaging. | Node.js, Multimodal LLM Extraction |
-| **[`subsurface/muse-ui`](muse-ui/)** | Adaptive scientific visualization engine with real-time capability negotiation. | React, TypeScript, MapLibre GL, Three.js, Vitest, Playwright |
-| **[`subsurface/ui-v2`](ui-v2/)** | Next-generation Subsurface Explorer with dual 2D/3D canvas, HUD, and executive dossier. | React 19, Vite, Tailwind CSS v4, MapLibre GL, Three.js, R3F |
+Experience the live application right now using the pre-promoted Bengaluru hydrogeological dataset:
 
----
-
-## 🚀 Quick Start
-
-### Prerequisites
-- **Node.js**: `v20.0.0` or higher
-- **npm**: `v10.0.0` or higher
-- A modern WebGL2-compatible browser (Chrome, Edge, Firefox, Safari)
-
-### 1. Launching the Subsurface Explorer (`ui-v2`)
-
-The primary application interface lives in `ui-v2`. It comes pre-loaded with curated study packages (e.g., *Bengaluru Groundwater Outlook 2025* and *BMRCL Phase 3 EIA*):
-
+### 1. Launch the Backend API
 ```bash
-# Navigate to the UI v2 directory
+# In repository root
+./subsurface-api/run.sh
+```
+The API initializes its virtual environment and starts on **`http://localhost:8010`** (Swagger docs: `http://localhost:8010/docs`).
+
+### 2. Launch the Subsurface Explorer (`ui-v2`)
+In a new terminal:
+```bash
 cd ui-v2
-
-# Install dependencies
-npm install
-
-# Start the local development server
+npm ci
 npm run dev
 ```
+Open **`http://localhost:5175`** in your browser.
+- Seamlessly switch between **2D Map**, **3D Subsurface**, and **Split View**.
+- Hot-switch languages: **English**, **Kannada (ಕನ್ನಡ)**, and **Hindi (हिन्दी)**.
+- Hot-switch studies using the header dropdown.
+- Click any borehole or transit corridor to view depth logs and page-level citations.
 
-Open `http://localhost:5173` in your browser.
+---
 
-- Switch studies using the study selector in the header.
-- Toggle between **2D Map**, **3D Subsurface**, and **Split View** in the bottom HUD.
-- Open the **Executive Dossier** to read plain-language summaries backed by page-level citations.
-- Click any borehole, observation well, or corridor to inspect its depth log and stratigraphic profiles.
+## 🔄 Running the End-to-End Orchestrated Pipeline
 
-### 2. Launching the Adaptive Visualizer (`muse-ui`)
-
-To inspect or evolve the clean-room adaptive visualization framework:
-
-```bash
-cd muse-ui
-npm install
-npm run dev
-```
-
-Run test suites and browser verification:
-```bash
-npm test            # Run unit test suite (Vitest)
-npx playwright test # Run headless browser acceptance tests
-```
-
-### 3. Running Extraction & Ingestion Tests
-
-Both processing modules contain self-verifying test suites with fixture-backed offline mocks:
+To run the complete automated pipeline from city discovery to translated, UI-ready packages:
 
 ```bash
-# Run document processing pipeline tests
-node muse-document-processing/tests/study-workflow.test.js
+# 1. Build the standalone bundle for the Muse runtime
+node scripts/build-pipeline-workflow-runtime.mjs
 
-# Run source ingestion spill & distillation tests
-node muse-source-ingestion/tests/ingest-workflow.test.js
+# 2. Verify orchestration logic and test fixtures
+node tests/pipeline-workflow.test.js
 ```
+
+In Meta Muse or via `muse exec`:
+```text
+Use a workflow with the saved script pipeline-workflow.runtime.js with request="pipeline-requests/bengaluru.json".
+```
+
+---
+
+## 🧩 Running Individual Modules Independently
+
+Every module operates as an independent, test-backed unit:
+
+- **Source Ingestion**:
+  ```bash
+  node muse-source-ingestion/tests/ingest-workflow.test.js
+  # In Muse: Run muse-source-ingestion/ingest-workflow.js with request="muse-source-ingestion/requests/bengaluru.json"
+  ```
+- **Document Processing**:
+  ```bash
+  node muse-document-processing/tests/study-workflow.test.js
+  # In Muse: Run a subsurface study on playground/bangalore_aquifier.pdf
+  ```
+- **Multilingual Translation**:
+  ```bash
+  node muse-translate/tests/translate-workflow.test.js
+  # In Muse: Run muse-translate/translate-workflow.js with input="muse-document-processing/runs/<run>" languages=["Kannada", "Hindi"]
+  ```
+- **Subsurface API Backend**:
+  ```bash
+  cd subsurface-api
+  python3 -m venv .venv
+  .venv/bin/python -m pip install -e '.[test]'
+  .venv/bin/python -m pytest
+  ```
+- **UI V2 Frontend**:
+  ```bash
+  cd ui-v2 && npm run verify
+  ```
+- **Adaptive Visualizer (`muse-ui`)**:
+  ```bash
+  cd muse-ui && npm test && npm run build
+  ```
 
 ---
 
 ## 📊 Scientific Data Contracts
-
-The pipeline communicates using documented, schema-validated contracts:
 
 - **`manifest.json` (`SourceManifest`)**: Output of source ingestion; lists acquired sources, SHA-256 hashes, temporal coverage, publisher metadata, and extraction readiness.
 - **`study_package.json` (`document-study.v2`)**: Output of document processing; combines:
@@ -109,7 +153,8 @@ The pipeline communicates using documented, schema-validated contracts:
   - `narrative_package.json`: Lay-accessible explanations, headline indicators, and entity cards.
   - `report.json`: Whole-study executive synthesis and risk analysis.
   - `evidence_inventory.json`: Page- and cell-level source grounding links.
-- **`capability-registry.json`**: UI contract declaring which visual primitives (point observations, cross-sections, 3D lithological columns, isoline contours) are supported and negotiated.
+- **`study_package_<lang>.json`**: Output of translation; exact schema mirror with localized plain-language prose and identical IDs, coordinates, and units.
+- **`city.json` (`city-catalog.v1`)**: Discovered municipal catalog entry for geographic spatial indexing.
 
 ---
 
@@ -122,9 +167,9 @@ The pipeline communicates using documented, schema-validated contracts:
 
 ---
 
-## 🤝 Contributing
+## 🤝 Contributing & Community
 
-We welcome contributions from hydrogeologists, software engineers, and data scientists! Please review our [Contributing Guidelines](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) before opening pull requests.
+Please review our [Contributing Guidelines](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) before submitting pull requests.
 
 ---
 

@@ -68,6 +68,10 @@ describe("pipeline orchestrator", () => {
     assert.match(translationPromotion, /narrative_package_<lang>\.json/);
     assert.match(translationPromotion, /report_<lang>\.json/);
     assert.match(translationPromotion, /into BOTH .*\/studies\/<doc-id>\//);
+    assert.match(translationPromotion, /asset_manifest\.json/);
+    const studyPromotion = host.calls.find((c) => c.label === "promote-studies").input;
+    assert.match(studyPromotion, /self-contained for UI rendering/);
+    assert.match(studyPromotion, /asset_manifest\.json/);
     const ingest = host.runnerCalls.find((c) => c.stage === "ingest");
     assert.equal(ingest.args.request, CFG.ingest_request);
     assert.equal(ingest.args.output_dir, CFG.ingest_run);

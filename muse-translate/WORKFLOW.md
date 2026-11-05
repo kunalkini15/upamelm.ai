@@ -21,6 +21,11 @@ Every phase uses `muse-spark-1.3-contributor`. Languages receive the maximum
 useful parallelism; there is no separate consolidation or review phase. The
 single finalizer always runs to verify the outputs.
 
+Each child writes required artifacts early and reserves its final model turn
+for `submit_result`. If a child reaches its step cap, the runner launches at
+most one bounded Spark recovery child. Recovery reads durable files and
+finishes only missing work.
+
 ## Inputs
 
 - Local lessons: if `muse-translate/lessons/LESSONS.md` exists, read it
@@ -40,6 +45,10 @@ single finalizer always runs to verify the outputs.
   `output_dir=muse-translate/runs/dgwr-karnataka-2023-v1`, and
   `languages=["Kannada","Hindi"]`. Paths are `subsurface`-relative and must not carry
   an additional `subsurface/` prefix.
+- `resume=true`: continue the same partial run. Pass the complete frozen
+  configuration again (`request`, or `input` + `output_dir` + `languages`).
+  `failure_report` optionally overrides the default
+  `${output_dir}/failure_report.json` path.
 - Scratch space: `muse-translate/playground/<run-id>/` for unverified probes
   and failed-write artifacts. Nothing downstream reads lives here.
 - Tooling: JSON checks with the system python3 (`json.load`), checksums via
@@ -97,6 +106,29 @@ same translated narrative and report as the standalone copies. It does not
 repeat translation or consolidation for valid files. It repairs only an
 affected language file when a check fails, then writes `verification.md` and
 the final `run_summary.json`.
+
+### 4. Durable failure and resume
+
+On any incomplete planning, lane, or verification stage, retain all valid
+artifacts and write `failure_report.json` with `status`, `failed_stage`,
+`safe_retry_point`, validated `completed_artifacts`, `unresolved_work`, and an
+ISO-8601 `timestamp`. Return terminal `partial` after the single recovery
+attempt fails so the root orchestrator stops correctly.
+
+On `resume=true`, first perform a read-only audit. The frozen request, current
+structured arguments, input identity/checksums, output directory, and exact
+normalized language set must match. Determine progress from fixed artifact
+paths and validated file contents; prior model counters and returned path lists
+are advisory. Resume at the first incomplete stage:
+
+- missing/invalid request or inventory: rerun planning only;
+- valid inventory: reuse each valid language lane and run only missing,
+  invalid, or interrupted lanes;
+- all lanes valid: run final verification only;
+- valid verification and summary: return `complete_reused` without writes.
+
+Never redo translation, hashing, or validation whose corresponding artifact
+is already valid. Never delete or regenerate completed work.
 
 ## Hard gates
 

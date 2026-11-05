@@ -4,6 +4,34 @@ One run studies one source document. The goal is not the smallest defensible
 package. The goal is the richest useful UI package the source can support,
 with uncertainty made visible rather than used as a reason to omit evidence.
 
+## Durable checkpoints and resume
+
+Every run freezes its complete launcher configuration and source identity in
+`request.json` before extraction. Each stage updates `checkpoint.json` only
+after validating its fixed-path outputs. Checkpoint boundaries are source
+mapping/cache/OCR planning, every extraction lane, evidence reconciliation,
+rendering, narrative/report authoring, integrated finalization, contract
+compilation, and final verification.
+
+On any terminal failure, preserve all files and write `failure_report.json`
+with `status: partial`, `failed_stage`, `safe_retry_point`, completed artifacts,
+unresolved work, and an ISO-8601 timestamp. Never delete or regenerate valid
+completed work.
+
+`resume=true` performs a read-only audit before mutation. The frozen request,
+source path and checksum, output directory, and fixed artifact paths must
+match. Model-returned counts and paths are advisory. Resume from the first
+incomplete stage; validate lanes independently and invoke only missing,
+invalid, or interrupted lanes. Valid source cache, OCR, extraction, hashes,
+rendering, authoring, and validation artifacts are reused without repeating
+their work.
+
+When a child reaches its step cap, launch at most one bounded Spark recovery
+agent for that stage or lane. It reads durable artifacts, finishes only missing
+work, writes required files early, and reserves its final turn for
+`submit_result`. If recovery cannot finish, return terminal `partial` so the
+root orchestrator stops and a later process can resume safely.
+
 ## Success hierarchy
 
 1. Recover all material information from the complete source.
@@ -34,6 +62,32 @@ quarantined, or omitted locally; it must not invalidate unrelated good work.
 - Temporary extraction files may use `muse-document-processing/playground/`.
 - Durable extracted tables and figure assets used by the UI belong under the
   run directory and must be indexed in the packages.
+- `resume=true` continues a partial run only when `request.json`, the source
+  identity/checksum, exact output directory, workflow options, and checkpoint
+  agree with the new invocation. Otherwise it stops without modifying work.
+
+## Durable checkpoints and resume
+
+Write `request.json` before substantive source processing and never silently
+change it. Each sequential stage updates `checkpoint.json` after its fixed
+artifacts parse and validate. Each extraction lane independently writes
+`evidence/<lane-id>.json`, `evidence/<lane-id>-assets.json`, and
+`evidence/<lane-id>-checkpoint.json`, so one interrupted lane does not invalidate
+the others.
+
+On a partial failure, preserve every valid artifact and write
+`failure_report.json` with `status`, `failed_stage`, `safe_retry_point`, validated
+completed artifact paths/checksums, unresolved work, and an ISO-8601 timestamp.
+A resume audit is read-only: it derives state from fixed paths and valid files,
+not child-agent references, counters, or returned path lists. Continue at the
+first incomplete stage and rerun only missing, invalid, or interrupted lanes.
+Never repeat source hashing, PDF extraction, OCR, authoring, or validation whose
+recorded artifact is still valid.
+
+When a child reaches its step cap, one bounded Spark recovery may read durable
+artifacts and finish only missing work. If that recovery cannot complete, write
+a terminal `partial` report so the root orchestrator stops. Artifacts are written
+early; the final child turn is reserved for `submit_result`.
 
 ## Model policy
 

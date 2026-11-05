@@ -4,6 +4,19 @@ Lightweight, read-only FastAPI service over the promoted city outputs in `../run
 It discovers cities, studies, and translated packages directly from the filesystem;
 no database or hand-maintained catalog is required.
 
+## Independent verification workflow
+
+`backend-workflow.js` provides a standalone Muse workflow for compilation,
+parallel tests, ephemeral live-server checks, exhaustive promoted-package probes,
+and structured JSON/Markdown reporting. It does not modify or depend on the
+global pipeline orchestrator. See `WORKFLOW.md` and `contracts.md`.
+
+Invoke it with:
+
+```text
+Use a workflow. Run backend/backend-workflow.js with pipeline_dir=runs/bengaluru and output_dir=backend/runs/bengaluru-validation-20261105.
+```
+
 ## Run
 
 From the repository root:

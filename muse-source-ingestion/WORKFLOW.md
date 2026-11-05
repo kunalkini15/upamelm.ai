@@ -4,6 +4,25 @@ One run = one city = one run directory. Follow the steps in order.
 Use judgment on corner cases; the hard gates below are the only hard stops.
 This procedure is city-agnostic: all city specifics come from the request file.
 
+## Agentic recovery policy
+
+Prefer a useful, honest result over terminating on process imperfections. A
+missing optional artifact, inaccessible publisher, incomplete lane, sparse
+coverage area, reviewer disagreement, conservative counter, or failed model
+call is not itself a hard failure. Reuse durable artifacts, try one bounded
+recovery or alternate route, and then continue with the strongest validated
+evidence available. Record the shortfall in `handoff.md`, `verification.md`,
+and `run_summary.json` and return `complete_with_limitations` when the final
+package remains usable. Stop only for the hard gates below, invalid city/run
+identity, no validated in-scope source at all, or inability to write/validate
+the required final package.
+
+Agents may repair, replace, simplify, quarantine, or omit defective candidates
+and draft content inside the run directory. Advisory model-returned counts,
+paths, and wording never override validated fixed-path artifacts. Once the root
+orchestrator validates a resume checkpoint, child stages must trust that
+authorization rather than repeat the same subjective audit.
+
 ## Model-family routing
 
 The checked-in runner uses one workflow invocation and five agentic phases:
@@ -66,7 +85,7 @@ scientific context.
 If `selection_window_mode` is `strict`, `selection_cutoff_date` overrides those
 legacy exceptions: sources older than the cutoff are not acquired or selected,
 whether dynamic or stable. Record them only as leads and search for an in-window
-successor. Do not reuse an older held file in a strict-window manifest.
+successor. Prior-run reuse is disabled in every freshness mode.
 
 The workflow is format-neutral. PDF reports remain first-class sources and must
 not be demoted merely to create format variety. At the same time, every lane
@@ -85,11 +104,9 @@ documented dependency on an included domain exists; it must not expand into its
 own general-purpose lane. Never search or select `exclude_domains[]` unless the
 request itself states a direct exception.
 
-Prior-run files remain useful as a validated acquisition cache, but scope is
-re-evaluated on every run. An out-of-scope held file may be fingerprinted for
-dedupe; it cannot count as coverage, suppress focused discovery, or enter the
-focused run's manifest. Invocation wording does not broaden or narrow scope—the
-frozen request is authoritative.
+Every invocation is a fresh run. Do not inspect, inventory, compare, or reuse
+files from any previous ingestion run. Invocation wording does not broaden or
+narrow scope—the frozen request is authoritative.
 
 ## Inputs
 
@@ -100,9 +117,13 @@ frozen request is authoritative.
 - `request`: path to a city request file under `muse-source-ingestion/requests/`
   (see `requests/README.md` for the contract). Freeze a copy as
   `request.json` in the run directory before doing anything else.
-- `output_dir`: `muse-source-ingestion/runs/<run-id>/`. Create it. All run
-  outputs go here and only here, using the layout in `README.md`.
-- Scratch space: `muse-source-ingestion/playground/<run-id>/` for search
+- `output_dir`: `muse-source-ingestion/runs/<city-slug>/`. Create it.
+  The city slug is a stable lowercase filesystem identifier for the canonical
+  request city. All run outputs go here and only here, using the layout in
+  `README.md`. The city directory is the stable run ID consumed by downstream
+  systems; reruns replace or resume this city directory rather than creating a
+  nested opaque run ID.
+- Scratch space: `muse-source-ingestion/playground/<city-slug>/` for search
   scratch, unverified probes, and failed-download artifacts
   (see `playground/README.md`). Nothing downstream reads lives here.
 - Tooling: prefer the proven utilities under
@@ -117,7 +138,7 @@ frozen request is authoritative.
 
 ## Steps
 
-### 1. Resolve the city
+### 1. Resolve the city and freeze the request
 
 Resolve city aliases, historical names, local-language names, and the relevant
 administrative and study boundaries for that jurisdiction. These may be a
@@ -127,27 +148,32 @@ administrative hierarchy. Record the denominator every coverage claim will be
 judged against: the requested city footprint and any explicitly requested wider
 frame. Never assume an alias or wider administrative unit covers the city.
 
-### 2. Inventory runs only
+### 2. Fresh-run initialization (bounded Spark stage)
 
-Inventory held sources from `muse-source-ingestion/runs/` alone: the
-current run directory plus every previous run directory. Read their
-manifests and open each referenced file — page counts and page-1 excerpts
-for documents, header and feature stats for spatial/data files — and
-record pages/sheets/features, geographic coverage with coverage class
-(citywide / regional / corridor / local), observation vs publication vs
-upload dates kept separate, bytes and sha256. A filename alone proves
-nothing: validate or mark unvalidated. Do not look anywhere else: no
-playground input folders, no sample directories, no sibling run roots.
+Never inspect any existing ingestion run. Freeze the current request and write
+`inventory.json` immediately with `sources: []`, `source_count: 0`, and
+`reuse_enabled: false`. Every source in the final manifest must come from this
+invocation's live discovery and acquisition.
 
-Write `inventory.json`. Every valid held source is registered with its
-provenance (originating run ID). Only held sources selected under the current
-request are marked `reused_existing` in the final manifest; out-of-scope or
-unselected holdings remain inventory entries only.
+City and run isolation are strict: evidence, gaps, lanes, publishers,
+geography, and source-selection decisions are never inherited from any earlier
+run. A source may be found again through live research, but never reused merely
+because a prior run downloaded it.
 
-### 3. Evidence map and gaps
+The only exception is an explicit `resume=true` invocation for the same failed
+city run. Resume is not prior-run reuse: it requires the root partial
+`failure_report.json`, a semantically identical frozen request, matching run
+paths, usable current-run lane validations, and an incomplete final output. A
+read-only checkpoint audit must pass before any write. For a consolidation
+checkpoint, skip initialization, scouting, discovery, and acquisition and
+continue from the preserved lane and draft artifacts. Normal invocations remain
+fresh and must reject existing destinations.
+
+### 3. Evidence map and lanes (bounded Wonder scout)
 
 Write `evidence_map.md`: what the inventory already covers, by evidence type
-and region, and what is missing within `research_scope`. Treat the request's
+and region, explicitly labelled as unverified metadata, and what is missing
+within `research_scope`. Treat the request's
 `evidence_gaps` as priorities inside that scope. In broad mode, audit the wider
 subsurface landscape for the requested boundary. In focused mode, do not audit
 or create lanes for unrelated subsurface categories merely because the generic
@@ -174,12 +200,31 @@ checking whether a newer edition, successor report, updated dataset, or wider
 coverage source exists.
 
 The lane plan must state the recent-observation cutoff date derived from the
-request and the native formats plausibly useful for that evidence domain.
+request, the native formats plausibly useful for that evidence domain, and a
+`query_mode` of `year_qualified` or `yearless`. In addition to the bounded
+domain lanes, always create exactly one cross-cutting
+`yearless-repository-sweep` lane. It covers all included domains without any
+numeric year or date token in its searches, emphasizing official repositories,
+catalogues, APIs, native datasets, attachment lists, and report collections.
+Its discoveries remain subject to the same scope and freshness gates.
 
-### 4. Discovery lanes (parallel)
+Scout runtime discipline is a hard operating rule:
+
+- batch-read the frozen request, inventory, relevant workflow/contracts
+  sections, and optional lessons in the first tool turn;
+- never inspect or validate acquired source files and never browse during scout;
+- write both `evidence_map.md` and `lanes.json` by the end of child-model turn 3,
+  even if the first versions are concise;
+- after both artifacts exist, prefer submission over further refinement; and
+- reserve the final available child-model turn exclusively for `submit_result`,
+  with no tool call or additional audit between the artifacts and submission.
+
+### 4. Candidate discovery lanes (parallel, bounded)
 
 Run the lanes in parallel, one directory per lane
-(`lanes/<lane>/`). Each lane owns its bounded evidence scope:
+(`lanes/<lane>/`). Candidate discovery searches and writes a compact shortlist;
+it does not download or validate source files in the same agent call. Each lane
+owns its bounded evidence scope:
 
 - Search for evidence types, not just broad category names. Follow report
   annexures, investigation volumes, supplementary files, and companion
@@ -196,6 +241,20 @@ Run the lanes in parallel, one directory per lane
 - Begin with the lane's current-baseline check and record it in `trace.jsonl`,
   including repositories searched, newest candidate found, its observation and
   publication dates, coverage class, and whether it supersedes an older source.
+- Derive eligible calendar years from the configured cutoff/recent window
+  through `as_of_date`. Search newest-first with year-qualified queries using
+  city aliases, evidence terms, publisher/domain hints, and useful format terms;
+  move backward through eligible years only while material gaps remain. Include
+  the cutoff year because evidence after the exact cutoff date may qualify.
+- The dedicated `yearless-repository-sweep` performs the unqualified search as
+  a full lane, not a small fallback. It must not add numeric years or date ranges
+  to queries. Current APIs, continuously updated datasets, and landing pages do
+  not always expose a year to search indexing, so this lane provides independent
+  recall across every included domain.
+- Do not deeply inspect an obviously pre-cutoff result during discovery. Record
+  it as a rejected/historical lead and search directly for its successor. Exact
+  observation and publication dates remain validation gates; a recent year in
+  a title or search snippet is not proof of eligibility.
 - Prefer recent observation data for dynamic evidence such as groundwater
   levels, extraction, quality, land use, hazards, monitoring, and infrastructure
   status. For comparatively stable evidence such as bedrock geology, lithology,
@@ -214,19 +273,27 @@ Run the lanes in parallel, one directory per lane
 - Use findings and failures to revise searches. Record every
   search, fetch, and download attempt in `trace.jsonl`.
 
-Search, fetch, download, byte, model-call, elapsed-time, and package-count
-figures are telemetry, not stopping limits. Continue a lane until all material
-leads are either validated, rejected, superseded, or inaccessible with recorded
-reasons, and further query refinement produces no materially stronger or
-complementary evidence. Do not defer a high-value source merely because an
-activity counter reached a requested value.
+Search and fetch figures are telemetry, not selection limits. Batch setup reads
+into the first child turn. Write `candidates.json`, `excerpts.md`,
+`trace.jsonl`, and `usage.json` by child-model turn 5, even when some leads
+remain unresolved. Keep a high-value shortlist rather than an exhaustive web
+catalogue, and reserve the final turn for `submit_result`.
+
+If a discovery child is interrupted after writing useful lane artifacts, launch
+a fresh Spark recovery call for that lane. Preserve and normalize the existing
+shortlist, perform only the minimum missing targeted discovery, write all four
+required artifacts by turn 3, and submit instead of discarding the lane.
 
 Per lane write `candidates.json`, `excerpts.md` (short excerpts with
-page/section refs), `validation.json`, `trace.jsonl`, and `usage.json`.
+page/section or landing-page refs), `trace.jsonl`, and `usage.json`.
 `candidates.json` must include a `format_sweep` summary and each candidate's
 freshness class, media type, and native-companion status.
 
-### 5. Acquire and validate
+### 5. Acquire and validate (parallel, bounded)
+
+Give each completed candidate lane a fresh Spark agent loop. Read its shortlist
+once, apply scope and freshness gates, and do not restart broad discovery. A
+targeted fetch may resolve a shortlisted download endpoint.
 
 Download complete assets into the lane's `downloads/` directory. Then open
 each file and verify it is parseable and contains the promised evidence,
@@ -243,15 +310,36 @@ nodata, CRS, resolution, and extent; APIs by endpoint, parameters, response
 schema, pagination, and a locally preserved response or export.
 
 A failed or incomplete download is an unresolved lead, never an
-acquisition. If a discovered file duplicates a `reused_existing` source
-(compare by sha256, not title), keep the existing one and note whether the
-discovered version or any companion asset adds anything.
+acquisition. Dedupe files acquired within the current run by sha256 and source
+identity; do not consult a prior run.
+
+Create a valid empty/in-progress `validation.json` by turn 2 and checkpoint each
+download into it immediately. Establish a validated core before optional
+companions. Write or update `candidates.json`, `excerpts.md`, `trace.jsonl`,
+`usage.json`, `validation.json`, and `downloads/` by child-model turn 6. After
+turn 6, start no new acquisition: close records and reserve the final turn for
+`submit_result`.
+
+If an acquisition child reaches its step cap or otherwise fails after writing
+durable files, do not discard the lane or fail ingestion immediately. Launch a
+fresh Spark recovery call for that lane. The recovery call must inventory only
+the existing lane artifacts, write `validation.json` by its second turn, batch
+hash and minimally open/parse every downloaded asset, preserve valid files,
+record honest rejected/unresolved dispositions, and submit a terminal result.
+It must not restart discovery, browse, or redownload existing assets. Wonder
+reviews the recovered selection later; it is not the file-validation worker.
 
 ### 6. Select a complementary set
 
-Dedupe candidates across lanes by URL, checksum, and investigation identity
-(byte-compare with `cmp` where both files are local). Considering the
-inventory, select every validated package with material, non-redundant marginal
+Consolidation is recoverable. If the synthesizer reaches its step cap after
+writing any draft artifacts, launch a fresh Spark consolidation-recovery call.
+It batch-reads current-run lane validations and existing draft files, performs
+no new research or file validation, completes all four draft artifacts by turn
+3, reconciles selected IDs/counts, and submits.
+
+Dedupe current-run candidates across lanes by URL, checksum, and investigation
+identity (byte-compare with `cmp` where both files are local). Select every
+validated package with material, non-redundant marginal
 value for explorable-subsurface visuals. There is no fixed package count: the
 set should be as small as possible without discarding useful unique evidence. Never select a weak
 filler to complete a category; never present a local study as citywide;
@@ -352,7 +440,7 @@ Self-check before finishing:
 - every manifest `local_path` exists and its sha256 matches;
 - every lane and selected source is in the frozen request scope, or records a
   direct permitted supporting dependency;
-- every reused source traces to a validated inventory entry;
+- `inventory.json` records `reuse_enabled: false` and contains no prior sources;
 - observation, publication, and upload dates are separate fields, and
   unknowns are explicit;
 - every selected older source has a documented successor check and a concrete
@@ -392,3 +480,8 @@ Self-check before finishing:
 6. No bulk transcription of large native datasets into model output or JSON.
 7. No out-of-scope lane or selected source in focused mode unless it records a
    direct dependency permitted by `supporting_evidence[]`.
+
+Everything else—including incomplete geographic coverage, unavailable newer
+successors, an incomplete nonessential lane, or unresolved research gaps—is a
+reported limitation, not an automatic run failure, when at least one useful
+validated in-scope package and all required final metadata can be produced.

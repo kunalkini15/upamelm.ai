@@ -19,6 +19,38 @@ There is no fixed code path to maintain. The operating procedure is
 [WORKFLOW.md](WORKFLOW.md); the checked-in multi-agent runner is
 [study-workflow.js](study-workflow.js).
 
+To continue a partial run in a new Muse process, invoke the same workflow with
+the same complete configuration and `resume=true`:
+
+```text
+Use a workflow. Run muse-document-processing/study-workflow.js with
+document=<same-source>, output_dir=<same-run-directory>, and resume=true.
+```
+
+Resume validates the frozen request, source checksum, output directory,
+checkpoint, and fixed artifacts. It continues at the first incomplete stage;
+valid extraction lanes and later artifacts are reused individually. The
+terminal report identifies the execution as `reused`, `resumed`, or
+`regenerated`.
+
+From the `subsurface` directory, a normal launcher invocation is:
+
+```text
+Use a workflow. Run muse-document-processing/study-workflow.js with document=muse-source-ingestion/runs/<run>/lanes/<lane>/downloads/<document.pdf> and output_dir=muse-document-processing/runs/<study-id>.
+```
+
+After a partial result, invoke the same frozen configuration with resume enabled:
+
+```text
+Use a workflow. Run muse-document-processing/study-workflow.js with document=<same-document> and output_dir=muse-document-processing/runs/<same-study-id> and resume=true.
+```
+
+Resume is cross-process. The workflow validates `request.json`, source identity
+and checksum, output directory, `failure_report.json`, and fixed artifact paths
+before doing any work. It resumes at the first incomplete stage and reruns only
+missing or invalid extraction lanes. A mismatch returns `partial` without
+regenerating the existing run.
+
 ## Outputs (per run)
 
 ```text
@@ -34,7 +66,11 @@ muse-document-processing/runs/<study-id>/
 ├── renderability_audit.json   # included and deferred UI opportunities
 ├── authoring_selfcheck.json   # Spark's content, coverage, and schema check
 ├── finalization_record.json   # integrated Wonder rewrite and dispositions
+├── request.json               # immutable canonical arguments and source identity
 ├── checkpoint.json            # completed phases and durable artifact paths
+├── failure_report.json        # structured terminal partial state, when applicable
+├── request.json               # frozen launcher configuration and source identity
+├── failure_report.json        # terminal partial state and safe retry point
 ├── narrative_package.json    # Output 2: non-technical pointers per rendered target
 ├── report.json               # Output 3: non-technical whole-document analysis
 ├── contract_compilation.json # exact-schema and adapted-output checks
@@ -94,3 +130,5 @@ for runtime calls that do not expose usage.
 - Source extraction is cached once, lanes are document-specific, Wonder shapes
   the visual experience before Spark writes it, and Wonder then finalizes the
   complete experience coherently.
+- Partial failures preserve valid work. Resume trusts validated fixed files and
+  checksums—not child-agent references, returned counters, or returned path lists.

@@ -17,6 +17,7 @@ const CFG = {
   translate_fanout: "parallel",
   study_concurrency: 3,
   translate_concurrency: 3,
+  fanout: { study: "sequential", translate: "parallel" },
 };
 
 const DOCS = [
@@ -28,21 +29,28 @@ const DOCS = [
 const okReport = (extra) => ({ status: "complete", summary: JSON.stringify({ status: "complete", ...extra }), outputs: {}, ...(extra || {}) });
 const agentResult = (label, data) => ({ ref: `ref-${label}`, usage: { input_tokens: 10, output_tokens: 5, total_tokens: 15 }, data: { complete: true, evidence: [], unresolved: [], ...data } });
 
-function hostFor({ planner = CFG, docs = DOCS, failStudy = null } = {}) {
+function hostFor({ planner = CFG, docs = DOCS, failStudy = null, preflightComplete = true, bundleValid = true } = {}) {
   const calls = [];
   const runnerCalls = [];
+  const completedDocs = docs.filter((doc) => doc.id !== failStudy);
   const agent = async ({ label, input }) => {
     calls.push({ label, input });
     if (label === "pipeline-planner") return agentResult(label, planner);
+    if (label === "pipeline-preflight") return preflightComplete
+      ? agentResult(label, { checked_paths: [CFG.pipeline_dir, CFG.ingest_run, CFG.studies_dir, CFG.translate_dir], distinct_path_count: 4, existing_stage_destination_count: 0, pipeline_entry_count: 1 })
+      : { ref: "ref-pipeline-preflight", data: { complete: false, evidence: [], unresolved: ["destination exists"], checked_paths: [], distinct_path_count: 4, existing_stage_destination_count: 1, pipeline_entry_count: 2 } };
+    if (label === "pipeline-resume-preflight") return agentResult(label, { failure_report_path: `${CFG.pipeline_dir}/failure_report.json`, child_failed_stage: "consolidate", checkpoint_path_count: 8 });
+    if (label === "record-pipeline-failure") return agentResult(label, { failure_report_path: `${CFG.pipeline_dir}/failure_report.json` });
     if (label === "promote-ingestion") {
       return agentResult(label, { promoted_dir: `${CFG.pipeline_dir}/ingestion`, promoted_paths: [`${CFG.pipeline_dir}/ingestion/manifest.json`], selected_docs: docs });
     }
     if (label === "promote-studies") {
-      return agentResult(label, { promoted_dirs: docs.map((d) => ({ id: d.id, dir: `${CFG.pipeline_dir}/studies/${d.id}` })), study_count: docs.length });
+      return agentResult(label, { promoted_dirs: completedDocs.map((d) => ({ id: d.id, dir: `${CFG.pipeline_dir}/studies/${d.id}` })), promoted_ids: completedDocs.map((d) => d.id), study_count: completedDocs.length, asset_count: completedDocs.length });
     }
     if (label === "promote-translations") {
-      return agentResult(label, { promoted_dirs: docs.map((d) => ({ id: d.id, dir: `${CFG.pipeline_dir}/translations/${d.id}` })), summary_path: `${CFG.pipeline_dir}/pipeline_summary.json`, translation_count: docs.length });
+      return agentResult(label, { promoted_dirs: completedDocs.map((d) => ({ id: d.id, dir: `${CFG.pipeline_dir}/translations/${d.id}` })), promoted_ids: completedDocs.map((d) => d.id), summary_path: `${CFG.pipeline_dir}/pipeline_summary.json`, translation_count: completedDocs.length, language_artifact_count: completedDocs.length * CFG.languages.length * 3 });
     }
+    if (label === "verify-city-bundle") return agentResult(label, { valid: bundleValid, audit_path: `${CFG.pipeline_dir}/bundle_verification.json`, study_count: completedDocs.length, translation_count: completedDocs.length, language_artifact_count: completedDocs.length * CFG.languages.length * 3, asset_count: completedDocs.length, missing_paths: bundleValid ? [] : ["studies/doc-a/resources/missing.json"], external_reference_count: 0 });
     throw new Error(`unexpected agent ${label}`);
   };
   const runners = {
@@ -63,7 +71,7 @@ describe("pipeline orchestrator", () => {
     const host = hostFor();
     const report = await workflow(host);
     assert.equal(report.status, "complete");
-    assert.deepEqual(host.calls.map((c) => c.label), ["pipeline-planner", "promote-ingestion", "promote-studies", "promote-translations"]);
+    assert.deepEqual(host.calls.map((c) => c.label), ["pipeline-planner", "pipeline-preflight", "promote-ingestion", "promote-studies", "promote-translations", "verify-city-bundle"]);
     const translationPromotion = host.calls.find((c) => c.label === "promote-translations").input;
     assert.match(translationPromotion, /narrative_package_<lang>\.json/);
     assert.match(translationPromotion, /report_<lang>\.json/);
@@ -105,6 +113,98 @@ describe("pipeline orchestrator", () => {
     assert.equal(report.status, "partial");
     assert.equal(report.failed_stage, "ingestion");
     assert.equal(host.runnerCalls.filter((c) => c.stage === "study").length, 0);
+    assert.equal(report.outputs.failure_report, `${CFG.pipeline_dir}/failure_report.json`);
+    assert.ok(host.calls.some((call) => call.label === "record-pipeline-failure"));
+  });
+
+  it("returns a structured partial report when ingestion throws", async () => {
+    const host = hostFor();
+    host.runners.ingest = async () => { throw new Error("boom"); };
+    const report = await workflow(host);
+    assert.equal(report.status, "partial");
+    assert.equal(report.failed_stage, "ingestion");
+    assert.ok(report.failures.some((failure) => failure.status === "workflow_exception"));
+    assert.equal(report.outputs.failure_report, `${CFG.pipeline_dir}/failure_report.json`);
+  });
+
+  it("stops before ingestion when live destinations are not fresh", async () => {
+    const host = hostFor({ preflightComplete: false });
+    const report = await workflow(host);
+    assert.equal(report.status, "partial");
+    assert.equal(report.failed_stage, "pipeline-preflight");
+    assert.equal(host.runnerCalls.length, 0);
+  });
+
+  it("resumes a validated partial ingestion without fresh-run preflight", async () => {
+    const host = hostFor({ planner: { ...CFG, resume: false } });
+    host.args.resume = true;
+    const report = await workflow(host);
+    assert.equal(report.status, "complete");
+    assert.ok(host.calls.some((call) => call.label === "pipeline-resume-preflight"));
+    assert.ok(!host.calls.some((call) => call.label === "pipeline-preflight"));
+    const ingest = host.runnerCalls.find((call) => call.stage === "ingest");
+    assert.equal(ingest.args.resume, true);
+    assert.equal(ingest.args.failure_report, `${CFG.pipeline_dir}/failure_report.json`);
+  });
+
+  it("accepts a completed resume audit even when advisory checkpoint count is zero", async () => {
+    const host = hostFor({ planner: { ...CFG, resume: false } });
+    host.args.resume = true;
+    const baseAgent = host.agent;
+    host.agent = async (call) => {
+      if (call.label === "pipeline-resume-preflight") return agentResult(call.label, { failure_report_path: "", child_failed_stage: "", checkpoint_path_count: 0 });
+      return baseAgent(call);
+    };
+    const report = await workflow(host);
+    assert.equal(report.status, "complete");
+    assert.ok(host.runnerCalls.some((call) => call.stage === "ingest"));
+  });
+
+  it("accepts a validated resume config even when planner calls the prior run incomplete", async () => {
+    const host = hostFor({ planner: { ...CFG, complete: false, resume: true } });
+    host.args = { request: "pipeline-requests/bengaluru.json", resume: true };
+    const baseAgent = host.agent;
+    host.agent = async (call) => {
+      if (call.label === "pipeline-planner") {
+        return { ref: "ref-pipeline-planner", data: { complete: false, evidence: ["validated partial checkpoint"], unresolved: ["prior ingestion incomplete"], ...CFG, resume: true } };
+      }
+      return baseAgent(call);
+    };
+    const report = await workflow(host);
+    assert.equal(report.status, "complete");
+    assert.ok(host.runnerCalls.some((call) => call.stage === "ingest"));
+  });
+
+  it("keeps authoritative invocation scope when planner output drifts", async () => {
+    const host = hostFor({ planner: { ...CFG, max_docs: 5, languages: ["kn"], fanout: { study: "parallel", translate: "parallel" } } });
+    host.args = {
+      request: "pipeline-requests/mumbai.json",
+      ingest_request: CFG.ingest_request,
+      ingest_run: CFG.ingest_run,
+      studies_dir: CFG.studies_dir,
+      translate_dir: CFG.translate_dir,
+      pipeline_dir: CFG.pipeline_dir,
+      max_docs: 1,
+      doc_ids: [],
+      languages: ["mr", "hi"],
+      study_fanout: "sequential",
+      translate_fanout: "sequential",
+      study_concurrency: 1,
+      translate_concurrency: 1,
+    };
+    const report = await workflow(host);
+    // The generic mock promotion still reports all three docs, so the real
+    // orchestrator correctly rejects that broadened promotion as partial.
+    assert.equal(report.status, "partial");
+    assert.equal(host.runnerCalls.filter((call) => call.stage === "study").length, 1);
+    assert.match(host.calls.find((call) => call.label === "promote-ingestion").input, /top 1 by rank/);
+  });
+
+  it("reports partial when the final city bundle audit fails", async () => {
+    const host = hostFor({ bundleValid: false });
+    const report = await workflow(host);
+    assert.equal(report.status, "partial");
+    assert.ok(report.failures.some((failure) => failure.stage === "verify-city-bundle"));
   });
 
   it("rejects configs without languages", async () => {
@@ -122,7 +222,7 @@ describe("pipeline orchestrator", () => {
     }));
     const host = hostFor({
       docs,
-      planner: { ...CFG, max_docs: 7, study_fanout: "parallel", study_concurrency: 3, translate_concurrency: 3 },
+      planner: { ...CFG, max_docs: 7, fanout: { study: "parallel", translate: "parallel" }, study_concurrency: 3, translate_concurrency: 3 },
     });
     let activeStudies = 0;
     let activeTranslations = 0;

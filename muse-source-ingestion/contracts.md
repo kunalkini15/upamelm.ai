@@ -30,7 +30,7 @@ rationale, never enforcement limits.
   `existing_sources`, `packages`, `rejected_candidates`, `dedupe_log`;
   per-source `package_id`, `coverage` (class + footprint description),
   `observation_date_text`, `upload_date`, `achievable_visual`,
-  `acquisition` (`acquired | reused_existing`), `lane_candidate_ref`,
+  `acquisition` (`acquired`; prior-run reuse is disabled), `lane_candidate_ref`,
   `limitations[]`, `validation{}`, and `successor_check` (newer editions,
   updated datasets, or wider-coverage alternatives checked, plus the unique
   evidence that justifies retaining an older source).

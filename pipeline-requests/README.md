@@ -34,3 +34,56 @@ uses the frozen request or source identity/checksum and, for translation, the
 normalized language set. Ranking, top-N selection, bounded fan-out, failure
 isolation, and promotion into `pipeline_dir` still run normally. A partial,
 stale, mismatched, or incomplete cached run is never reused.
+
+Live runs are write-once. Before ingestion, the orchestrator requires
+`ingest_run`, `studies_dir`, and `translate_dir` to be absent, all configured
+roots to be distinct, and `pipeline_dir` to contain only the frozen
+`pipeline_request.json`. After promotion it audits the actual city bundle:
+counts and IDs must match completed child workflows, every requested language
+must have study/narrative/report packages, every referenced asset must resolve
+inside the promoted study, and UI packages must not reference child-run
+directories. Any failed gate returns `partial`; do not resume or relaunch until
+the reported destination or artifact defect is understood.
+
+## Run live with console logs
+
+From the repository root:
+
+```bash
+scripts/run-pipeline-live.sh pipeline-requests/<city>.json
+```
+
+The same command also resumes a failed ingestion when the city pipeline folder
+contains both `pipeline_request.json` and a valid partial `failure_report.json`
+with `safe_retry_point: "ingestion"`, the ingestion checkpoint exists, and no
+study or translation destination exists. The launcher passes `resume:true` and
+the workflow validates the frozen request and artifacts before continuing.
+
+If a stopped run created only `<pipeline_dir>/pipeline_request.json`, the
+launcher treats it as a planner checkpoint and resumes automatically. To
+discard and regenerate that checkpoint, pass `--force`:
+
+```bash
+scripts/run-pipeline-live.sh --force pipeline-requests/<city>.json
+```
+
+`--force` is deliberately limited: it removes only a pipeline directory whose
+sole entry is `pipeline_request.json`. It never overwrites ingestion, study,
+translation, or promoted city outputs; use fresh run paths for those cases.
+
+The runner validates that every configured destination is absent, rebuilds and
+syntax-checks the import-free runtime, runs the orchestrator tests, and invokes
+Muse exactly once. It then monitors the same background workflow without
+calling or resuming Muse. Console progress includes newly created artifacts and
+30-second heartbeats until `bundle_verification.json` is written. Raw launcher
+JSONL, console progress, the frozen request, and the exported Muse session are
+saved under `pipeline-logs/<city>-<UTC timestamp>/` (gitignored).
+
+The command exits `0` only when the final bundle audit has `valid: true`; `2`
+means an invalid completed bundle, and `3` means the monitor timed out without
+relaunching the workflow. Override the six-hour monitor ceiling only when
+needed, for example:
+
+```bash
+PIPELINE_MONITOR_TIMEOUT_MINUTES=480 scripts/run-pipeline-live.sh pipeline-requests/<city>.json
+```

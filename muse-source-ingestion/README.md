@@ -14,7 +14,8 @@ Use the source-ingestion workflow for muse-source-ingestion/requests/<city>.json
 
 The agent resolves the city, inventories local holdings, searches the public
 web for complementary evidence, downloads and validates complete files, and
-writes one self-contained run directory under `muse-source-ingestion/runs/`.
+writes one self-contained city run under
+`muse-source-ingestion/runs/<city-slug>/`.
 
 There is no fixed code path to maintain. The operating procedure is
 [WORKFLOW.md](WORKFLOW.md); the checked-in multi-agent runner is
@@ -27,9 +28,9 @@ request file and are independently resolved for each city.
 ## Outputs (per run)
 
 ```text
-muse-source-ingestion/runs/<run-id>/
+muse-source-ingestion/runs/<city-slug>/
 ├── request.json            # frozen copy of the city request
-├── inventory.json          # local + reused sources (validated, with provenance)
+├── inventory.json          # empty fresh-run inventory; reuse disabled
 ├── evidence_map.md         # existing coverage and gaps before discovery
 ├── lanes.json              # strategist lane plan (ids, objectives, needs, exclusions)
 ├── lanes/<lane>/           # one dir per discovery lane
@@ -45,7 +46,7 @@ muse-source-ingestion/runs/<run-id>/
 │   ├── handoff.md
 │   └── run_summary.json
 ├── review.json              # read-only Wonder strategic review
-├── manifest.json           # acquired + reused sources (SourceManifest core)
+├── manifest.json           # sources acquired by this run (SourceManifest core)
 ├── comparison.md           # selection/rejection reasons, dedupe log
 ├── handoff.md              # per-source pointers for document-processing runs
 ├── run_summary.json        # activity, stopping rationale, blockers, gaps
@@ -63,9 +64,12 @@ added fields (see [contracts.md](contracts.md)). Each manifest entry's
 the git-ignored `playground/` workspace
 (see [playground/README.md](playground/README.md)), never in `runs/`.
 
-The runner routes strategic planning, independent critique, and final
-information-value ranking to Wonder, while Spark performs parallel discovery,
-synthesis, targeted repair, and final verification. Ranking uses compact
+The runner first uses a bounded Spark fresh-run initialization stage, then routes
+strategic lane planning, independent critique, and final information-value
+ranking to Wonder. Each Spark research lane is split into bounded candidate
+discovery and acquisition/validation calls so neither must search, download,
+validate, write every artifact, and submit within one agent loop. Spark also
+performs synthesis, targeted repair, and final verification. Ranking uses compact
 evidence artifacts and high-signal document sections rather than rereading all
 content. This routing is explicit in `ingest-workflow.js`; changing the wording
 of the invocation does not change the model assignment.
@@ -74,6 +78,11 @@ Canonical downloads retain their original names and manifest paths. Ordered
 copies under `ranked/` add a zero-padded rank prefix, allowing a downstream
 workflow to select the first five or six documents without changing provenance
 or invalidating hashes.
+
+The workflow never lists or inspects previous ingestion runs. `inventory.json`
+is deliberately empty and reuse is disabled, so every run begins directly with
+live discovery. This prevents earlier runs from consuming the scout's finite
+child-turn allowance.
 
 ## Local lessons
 
@@ -89,15 +98,14 @@ numbered lessons. Whether the file was loaded is recorded in the run artifacts.
 
 ## Ground rules
 
-- One city per run. A second city is a second run from its own request file.
+- One city per run. Store runs as `runs/<city-slug>/`; the directory name is
+  the stable city/run identifier consumed by downstream systems.
 - A publication page, abstract, or table of contents is not an acquisition.
   Only complete, opened, validated files are marked acquired.
 - Never invent coordinates, dates, coverage, or measurements. Unknown facts
   stay unknown; local evidence stays labelled local.
-- A file held by the current or a previous run under `runs/` is registered
-  as `reused_existing` with provenance after validation — never silently
-  skipped, never re-downloaded needlessly. Nothing outside `runs/` counts
-  as held.
+- Never reuse a prior-run file. A rerun starts fresh and acquires its own
+  selected sources through live discovery.
 - Stop when material leads are resolved or inaccessible and further search
   refinement yields no stronger or complementary evidence. Activity counts are
   telemetry only. Never claim the collection is exhaustive.

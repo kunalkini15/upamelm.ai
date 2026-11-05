@@ -1,0 +1,55 @@
+{
+  "city": "Hyderabad",
+  "state": "Telangana",
+  "country": "India",
+  "city_aliases": ["Greater Hyderabad", "Hyderabad-Secunderabad", "Secunderabad"],
+  "district_aliases": ["Hyderabad District", "Ranga Reddy", "Rangareddy", "Medchal-Malkajgiri", "Sangareddy"],
+  "local_language_names": ["హైదరాబాద్", "حیدرآباد"],
+  "as_of_date": "2026-11-05",
+  "study_boundary": "Greater Hyderabad Municipal Corporation (GHMC) limits as the city denominator: approximately 650 sq km across 6 zones, 30 circles, and 150 wards, spanning Hyderabad and parts of Medchal-Malkajgiri, Ranga Reddy, and Sangareddy districts. Evidence for Hyderabad District alone, the wider Hyderabad Metropolitan Region, areas up to the Outer Ring Road, or individual adjoining districts must retain its true denominator and be labelled as district or wider-frame context rather than citywide GHMC coverage.",
+  "research_scope": {
+    "mode": "focused",
+    "include_domains": [
+      "aquifer geometry, disposition, boundaries, thickness, weathered zones, fractured zones, and productive depths",
+      "groundwater levels, monitoring wells, seasonal and long-term trends",
+      "groundwater resource assessment, recharge, extraction, stress, and status",
+      "groundwater quality, sampling locations, parameters, exceedances, and trends",
+      "exploratory wells, piezometers, pumping tests, geophysics, and borehole logs that directly characterize aquifers or groundwater"
+    ],
+    "supporting_evidence": [
+      "geology, granitic lithology, structure, lineaments, soils, lakes, drainage, or land use only when directly required to interpret aquifer geometry, recharge, groundwater flow, quality, or well depths"
+    ],
+    "exclude_domains": [
+      "general geology or lineament mapping without a direct aquifer or groundwater role",
+      "standalone soil, lake, or drainage mapping without recharge, groundwater-quality, or aquifer relevance",
+      "seismic hazard, deformation, and microzonation without a direct groundwater relationship",
+      "metro, utility, tunnel, foundation, and infrastructure studies without groundwater observations or aquifer evidence"
+    ]
+  },
+  "evidence_gaps": [
+    "GHMC-scale hard-rock aquifer geometry, weathered-zone thickness, fractures, and productive well depths",
+    "recent located groundwater-level observations and seasonal or long-term trends",
+    "current groundwater resource status, recharge, extraction stress, and over-exploited assessment units",
+    "recent located groundwater-quality observations and exceedances",
+    "aquifer-characterization wells, yields, pumping tests, and geophysical or borehole evidence"
+  ],
+  "target_capabilities": [
+    "aquifer cross-section",
+    "aquifer depth, weathered-zone, and fracture map",
+    "groundwater monitoring time series",
+    "groundwater status, recharge, and extraction map",
+    "groundwater quality map"
+  ],
+  "source_policy": {
+    "recent_observation_window_years": 5,
+    "selection_cutoff_date": "2021-11-05",
+    "selection_window_mode": "strict",
+    "older_dynamic_evidence": "exclude from acquisition and selection; record only as an unresolved or historical lead",
+    "older_stable_evidence": "exclude from acquisition and selection; record only as an unresolved lead and search for an in-window successor",
+    "accept_any_useful_format": true,
+    "accepted_formats": ["pdf", "csv", "tsv", "xlsx", "json", "geojson", "kml", "kmz", "shapefile", "geopackage", "geotiff", "raster", "api"],
+    "require_native_companion_search": true
+  },
+  "trusted_domains": ["gov.in", "nic.in", "telangana.gov.in", "gwd.telangana.gov.in", "ghmc.gov.in", "hmwssb.telangana.gov.in", "ac.in", "org.in"],
+  "preferred_publishers": ["CGWB", "CGWB Southern Region", "Ground Water Department Telangana", "GHMC", "Hyderabad Metropolitan Water Supply and Sewerage Board", "GSI", "National Remote Sensing Centre"]
+}

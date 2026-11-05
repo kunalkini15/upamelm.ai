@@ -10,6 +10,9 @@ below are summaries, not replacements — when in doubt, match the input file.
 Keys: `input`, `output_dir`, `languages[]`. Optional: `scope`
 (`full` | `narrative_only` | `report_only`, default `full`),
 `overwrite` (default false), `guidance` (qualitative only, never counts).
+Launcher-only options are `resume` (boolean) and `failure_report` (path). They
+do not alter the frozen translation request; resume is accepted only when the
+current complete configuration is semantically identical to that request.
 
 - `input`: path to a `study_package.json` file or to a directory containing
   `study_package.json`, `narrative_package.json`, and/or `report.json`.
@@ -82,3 +85,12 @@ Top-level keys: `schema_version` (`translate-run.v1`), `run_id`, `input`,
 There is no separate draft or review artifact. Per-language lanes write final
 package copies directly, and `verification.md` plus `run_summary.json` record
 the single final verification and any targeted repairs.
+
+## Failure checkpoint: `failure_report.json`
+
+Required keys: `status` (`partial`), `failed_stage`, `safe_retry_point`,
+`completed_artifacts[]`, `unresolved_work[]`, and `timestamp` (ISO-8601).
+Completed artifacts are derived from fixed paths and validated files, never
+trusted from a child model's counters or submitted path list. The checkpoint
+is resumable only for the same frozen request, input identity/checksums,
+output directory, and normalized language set.

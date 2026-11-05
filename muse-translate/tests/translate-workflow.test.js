@@ -121,4 +121,84 @@ describe("translate workflow", () => {
     assert.deepEqual(report.outputs.lane_ids, ["kn", "hi"]);
   });
 
+  it("checkpoints a planning interruption as a terminal partial report", async () => {
+    const calls = [];
+    const host = {
+      args: { input: "study/run", output_dir: OUT, languages: ["kn", "hi"] },
+      parallel: async () => [],
+      agent: async ({ label, input }) => {
+        calls.push({ label, input });
+        if (label === "write-failure-report") return result(label, { failure_report_path: `${OUT}/failure_report.json` });
+        return { ref: `ref-${label}`, error_kind: "generated_child_model_step_cap" };
+      },
+    };
+    const report = await workflow(host);
+    assert.equal(report.status, "partial");
+    assert.equal(report.failed_stage, "translate-planner");
+    assert.equal(report.safe_retry_point, "plan");
+    assert.equal(report.failure_report, `${OUT}/failure_report.json`);
+    assert.equal(calls.filter((call) => call.label === "translate-planner-recovery").length, 1);
+    assert.match(calls.find((call) => call.label === "write-failure-report").input, /completed_artifacts/);
+  });
+
+  it("resumes parallel lanes individually and runs only the missing lane", async () => {
+    const base = hostFor({ laneCount: 2 });
+    const originalAgent = base.agent;
+    base.args = { input: "study/run", output_dir: OUT, languages: ["kn", "hi"], resume: true };
+    base.agent = async (options) => {
+      if (options.label === "resume-checkpoint-audit") {
+        base.calls.push(options);
+        return result(options.label, { resume_stage: "lanes", lane_ids: ["kn", "hi"], reusable_lane_ids: ["kn"], input_sha256: "abc" });
+      }
+      return originalAgent(options);
+    };
+    const report = await workflow(base);
+    assert.equal(report.status, "complete_resumed");
+    assert.equal(report.reuse, "resumed-with-reuse");
+    assert.equal(base.calls.some((call) => call.label === "translate-planner"), false);
+    assert.equal(base.calls.some((call) => call.label === "translate-kn"), false);
+    assert.equal(base.calls.filter((call) => call.label === "translate-hi").length, 1);
+  });
+
+  it("uses one bounded recovery agent when finalization hits its step cap", async () => {
+    const base = hostFor({ laneCount: 1 });
+    const originalAgent = base.agent;
+    let verifyCalls = 0;
+    base.agent = async (options) => {
+      if (options.label === "verify-and-finalize") {
+        base.calls.push(options);
+        verifyCalls += 1;
+        return { ref: "verify-interrupted", error_kind: "generated_child_model_step_cap" };
+      }
+      if (options.label === "verify-and-finalize-recovery") {
+        base.calls.push(options);
+        verifyCalls += 1;
+        return result(options.label, { verification_path: `${OUT}/verification.md`, summary_path: `${OUT}/run_summary.json`, output_count: 3, valid: true, warning_count: 0, issue_count: 0 });
+      }
+      return originalAgent(options);
+    };
+    const report = await workflow(base);
+    assert.equal(report.status, "complete");
+    assert.equal(verifyCalls, 2);
+    assert.match(base.calls.find((call) => call.label === "verify-and-finalize-recovery").input, /reserve the final turn for submit_result/i);
+  });
+
+  it("resumes directly at final verification without rerunning planning or lanes", async () => {
+    const base = hostFor({ laneCount: 2 });
+    const originalAgent = base.agent;
+    base.args = { input: "study/run", output_dir: OUT, languages: ["kn", "hi"], resume: true, failure_report: `${OUT}/failure_report.json` };
+    base.agent = async (options) => {
+      if (options.label === "resume-checkpoint-audit") {
+        base.calls.push(options);
+        return result(options.label, { resume_stage: "finalize", lane_ids: ["kn", "hi"], reusable_lane_ids: ["kn", "hi"], input_sha256: "abc" });
+      }
+      return originalAgent(options);
+    };
+    const report = await workflow(base);
+    assert.equal(report.status, "complete_resumed");
+    assert.deepEqual(base.calls.map((call) => call.label), ["resume-checkpoint-audit", "verify-and-finalize"]);
+    assert.match(base.calls[0].input, /READ-ONLY resume audit/);
+    assert.match(base.calls[0].input, /counters and path lists returned by prior models are advisory/i);
+  });
+
 });

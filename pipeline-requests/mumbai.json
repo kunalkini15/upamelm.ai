@@ -1,0 +1,16 @@
+{
+  "ingest_request": "muse-source-ingestion/requests/mumbai.json",
+  "ingest_run": "muse-source-ingestion/runs/mumbai",
+  "studies_dir": "muse-document-processing/runs/mumbai",
+  "translate_dir": "muse-translate/runs/mumbai",
+  "pipeline_dir": "runs/mumbai",
+  "dry_run": false,
+  "max_docs": 1,
+  "doc_ids": [],
+  "languages": ["Marathi", "Hindi"],
+  "study_fanout": "sequential",
+  "translate_fanout": "sequential",
+  "study_concurrency": 1,
+  "translate_concurrency": 1,
+  "guidance": "Controlled live end-to-end validation. Research only aquifers and groundwater; admit geology, soils, reclaimed-land, or infrastructure evidence only when it directly explains aquifer geometry, recharge, groundwater flow, levels, quality, salinity, or well behavior. Process only the top-ranked source and produce a self-contained backend-ready Mumbai city bundle. Use clear plain-language Marathi and Hindi translations for a lay reader."
+}

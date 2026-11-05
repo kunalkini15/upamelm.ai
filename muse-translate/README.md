@@ -71,6 +71,22 @@ The workflow normalizes every entry to its code (full table in
 [contracts.md](contracts.md)) and outputs `study_package_hi.json`, never `hn`.
 The standard pipeline invocation above currently requests Kannada and Hindi.
 
+## Resume a partial run
+
+Every incomplete run preserves its valid files and writes
+`failure_report.json`. Resume the same output directory with the complete,
+unchanged configuration and `resume=true`:
+
+```text
+Use a workflow. Run muse-translate/translate-workflow.js with input=muse-document-processing/runs/dgwr-karnataka-2023-v1 and output_dir=muse-translate/runs/dgwr-karnataka-2023-v1 and languages=["Kannada","Hindi"] and resume=true.
+```
+
+The launcher audits the frozen request, input identity/checksums, output
+directory, requested language set, and fixed artifact paths before writing.
+It reports whether work was `generated`, `resumed`, `resumed-with-reuse`, or
+returned as a validated `complete_reused`. A mismatched checkpoint remains
+terminal `partial`; it never silently starts over in the same run directory.
+
 ## Local lessons
 
 Optional human-curated cues live in

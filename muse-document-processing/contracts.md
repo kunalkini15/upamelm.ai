@@ -183,3 +183,29 @@ outlier, transcription problem, or conflict with the source itself.
 
 Narrative coverage applies to every interactive feature, including selectable
 or listable null-geometry objects.
+
+## Resume artifacts
+
+`request.json` is the frozen configuration envelope. It contains the document
+path, source identity and SHA-256, output directory, workflow version, and all
+launcher options that affect output.
+
+`checkpoint.json` records validated fixed-path artifacts and lane completion.
+It is evidence for a resume audit, not authority to skip validation.
+
+`failure_report.json` has this minimum shape:
+
+```json
+{
+  "status": "partial",
+  "failed_stage": "parallel-extraction",
+  "safe_retry_point": "parallel-extraction",
+  "completed_artifacts": [],
+  "unresolved_work": [],
+  "timestamp": "2026-01-01T00:00:00.000Z"
+}
+```
+
+The report may include source identity, output directory, and diagnostic
+metadata. Resumability is determined from validated files at documented fixed
+paths, never solely from counters or path arrays returned by a model.

@@ -1,0 +1,16 @@
+{
+  "ingest_request": "muse-source-ingestion/requests/hyderabad.json",
+  "ingest_run": "muse-source-ingestion/runs/hyderabad",
+  "studies_dir": "muse-document-processing/runs/hyderabad",
+  "translate_dir": "muse-translate/runs/hyderabad",
+  "pipeline_dir": "runs/hyderabad",
+  "dry_run": false,
+  "max_docs": 1,
+  "doc_ids": [],
+  "languages": ["Telugu", "Hindi"],
+  "study_fanout": "sequential",
+  "translate_fanout": "sequential",
+  "study_concurrency": 1,
+  "translate_concurrency": 1,
+  "guidance": "Controlled live end-to-end validation. Research only aquifers and groundwater; admit geology, granitic structure, soils, lakes, drainage, or infrastructure evidence only when it directly explains aquifer geometry, recharge, groundwater flow, levels, quality, or well behavior. Process only the top-ranked source and produce a self-contained backend-ready Hyderabad city bundle. Use clear plain-language Telugu and Hindi translations for a lay reader."
+}

@@ -1,0 +1,53 @@
+{
+  "city": "Mumbai",
+  "state": "Maharashtra",
+  "country": "India",
+  "city_aliases": ["Bombay", "Greater Mumbai", "Brihanmumbai"],
+  "district_aliases": ["Mumbai City", "Mumbai Suburban", "Mumbai Suburban District"],
+  "local_language_names": ["मुंबई", "बृहन्मुंबई"],
+  "as_of_date": "2026-11-05",
+  "study_boundary": "Brihanmumbai Municipal Corporation (Greater Mumbai) footprint, covering 24 municipal wards across Mumbai City and Mumbai Suburban districts, as the city denominator (approximately 483.22 sq km in BMC's 2024-25 Environment Status Report). Evidence for the wider Mumbai Metropolitan Region, Thane, Palghar, or Raigad must remain explicitly labelled as wider-frame context.",
+  "evidence_gaps": [
+    "borehole lithology and basalt aquifer geometry with depth",
+    "recent ward- or district-resolved groundwater levels and quality",
+    "coastal salinity and seawater-intrusion evidence",
+    "land subsidence, reclaimed-land, and geotechnical constraints"
+  ],
+  "target_capabilities": [
+    "subsurface cross-section",
+    "aquifer and depth-to-rock map",
+    "groundwater monitoring time series",
+    "coastal salinity and vulnerability view"
+  ],
+  "research_scope": {
+    "mode": "focused",
+    "include_domains": [
+      "aquifer geometry, disposition, boundaries, thickness, weathered zones, fractured zones, and productive depths",
+      "groundwater levels, monitoring wells, seasonal and long-term trends",
+      "groundwater resource assessment, recharge, extraction, stress, and status",
+      "groundwater quality, sampling locations, parameters, exceedances, salinity, seawater intrusion, and trends",
+      "exploratory wells, piezometers, pumping tests, and borehole logs that directly characterize aquifers or groundwater"
+    ],
+    "supporting_evidence": [
+      "geology, lithology, structure, reclaimed land, soils, or land use only when directly required to interpret aquifer geometry, recharge, groundwater flow, salinity, quality, or well depths"
+    ],
+    "exclude_domains": [
+      "general geology or lineament mapping without a direct aquifer or groundwater role",
+      "standalone soil mapping without recharge, infiltration, groundwater-quality, or aquifer relevance",
+      "seismic hazard, deformation, land subsidence, and microzonation without a direct groundwater relationship",
+      "metro, utility, tunnel, foundation, and infrastructure studies without groundwater observations or aquifer evidence"
+    ]
+  },
+  "source_policy": {
+    "recent_observation_window_years": 5,
+    "selection_cutoff_date": "2021-11-05",
+    "selection_window_mode": "strict",
+    "older_dynamic_evidence": "exclude from acquisition and selection; record only as an unresolved or historical lead",
+    "older_stable_evidence": "exclude from acquisition and selection; record only as an unresolved lead and search for an in-window successor",
+    "accept_any_useful_format": true,
+    "accepted_formats": ["pdf", "csv", "tsv", "xlsx", "json", "geojson", "kml", "kmz", "shapefile", "geopackage", "geotiff", "raster", "api"],
+    "require_native_companion_search": true
+  },
+  "trusted_domains": ["gov.in", "nic.in", "maharashtra.gov.in", "mcgm.gov.in", "mmrda.maharashtra.gov.in", "ac.in", "org.in"],
+  "preferred_publishers": ["CGWB", "CGWB Central Region", "GSDA Maharashtra", "GSI", "BMC/MCGM", "MMRDA", "IIT Bombay"]
+}

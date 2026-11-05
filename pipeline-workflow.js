@@ -46,6 +46,7 @@
  * @param {number} [host.args.study_concurrency=3] - Max simultaneous studies.
  * @param {number} [host.args.translate_concurrency=3] - Max simultaneous translations.
  * @param {boolean} [host.args.dry_run=false] - Reuse compatible completed stage runs while still exercising selection, fan-out, and promotion.
+ * @param {boolean} [host.args.resume=false] - Continue a validated partial live run from its durable checkpoint.
  * @returns {Promise<Object>} Pipeline report with status, promoted outputs,
  *   and per-stage telemetry.
  */
@@ -85,6 +86,7 @@ export default async function workflow(host) {
   // Invocation-level safety latch: an explicit inline dry_run=true can never
   // be weakened by request-file contents or planner output.
   const forcedDryRun = args.dry_run === true;
+  const forcedResume = args.resume === true;
 
   const stages = [];
   const notes = [];
@@ -106,6 +108,16 @@ export default async function workflow(host) {
     } catch {
       stages.push({ scope, ref: null, complete: false, model: SPARK, error_kind: "agent_exception" });
       return { result: null, data: null, ok: false };
+    }
+    if (result && (result.error_kind === "generated_child_model_step_cap" || result.data_spilled_for_size === true)) {
+      try {
+        result = await host.agent({
+          input: `${input} RECOVERY: A prior agent was interrupted after writing durable artifacts. Inspect and reuse those artifacts; do not repeat completed work. Finish only missing checks/writes, keep the response compact, and reserve the final turn for the schema submission.`,
+          schema: stageSchema,
+          label: `${scope}-recovery`,
+          model: SPARK,
+        });
+      } catch { result = null; }
     }
     if (result && typeof result.notes === "string" && result.notes.trim()) {
       notes.push({ source: scope, ref: result.ref, value: result.notes });
@@ -138,22 +150,49 @@ export default async function workflow(host) {
   });
   const okStatus = (report) => !!report && typeof report.status === "string" && report.status.startsWith("complete");
 
+  async function persistFailure(cfg, failedStage, message, report, safeRetryPoint = "ingestion") {
+    const childSummary = report && typeof report.summary === "string" ? report.summary : JSON.stringify(report || {});
+    const recorded = await run(
+      "record-pipeline-failure",
+      `Write or replace ${cfg.pipeline_dir}/failure_report.json as concise valid JSON for the latest aborted pipeline. Do not modify or remove any other file. Record status="partial", failed_stage=${JSON.stringify(failedStage)}, message=${JSON.stringify(message)}, safe_retry_point=${JSON.stringify(safeRetryPoint)}, and the current ISO timestamp. Set downstream_stages_skipped according to the failed stage. From the child workflow report below, preserve child_failed_stage, failed lanes/stages with their error_kind, unresolved items, and completed artifact paths explicitly present. Do not preserve stale failure fields from an earlier attempt. Do not invent details. Child workflow report: ${childSummary}. Return complete/evidence/unresolved plus failure_report_path. ${COMPACT}`,
+      schema({ failure_report_path: path })
+    );
+    return recorded.ok ? recorded.data.failure_report_path : null;
+  }
+
   // 0. Freeze the pipeline request and normalize config. File reads happen
   // here inside the agent because the orchestrator script itself does no I/O.
   const requestLine = args.request
-    ? `Pipeline request file: ${args.request}. Read it completely; inline args (if any) override its fields.`
+    ? `Pipeline request file: ${args.request}. Read it completely. Inline overrides (authoritative when present): ${JSON.stringify(args)}.`
     : `No request file; use these inline args as the request: ${JSON.stringify(args)}.`;
   const plan = await run(
     "pipeline-planner",
-    `${requestLine} Create the root consolidation folder and write the frozen effective config as <pipeline_dir>/pipeline_request.json (copy the request file when given, else write the inline args). Normalize: dry_run defaults to false; max_docs defaults to 5 (positive integer); languages accept ISO codes or names case-insensitively per muse-translate/contracts.md, lowercased, deduped, at least one required; doc_ids defaults to [] (explicit rank/source-id override for max_docs); study_fanout and translate_fanout default to parallel and must be sequential|parallel; study_concurrency and translate_concurrency default to 3 and must be positive integers (fanout=sequential forces effective concurrency 1). In dry_run mode, ingest_run/studies_dir/translate_dir identify preferred exact cached locations; each stage may resolve a newer compatible completed run when its exact candidate is absent, but pipeline_dir must be a fresh consolidation destination. Write nothing outside <pipeline_dir> except creating stage output dirs in live mode. ${COMPACT} Return complete/evidence/unresolved plus pipeline_request_path, ingest_request, ingest_run, studies_dir, translate_dir, pipeline_dir, dry_run, max_docs, languages (array of strings), doc_ids (array of strings), study_fanout, translate_fanout, study_concurrency, and translate_concurrency.`,
+    `${requestLine} Normalize resume and dry_run (both default false and cannot both be true), max_docs defaults to 5 (positive integer), languages per muse-translate/contracts.md, doc_ids defaults [], fanout defaults parallel, and concurrency defaults 3. For a fresh run, create <pipeline_dir> and freeze the effective config as <pipeline_dir>/pipeline_request.json. For resume=true, do not overwrite anything: read the existing <pipeline_dir>/pipeline_request.json and failure_report.json, require the requested paths/city/scope/languages to match the frozen config, and return that frozen config with resume=true. In dry_run mode, stage dirs identify compatible completed caches. Write nothing outside <pipeline_dir> except creating stage output dirs in fresh live mode. ${COMPACT} Return complete/evidence/unresolved plus ingest_request, ingest_run, studies_dir, translate_dir, pipeline_dir, dry_run, resume, max_docs, languages, doc_ids, study_concurrency, translate_concurrency, and fanout={study,translate}.`,
     schema(
-      { pipeline_request_path: path, ingest_request: path, ingest_run: path, studies_dir: path, translate_dir: path, pipeline_dir: path, dry_run: { type: "boolean" }, max_docs: { type: "integer" }, languages: { type: "array", items: path }, doc_ids: { type: "array", items: path }, study_concurrency: { type: "integer" }, translate_concurrency: { type: "integer" } },
-      ["pipeline_request_path", "ingest_request", "ingest_run", "studies_dir", "translate_dir", "pipeline_dir", "dry_run", "max_docs", "languages", "doc_ids"]
+      { ingest_request: path, ingest_run: path, studies_dir: path, translate_dir: path, pipeline_dir: path, dry_run: { type: "boolean" }, resume: { type: "boolean" }, max_docs: { type: "integer" }, languages: { type: "array", items: path }, doc_ids: { type: "array", items: path }, study_concurrency: { type: "integer" }, translate_concurrency: { type: "integer" }, fanout: { type: "object", required: ["study", "translate"], properties: { study: { type: "string", enum: ["sequential", "parallel"] }, translate: { type: "string", enum: ["sequential", "parallel"] } } } },
+      ["ingest_request", "ingest_run", "studies_dir", "translate_dir", "pipeline_dir", "dry_run", "resume", "max_docs", "languages", "doc_ids", "fanout"]
     )
   );
-  if (!plan.ok) return partial("pipeline-planner", "pipeline request was not frozen or config is invalid");
+  // During resume, the planner may truthfully describe the *prior pipeline*
+  // as incomplete while still returning a fully validated resume config. The
+  // dedicated resume preflight below owns checkpoint acceptance; do not turn
+  // that expected prior-run state into a circular planner failure.
+  const plannerAccepted = plan.ok || (forcedResume && plan.data && plan.data.resume === true);
+  if (!plannerAccepted) return partial("pipeline-planner", "pipeline request was not frozen or config is invalid");
   const cfg = plan.data;
+  // Invocation/request fields are authoritative. Planner output is useful for
+  // validation and freezing, but must never silently change execution scope.
+  for (const key of ["ingest_request", "ingest_run", "studies_dir", "translate_dir", "pipeline_dir", "max_docs", "doc_ids", "languages", "study_concurrency", "translate_concurrency"]) {
+    if (args[key] !== undefined) cfg[key] = args[key];
+  }
+  if (args.study_fanout !== undefined) cfg.study_fanout = args.study_fanout;
+  if (args.translate_fanout !== undefined) cfg.translate_fanout = args.translate_fanout;
+  cfg.pipeline_request_path = `${cfg.pipeline_dir}/pipeline_request.json`;
   if (forcedDryRun) cfg.dry_run = true;
+  if (forcedResume) cfg.resume = true;
+  if (cfg.dry_run && cfg.resume) return partial("pipeline-planner", "dry_run and resume cannot both be true");
+  cfg.study_fanout = args.study_fanout || cfg.fanout?.study || cfg.study_fanout || "parallel";
+  cfg.translate_fanout = args.translate_fanout || cfg.fanout?.translate || cfg.translate_fanout || "parallel";
   const need = ["ingest_request", "ingest_run", "studies_dir", "translate_dir", "pipeline_dir"];
   const missing = need.filter((key) => !cfg[key]);
   if (!Array.isArray(cfg.languages) || cfg.languages.length < 1) missing.push("languages");
@@ -165,12 +204,58 @@ export default async function workflow(host) {
   const translateConcurrency = cfg.translate_fanout === "sequential" ? 1 : configuredTranslateConcurrency;
   const BASE = `Pipeline root folder: ${cfg.pipeline_dir}/. ${COMPACT}`;
 
+  // Live runs are write-once. Stop before model work if any stage destination
+  // already exists or aliases another configured root. The planner may create
+  // pipeline_dir only to freeze pipeline_request.json.
+  if (!cfg.dry_run && !cfg.resume) {
+    const preflight = await run(
+      "pipeline-preflight",
+      `Read-only preflight for a new live run. Configured paths: pipeline_dir=${cfg.pipeline_dir}, ingest_run=${cfg.ingest_run}, studies_dir=${cfg.studies_dir}, translate_dir=${cfg.translate_dir}. Confirm all four normalized paths are distinct and none is nested inside another. Confirm ingest_run, studies_dir, and translate_dir do not exist. Confirm pipeline_dir contains exactly pipeline_request.json and no other entry. Confirm ${cfg.pipeline_request_path} exists, parses as JSON, and its effective pipeline_dir is ${cfg.pipeline_dir}. Return distinct_path_count=4, existing_stage_destination_count=0, and pipeline_entry_count=1 only when those facts were directly verified. Do not create, edit, delete, move, or rename anything. Return complete=false on any collision, prior output, unexpected entry, invalid request, or ambiguous path.`,
+      schema({
+        checked_paths: { type: "array", items: path },
+        distinct_path_count: { type: "integer" },
+        existing_stage_destination_count: { type: "integer" },
+        pipeline_entry_count: { type: "integer" },
+      })
+    );
+    const safeDestination = preflight.ok
+      && preflight.data.distinct_path_count === 4
+      && preflight.data.existing_stage_destination_count === 0
+      && preflight.data.pipeline_entry_count === 1;
+    if (!safeDestination) {
+      failures.push({ stage: "pipeline-preflight", status: "unsafe_destination" });
+      return partial("pipeline-preflight", "live run destinations are not fresh, distinct, and write-safe", { outputs: { pipeline_request: cfg.pipeline_request_path } });
+    }
+  }
+  if (cfg.resume) {
+    const resumePreflight = await run(
+      "pipeline-resume-preflight",
+      `Read-only resume preflight. Require ${cfg.pipeline_dir}/failure_report.json with status=partial and safe_retry_point equal to ingestion or study-fanout. Require ${cfg.pipeline_request_path} and the fixed artifacts appropriate to that retry point. For ingestion require the ingestion request/inventory/evidence map/lanes. For study-fanout require completed ingestion manifest/ranking plus at least one study failure_report.json and matching frozen study request/checkpoint. Confirm all configured roots and source identities match and no completed pipeline_summary.json or bundle_verification.json marks this run complete. Do not create, edit, delete, move, rename, extract, or rehash valid recorded artifacts. Return complete=true only when intentional resume is safe.`,
+      schema({ failure_report_path: path, child_failed_stage: path, checkpoint_path_count: { type: "integer" } })
+    );
+    // `complete=true` is the contract decision. The ingestion workflow performs
+    // its own independent artifact audit next; do not override a passed audit
+    // using advisory counters that a model may conservatively leave at zero.
+    if (!resumePreflight.ok) {
+      failures.push({ stage: "pipeline-resume-preflight", status: "unsafe_resume" });
+      return partial("pipeline-resume-preflight", "partial run checkpoint is missing or incompatible", { outputs: { pipeline_request: cfg.pipeline_request_path } });
+    }
+  }
+
   // 1. Document ingestion: city request -> manifest + ranked documents.
-  const ingest = await runners.ingest({ ...host, args: { request: cfg.ingest_request, output_dir: cfg.ingest_run, dry_run: cfg.dry_run } });
+  let ingest;
+  try {
+    ingest = await runners.ingest({ ...host, args: { request: cfg.ingest_request, output_dir: cfg.ingest_run, dry_run: cfg.dry_run, resume: cfg.resume === true, checkpoint_validated: cfg.resume === true, failure_report: `${cfg.pipeline_dir}/failure_report.json` } });
+  } catch {
+    failures.push({ stage: "ingestion", status: "workflow_exception" });
+    const failureReport = await persistFailure(cfg, "ingestion", "ingestion workflow raised an exception; downstream stages skipped", null);
+    return partial("ingestion", "ingestion workflow raised an exception; downstream stages skipped", { outputs: { pipeline_request: cfg.pipeline_request_path, failure_report: failureReport } });
+  }
   track("ingestion", ingest);
   if (!okStatus(ingest)) {
     failures.push({ stage: "ingestion", status: ingest ? ingest.status : "no_report" });
-    return partial("ingestion", "ingestion did not complete; downstream stages skipped", { outputs: { pipeline_request: cfg.pipeline_request_path } });
+    const failureReport = await persistFailure(cfg, "ingestion", "ingestion did not complete; downstream stages skipped", ingest);
+    return partial("ingestion", "ingestion did not complete; downstream stages skipped", { outputs: { pipeline_request: cfg.pipeline_request_path, failure_report: failureReport } });
   }
 
   // 2. Promote-ingestion: top-N selection + key files into the root folder.
@@ -185,12 +270,21 @@ export default async function workflow(host) {
     failures.push({ stage: "promote-ingestion", status: "no_selection" });
     return partial("promote-ingestion", "no documents were selected for study", { outputs: { pipeline_request: cfg.pipeline_request_path, ingestion: promoteIngest.data ? promoteIngest.data.promoted_dir : null } });
   }
-  const selectedDocs = promoteIngest.data.selected_docs;
+  const promotedDocs = promoteIngest.data.selected_docs;
+  // Enforce selection cardinality in code as well as in the agent prompt. A
+  // promotion agent may return extra valid rows; that must not broaden work.
+  const selectedDocs = Array.isArray(cfg.doc_ids) && cfg.doc_ids.length > 0
+    ? cfg.doc_ids.map((id) => promotedDocs.find((doc) => doc.id === id)).filter(Boolean)
+    : promotedDocs.slice(0, maxDocs);
+  if (selectedDocs.length < 1 || (cfg.doc_ids?.length && selectedDocs.length !== cfg.doc_ids.length)) {
+    failures.push({ stage: "promote-ingestion", status: "selection_scope_mismatch" });
+    return partial("promote-ingestion", "promoted document selection does not match the authoritative request", { outputs: { pipeline_request: cfg.pipeline_request_path, ingestion: promoteIngest.data.promoted_dir } });
+  }
 
   // 3. Study fan-out: one document-processing run per selected document.
   // A failed document never blocks its siblings; downstream stages process
   // exactly the completed subset.
-  const runStudy = (doc) => runners.study({ ...host, args: { document: doc.source_path, output_dir: `${cfg.studies_dir}/${doc.id}`, runs_dir: cfg.studies_dir, dry_run: cfg.dry_run } });
+  const runStudy = (doc) => runners.study({ ...host, args: { document: doc.source_path, output_dir: `${cfg.studies_dir}/${doc.id}`, runs_dir: cfg.studies_dir, dry_run: cfg.dry_run, resume: cfg.resume === true } });
   const studyReports = await mapWithConcurrency(selectedDocs, studyConcurrency, runStudy);
   const studies = [];
   studyReports.forEach((report, index) => {
@@ -203,15 +297,25 @@ export default async function workflow(host) {
     }
     else failures.push({ stage: `study:${doc.id}`, status: report ? report.status : "no_report" });
   });
-  if (studies.length < 1) return partial("study-fanout", "no study completed; translation skipped", { outputs: { pipeline_request: cfg.pipeline_request_path, ingestion: promoteIngest.data.promoted_dir, selected_docs: selectedDocs } });
+  if (studies.length < 1) {
+    const studyFailure = studyReports.find((report) => !okStatus(report)) || null;
+    const failureReport = await persistFailure(cfg, "study-fanout", "no study completed; translation skipped", studyFailure, "study-fanout");
+    return partial("study-fanout", "no study completed; translation skipped", { outputs: { pipeline_request: cfg.pipeline_request_path, ingestion: promoteIngest.data.promoted_dir, selected_docs: selectedDocs, failure_report: failureReport } });
+  }
 
   // 4. Promote-studies: key study files per document into the root folder.
   const promoteStudies = await run(
     "promote-studies",
-    `${BASE} Completed studies: ${studies.map((s) => `${s.id} (report: ${s.report.summary}, dir: ${s.output_dir})`).join("; ")}. For each, copy the key files that exist (study_package.json, narrative_package.json, report.json, grounding_selfcheck.json) from its study dir into ${cfg.pipeline_dir}/studies/<doc-id>/ without renaming. Make that promoted study self-contained for UI rendering: recursively inspect path/asset_path/transcription_path and other file-valued strings in the promoted packages; copy every referenced resource, image, OCR file, table, and source document that exists into the promoted study while preserving study-relative resources/ and source-cache/ paths and placing ingestion documents under source/. In promoted copies only, rebase project-relative source-run paths to those local relative paths. Never edit the original run outputs. Write asset_manifest.json containing local_path and original source_path for every copied dependency. Treat any referenced-but-missing rendering dependency as a promotion failure. Return complete/evidence/unresolved plus promoted_dirs (array of {id, dir}) and study_count.`,
-    schema({ promoted_dirs: { type: "array", items: { type: "object", required: ["id", "dir"], properties: { id: path, dir: path } } }, study_count: { type: "integer" } })
+    `${BASE} Completed studies: ${studies.map((s) => `${s.id} (report: ${s.report.summary}, dir: ${s.output_dir})`).join("; ")}. For each, copy the key files that exist (study_package.json, narrative_package.json, report.json, grounding_selfcheck.json) from its study dir into ${cfg.pipeline_dir}/studies/<doc-id>/ without renaming. Make that promoted study self-contained for UI rendering: recursively inspect path/asset_path/transcription_path and other file-valued strings in the promoted packages; copy every referenced resource, image, OCR file, table, and source document that exists into the promoted study while preserving study-relative resources/ and source-cache/ paths and placing ingestion documents under source/. In promoted copies only, rebase project-relative source-run paths to those local relative paths. Never edit the original run outputs. Write asset_manifest.json containing local_path and original source_path for every copied dependency. Treat any referenced-but-missing rendering dependency as a promotion failure. Return complete/evidence/unresolved plus promoted_dirs (array of {id, dir}), promoted_ids, study_count, and total asset_count.`,
+    schema({ promoted_dirs: { type: "array", items: { type: "object", required: ["id", "dir"], properties: { id: path, dir: path } } }, promoted_ids: { type: "array", items: path }, study_count: { type: "integer" }, asset_count: { type: "integer" } })
   );
-  if (!promoteStudies.ok) {
+  const expectedStudyIds = studies.map((study) => study.id).sort();
+  const promotedStudyIds = (promoteStudies.data?.promoted_ids || []).slice().sort();
+  const studiesPromotedExactly = promoteStudies.ok
+    && promoteStudies.data.study_count === studies.length
+    && promoteStudies.data.promoted_dirs.length === studies.length
+    && JSON.stringify(promotedStudyIds) === JSON.stringify(expectedStudyIds);
+  if (!studiesPromotedExactly) {
     failures.push({ stage: "promote-studies", status: "promotion_failed" });
     return partial("promote-studies", "study outputs were not promoted to the root folder", { outputs: { pipeline_request: cfg.pipeline_request_path, ingestion: promoteIngest.data.promoted_dir, selected_docs: selectedDocs } });
   }
@@ -230,10 +334,35 @@ export default async function workflow(host) {
   // 6. Promote-translations + pipeline summary in the root folder.
   const promoteTranslations = await run(
     "promote-translations",
-    `${BASE} Completed translations: ${translations.map((t) => `${t.id} (report: ${t.report.summary}, dir: ${t.output_dir})`).join("; ") || "(none)"}. Failed stages (record these verbatim in the summary failure lists): ${JSON.stringify(failures)}. For each completed translation, read inventory.json/run_summary.json to enumerate its verified outputs. Copy every requested language artifact that exists—study_package_<lang>.json, narrative_package_<lang>.json, and report_<lang>.json—without renaming into BOTH ${cfg.pipeline_dir}/studies/<doc-id>/ (canonical single-folder UI serving location beside the source-language files) and ${cfg.pipeline_dir}/translations/<doc-id>/ (translation-stage mirror). In promoted copies only, apply the same study-local path rebasing recorded by ${cfg.pipeline_dir}/studies/<doc-id>/asset_manifest.json so translated packages reference local resources/, source-cache/, and source/ assets; keep the canonical study and translation mirror copies identical. Copy request.json, inventory.json, verification.md, and run_summary.json into the translation-stage mirror only. Missing an inventoried language artifact or an asset-manifest mapping needed by a translated package is a promotion failure; never silently omit it. Then write ${cfg.pipeline_dir}/pipeline_summary.json recording execution_mode (${cfg.dry_run ? "dry_run" : "live"}), the pipeline request path, resolved/reused ingestion run, selected docs with ranks, resolved/reused study and translation directories, completed/failed studies, completed/failed translations, languages, effective concurrency (study ${studyConcurrency}, translation ${translateConcurrency}), and promoted dirs. Never edit run outputs; copy only. Return complete/evidence/unresolved plus promoted_dirs (array of {id, dir}), summary_path, and translation_count.`,
-    schema({ promoted_dirs: { type: "array", items: { type: "object", required: ["id", "dir"], properties: { id: path, dir: path } } }, summary_path: path, translation_count: { type: "integer" } })
+    `${BASE} Completed translations: ${translations.map((t) => `${t.id} (report: ${t.report.summary}, dir: ${t.output_dir})`).join("; ") || "(none)"}. Failed stages (record these verbatim in the summary failure lists): ${JSON.stringify(failures)}. For each completed translation, read inventory.json/run_summary.json to enumerate its verified outputs. Copy every requested language artifact that exists—study_package_<lang>.json, narrative_package_<lang>.json, and report_<lang>.json—without renaming into BOTH ${cfg.pipeline_dir}/studies/<doc-id>/ (canonical single-folder UI serving location beside the source-language files) and ${cfg.pipeline_dir}/translations/<doc-id>/ (translation-stage mirror). In promoted copies only, apply the same study-local path rebasing recorded by ${cfg.pipeline_dir}/studies/<doc-id>/asset_manifest.json so translated packages reference local resources/, source-cache/, and source/ assets; keep the canonical study and translation mirror copies identical. Copy request.json, inventory.json, verification.md, and run_summary.json into the translation-stage mirror only. Missing an inventoried language artifact or an asset-manifest mapping needed by a translated package is a promotion failure; never silently omit it. Then write ${cfg.pipeline_dir}/pipeline_summary.json recording execution_mode (${cfg.dry_run ? "dry_run" : "live"}), the pipeline request path, resolved/reused ingestion run, selected docs with ranks, resolved/reused study and translation directories, completed/failed studies, completed/failed translations, languages, effective concurrency (study ${studyConcurrency}, translation ${translateConcurrency}), and promoted dirs. Never edit run outputs; copy only. Return complete/evidence/unresolved plus promoted_dirs (array of {id, dir}), promoted_ids, summary_path, translation_count, and language_artifact_count (three package files per completed document per requested language).`,
+    schema({ promoted_dirs: { type: "array", items: { type: "object", required: ["id", "dir"], properties: { id: path, dir: path } } }, promoted_ids: { type: "array", items: path }, summary_path: path, translation_count: { type: "integer" }, language_artifact_count: { type: "integer" } })
   );
-  if (!promoteTranslations.ok) failures.push({ stage: "promote-translations", status: "promotion_failed" });
+  const expectedTranslationIds = translations.map((translation) => translation.id).sort();
+  const promotedTranslationIds = (promoteTranslations.data?.promoted_ids || []).slice().sort();
+  const expectedLanguageArtifactCount = translations.length * cfg.languages.length * 3;
+  const translationsPromotedExactly = promoteTranslations.ok
+    && promoteTranslations.data.translation_count === translations.length
+    && promoteTranslations.data.promoted_dirs.length === translations.length
+    && promoteTranslations.data.language_artifact_count === expectedLanguageArtifactCount
+    && JSON.stringify(promotedTranslationIds) === JSON.stringify(expectedTranslationIds);
+  if (!translationsPromotedExactly) failures.push({ stage: "promote-translations", status: "promotion_failed_or_incomplete" });
+
+  // One decisive release gate reads the consolidated city folder, not child
+  // reports. A run cannot be complete while the backend bundle is incomplete.
+  const bundleAudit = await run(
+    "verify-city-bundle",
+    `${BASE} Final audit. Expected selected IDs: ${selectedDocs.map((doc) => doc.id).join(",")}. Expected completed study IDs: ${studies.map((study) => study.id).join(",")}. Expected completed translation IDs: ${translations.map((translation) => translation.id).join(",")}. Expected languages: ${cfg.languages.join(",")}. Inspect the actual filesystem under ${cfg.pipeline_dir}. Require pipeline_request.json and pipeline_summary.json; all promoted ingestion metadata; one studies/<id>/ per completed study with source-language study/narrative/report/grounding files, asset_manifest.json, every requested translated study/narrative/report package, and every resources/, source-cache/, or source/ dependency referenced by any promoted package; one translations/<id>/ per completed translation with request, inventory, verification, run_summary, and every requested translated package. Parse every JSON. Reject any package path that points to muse-document-processing/runs or muse-source-ingestion/runs. Confirm pipeline summary counts, IDs, languages, and paths match this bundle. Write the complete audit result to ${cfg.pipeline_dir}/bundle_verification.json even when invalid; this is the only file this audit may write. Return complete=true only if the bundle is backend-ready and internally self-contained.`,
+    schema({ valid: { type: "boolean" }, audit_path: path, study_count: { type: "integer" }, translation_count: { type: "integer" }, language_artifact_count: { type: "integer" }, asset_count: { type: "integer" }, missing_paths: { type: "array", items: path }, external_reference_count: { type: "integer" } })
+  );
+  const bundleValid = bundleAudit.ok
+    && bundleAudit.data.valid === true
+    && bundleAudit.data.audit_path === `${cfg.pipeline_dir}/bundle_verification.json`
+    && bundleAudit.data.study_count === studies.length
+    && bundleAudit.data.translation_count === translations.length
+    && bundleAudit.data.language_artifact_count === expectedLanguageArtifactCount
+    && bundleAudit.data.external_reference_count === 0
+    && bundleAudit.data.missing_paths.length === 0;
+  if (!bundleValid) failures.push({ stage: "verify-city-bundle", status: "bundle_invalid" });
 
   const outputs = {
     pipeline_request: cfg.pipeline_request_path,
@@ -244,8 +373,9 @@ export default async function workflow(host) {
     studies: studies.map((s) => ({ id: s.id, output_dir: s.output_dir })),
     studies_dir: promoteStudies.data ? promoteStudies.data.promoted_dirs : [],
     translations: translations.map((t) => ({ id: t.id, output_dir: t.output_dir })),
-    translations_dir: promoteTranslations.ok ? promoteTranslations.data.promoted_dirs : [],
-    pipeline_summary: promoteTranslations.ok ? promoteTranslations.data.summary_path : null,
+    translations_dir: translationsPromotedExactly ? promoteTranslations.data.promoted_dirs : [],
+    pipeline_summary: translationsPromotedExactly ? promoteTranslations.data.summary_path : null,
+    bundle_audit: bundleAudit.data || null,
   };
   if (failures.length > 0) return partial("pipeline", `${failures.length} stage(s) did not complete but siblings were preserved`, { outputs });
   return finish({ status: "complete", dry_run: cfg.dry_run, outputs, stages, failures, unresolved: [], notes });

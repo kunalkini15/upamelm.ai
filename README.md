@@ -8,51 +8,58 @@ By pairing autonomous agentic discovery, multimodal document extraction, and mul
 
 ---
 
-## 🏛 System Architecture & End-to-End Pipeline
+## 🏛 How the System Works
+
+Subsurface has two connected paths: an **evidence-authoring pipeline** turns
+public reports and datasets into grounded study packages, and the **interactive
+application** turns those packages into an explorable, multilingual evidence
+experience.
 
 ```mermaid
-flowchart TD
-    subgraph Orchestration ["Orchestration & Workflow Layer"]
-        PW["pipeline-workflow.js<br/>(Deterministic Top-Level Pipeline)"]
+flowchart TB
+    accTitle: Subsurface system architecture
+    accDescr: Public scientific sources move through discovery, evidence extraction, localization, and package promotion. The backend serves those packages to a UI that supports exploration, visualization, and explanation.
+
+    subgraph AUTHORING ["Evidence authoring · orchestrated by pipeline-workflow.js"]
+        direction LR
+        SOURCES["Public reports<br/>and datasets"]
+        DISCOVER["Discover and rank<br/>sources"]
+        EXTRACT["Extract and ground<br/>evidence"]
+        LOCALIZE["Localize<br/>narratives"]
+        PACKAGES[("Promoted study<br/>packages")]
+
+        SOURCES --> DISCOVER --> EXTRACT --> LOCALIZE --> PACKAGES
     end
 
-    subgraph Stages ["Autonomous Scientific Modules (Independent Runs)"]
-        SI["muse-source-ingestion<br/>(City Discovery & Source Manifests)"]
-        DP["muse-document-processing<br/>(Multimodal Extraction & Grounding)"]
-        TR["muse-translate<br/>(Multilingual Localization · KN, HI)"]
+    subgraph EXPERIENCE ["Interactive evidence experience"]
+        direction LR
+        BACKEND["Backend<br/>Catalog and file API"]
+        UI["UI<br/>Explore, visualize, explain"]
+
+        BACKEND --> UI
     end
 
-    subgraph Storage ["Consolidated Runs"]
-        RUNS["runs/<city>/<br/>(Promoted Packages, City Metadata & Assets)"]
-    end
-
-    subgraph Serving ["Backend Service"]
-        API["backend (FastAPI)<br/>http://localhost:8010"]
-    end
-
-    subgraph Presentation ["Frontend Visualization"]
-        UI["ui (Subsurface Explorer)<br/>React 19 + MapLibre GL + R3F<br/>http://localhost:5175"]
-    end
-
-    PW --> SI
-    SI --> DP
-    DP --> TR
-    TR --> RUNS
-    RUNS --> API
-    API -->|/api proxy| UI
+    AUTHORING --> EXPERIENCE
 ```
 
----
+- **Authoring path:** `pipeline-workflow.js` coordinates source discovery,
+  per-document extraction and grounding, multilingual localization, and
+  promotion into self-contained city and study packages under `runs/`.
+- **Runtime path:** `backend/` discovers the promoted packages directly from
+  disk and exposes their catalogs, study contracts, translations, and assets.
+- **User experience:** `ui/` provides city, study, and language selection;
+  coordinated 2D and 3D exploration; charts and structured evidence; plain-
+  language feature explanations; source citations; and whole-study reports.
 
-## 📂 Core Modules & Workspaces
+## 📂 Modules & Workspaces
 
 Every module can run **either as part of the unified pipeline or completely independently**:
 
 | Module | Description | Port / Path | Tech Stack |
 |---|---|---|---|
 | **[`pipeline-workflow.js`](pipeline-workflow.js)** | Top-level orchestrator chaining ingestion, study fan-out, translation, and UI promotion. | Root | Node.js, Meta Muse |
-| **[`backend/`](backend/)** | Read-only FastAPI service discovering cities, studies, and assets from `runs/`. | `http://localhost:8010` | Python 3.10+, FastAPI, Uvicorn |
-| **[`ui/`](ui/)** | Flagship interactive Subsurface Explorer (2D map + 3D spatial scene + executive dossier). | `http://localhost:5175` | React 19, Vite, Tailwind v4, MapLibre GL, Three.js |
+| **[`backend/`](backend/)** | Read-only catalog and file API that discovers cities, studies, translations, and assets from `runs/`. | `http://localhost:8010` | Python 3.10+, FastAPI, Uvicorn |
+| **[`ui/`](ui/)** | Interactive evidence explorer combining discovery, multilingual selection, 2D/3D visualization, charts, grounded explanations, citations, and study reports. | `http://localhost:5175` | React 19, Vite, Tailwind v4, MapLibre GL, Three.js |
 | **[`muse-source-ingestion/`](muse-source-ingestion/)** | Municipal-scale discovery and document acquisition from public portals (CGWB, NAQUIM). | Module | Node.js, Multi-Agent Discovery |
 | **[`muse-document-processing/`](muse-document-processing/)** | Multimodal PDF/tabular extraction, evidence inventory, and `document-study.v2` packaging. | Module | Node.js, Multimodal Extraction |
 | **[`muse-translate/`](muse-translate/)** | Multilingual localization (Kannada, Hindi, etc.) preserving exact scientific grounding. | Module | Node.js, Parallel LLM Lanes |
